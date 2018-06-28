@@ -1,0 +1,38 @@
+$box-shadow: 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12), 0 2px 4px -1px rgba(0,0,0,.3);
+
+.accordion{
+    background: #fff;
+    div{
+        h1, h2, h3, h4, h5, h6, i{
+            text-align: justify;
+            transition: linear 1;
+        }
+    }
+    [data-display]{
+        display: none;
+    }
+}
+
+.accordion-title{
+    background: #F5F5F5;
+    box-shadow: $box-shadow;
+    cursor: pointer;
+}
+
+.accordion-item{
+    margin: 20px;
+    box-shadow: $box-shadow;
+    div{
+        h1, h2, h3, h4, h5, h6{
+            color: #fff;
+        }
+        p{
+            text-align: justify;
+            padding: 1rem;
+        }
+    }
+}
+
+.accordion-title:hover{
+    background: #BDBDBD;
+}

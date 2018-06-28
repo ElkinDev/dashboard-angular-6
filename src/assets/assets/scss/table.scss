@@ -1,0 +1,28 @@
+.table{
+    thead{
+        tr{
+            th{
+                text-align: center !important;
+                text-transform: uppercase;
+            }
+        }
+    }
+    tbody{
+        tr{
+            .action-td{
+                text-align: right !important;
+            }
+        }
+    }
+}
+
+.card-history{
+    color: #fff;
+    background: #039BE5;
+    margin: .4rem 0rem;
+    padding: .5rem;
+}
+.div-details-history{
+    padding-top:30px;
+}
+.show-documents{display:none;}

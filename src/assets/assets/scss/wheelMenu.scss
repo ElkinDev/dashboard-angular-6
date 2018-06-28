@@ -1,0 +1,158 @@
+.menuWheel{
+    padding-left: 0 !important;padding-right: 0 !important;
+}
+.centerModalCircle{
+    margin: 0 auto;
+    pointer-events: none;
+    h2{
+        text-align: center;
+        font:bold 22px arial;
+    }
+    p{
+        text-align: center;
+    }
+    .waitLoadInfoTmp{
+      margin-top: 7.5rem;
+    }
+    .formCallCaptcha{
+        margin-top: 4.5rem;
+    }
+}
+.mesgWheel{
+    z-index: 1;
+    transition: opacity .5s;
+    visibility: hidden;
+    opacity: 0;
+    text-align: center;
+    position: absolute;
+    color: #555;
+    margin: 25% 0;
+    top: 0;
+    .body{
+      text-align: center;
+      margin-top: 21px;
+    }
+}
+.btn-details-primary{
+    text-decoration: none !important;
+    font-weight: bold !important;
+    font-size: 0.83rem !important;
+    padding: 5px 15px 2px !important;
+    color:#fff !important;
+}
+.resClic{
+  padding-top: 3rem !important;
+  p{
+    text-align: justify;
+    white-space: pre-line;
+  }
+  p a{
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.83rem;
+    padding: 5px 15px 2px;
+  }
+
+}
+
+#wheel-data{
+    text{
+
+        font-weight: 0 !important;
+        font-size: 1rem;
+        cursor: pointer;
+        textPath{
+            font-size:.8rem ;
+            fill: #fff;
+            text-anchor: middle;
+        }
+    }
+    path{
+        cursor: pointer;
+        fill: #90A4AE;
+    }
+    polyline{
+        cursor: pointer;
+    	stroke: #606971;
+    	fill: none;
+    }
+
+    .wheel-no-focus{
+        path{
+            fill: #7c848c;
+        }
+    }
+}
+
+#id-center{
+  fill: #fff !important;
+}
+
+@media (max-width: 425px){
+
+  .wheelClick{
+    article{
+      padding: 0px !important;
+    }
+  }
+  .centerModalCircle .waitLoadInfoTmp{
+    margin-top: 50%;
+  }
+
+  .serget{
+    font-size: .5rem !important;
+  }
+}
+
+@media (max-width: 800px){
+    .from-center-circle {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.3);
+        width: 78% !important;
+        z-index: 100;
+    }
+
+    .centerModalCircle{
+        position: absolute;
+        top: 20%;
+        left: 0;
+        right: 0;
+        width: 43%;
+        margin: 0 auto;
+        pointer-events: none;
+    }
+
+}
+
+
+@media (max-width: 1024px){
+    .notpadding {
+        padding: 0 !important;margin: 0 !important;
+    }
+
+}
+
+@media (max-width: 768px){
+        #wheel-data{
+        text{
+            font-size: 1rem ;
+        }
+        }
+
+}
+
+
+@media (max-width: 480px){
+    .col-circle {
+        padding: 0 5px 0 5px 0px ;
+    }
+    .pay-content{padding: 0 5px 0 5px 0px !important;}
+     #wheel-data{
+
+        textPath{
+            font-size:1rem  !important;
+        }
+    }
+
+}

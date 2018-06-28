@@ -1,0 +1,34 @@
+
+
+.button-pay-new{
+    >span {
+        background-color: #2369a0;
+        color: #fff;
+        padding: 4px 9px;
+        border-radius: 4px;
+        margin-top: 0;
+        font-size: 19px;
+        cursor: pointer;
+    }
+}
+
+.countQuerys{
+    border-radius: 5px;
+    padding: .5rem;
+    color: #fff !important;
+    background-color: #009688;
+}
+
+.newCircle{
+    position: relative;
+}
+
+.payHomeContent{
+    .spin-payHome{
+        width: 100px;
+        height: 100px;
+        position: relative;
+        margin: 0 auto;
+        display: none;
+    }
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2017 by original authors @ fontello.com</metadata>
+<defs>
+<font id="fontello" horiz-adv-x="1000" >
+<font-face font-family="fontello" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="ico-comprobamos" unicode="&#xe800;" d="M46-110c-25 22-46 40-46 41-1 2 39 42 138 140 52 52 95 95 96 96 0 1-2 6-8 16-66 109-82 241-42 362a442 442 0 0 0 187 239c27 17 66 35 97 45 115 37 242 24 348-35a445 445 0 0 0 180-189l7-13h-61l-62 0-7 11a322 322 0 0 1-39 45 328 328 0 0 1-147 83c-131 35-269-13-351-122a331 331 0 0 1-42-324 332 332 0 0 1 77-113c51-50 114-80 186-91 20-3 73-3 92 0 41 7 80 20 113 38a390 390 0 0 1 49 33c13 11 35 32 45 44l8 10h127l-1-3a529 529 0 0 0-21-35c-69-104-177-173-299-192-24-4-33-5-69-5-32 0-39 1-54 3-62 8-118 28-170 59-8 5-14 8-14 7-1-1-17 11-33 23-8 6-14 10-14 10-1 0-51-50-113-112l-111-111z" horiz-adv-x="1005" />
+</font>
+</defs>
+</svg>

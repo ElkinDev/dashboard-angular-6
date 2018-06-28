@@ -1,0 +1,68 @@
+.modal-update-browser p{ font-size: 0.8rem !important; }
+
+@media (max-width: 575px){
+    .hidden-xs{display:none;}
+}
+#welcome{
+    background: rgba(0, 0, 0, 0.61);
+    *{
+        font-weight: bolder;
+        color: #fff;
+    }
+    ul{
+        padding: 0px;
+    }
+    .modal-content{
+        background: rgba(0, 0, 0, 0.82);
+        padding: 0 16px;
+        box-shadow: 0 0 28px 5px #000;
+    }
+    .btn{
+        color: #d2d2d2;
+        background-color: #2c8690;
+    }
+}
+
+.modal-body{
+  .spin-payHome{
+    text-align: center;
+  }
+}
+
+.promotion{
+  font-size: .84rem;
+  a[href="#/contact"]{
+    color: #e40a25;
+  }
+  p{
+    margin-bottom: .2rem;
+  }
+  .promotion-list{
+    &:nth-child(1){
+      border-left: 0px !important;
+    }
+    border-left: 1px solid #beb8ba;
+  }
+}
+.errMsgInputRelative{
+    display: block;
+    text-align: center;
+    color: red;
+    font-size: 0.8rem;
+    margin-top: -5px;
+
+}
+.errMsgInputRelative1{
+    display: block;
+    text-align: center;
+    color: red;
+    font-size: 0.8rem;
+}
+
+.errInputText{
+  border-bottom: 2px solid red !important;
+}
+
+.errFormControl{
+  border: 2px solid red !important;
+}

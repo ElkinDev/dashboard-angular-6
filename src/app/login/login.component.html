@@ -1,0 +1,82 @@
+<section class="container-fluid section-full bg-dark display-table">
+    <section class="display-middle text-center">
+        <div class="panel-login col-lg-4 offset-lg-4">
+            <form class="form-horizontal" #login="ngForm" (ngSubmit)=" login.form.valid && onSubmit(login)">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <img src="logo" alt="logo.comprobamos">
+                        <h2>Login</h2>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6 text-left">
+                        <label for="validationServerUsername">Usuario</label>
+                        <div class="form-group">
+
+                            <input name="email" #email="ngModel" ngModel  (keypress)="keyPress($event)" type="email" class="form-control" [ngClass]="{'is-invalid': (login.submitted && email.invalid) || dontExist }"
+                                id="email" placeholder="Correo Electrónico" aria-describedby="email" required email >
+                                <div *ngIf="login.submitted && email.invalid" class="invalid-feedback">
+                                    
+                                </div>
+                                <div *ngIf="login.submitted && email.invalid" class="invalid-feedback">
+                                    <div *ngIf="email.errors.required">Correo electrónico requerido</div>
+                                    <div *ngIf="email.errors.email">Correo electrónico inválido</div>
+                                </div>
+                                <div *ngIf="dontExist" class="invalid-feedback">
+                                    Usuario no existe
+                                </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6 text-left">
+                        <div class="form-group">
+
+                            <label for="validationServer03">Contraseña</label>
+                            <input name="password" #password="ngModel" ngModel type="password" class="form-control" id="password" [ngClass]="{ 'is-invalid': login.submitted && password.invalid }" placeholder="Contraseña" required minlength="6">
+                            <div *ngIf="login.submitted && password.invalid" class="invalid-feedback">
+                                <div *ngIf="password.errors.required">Contraseña es requerida</div>
+                                <div *ngIf="password.errors.minlength">La contraseña es mayor o igual a 6 dígitos</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-control-feedback">
+                            <span class="text-danger align-middle">
+                                <!-- Put password error message here -->
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6" style="padding-top: .35rem">
+                        <div class="form-check mb-2 mr-sm-2 mb-sm-0">
+                            <label class="form-check-label">
+                                <input class="form-check-input" name="remember" type="checkbox">
+                                <span style="padding-bottom: .15rem">Recordar sesión</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 1rem">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-sign-in"></i>Entrar
+                        </button>
+                        <a class="btn btn-link" href="/password/reset">Has olvidado la contraseña?</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</section>

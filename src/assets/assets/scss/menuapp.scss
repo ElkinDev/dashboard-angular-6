@@ -1,0 +1,23 @@
+.menu-app{
+    ul{
+        list-style: none;
+        color: #fff;
+        margin: 0;
+        padding-top: 2rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
+        padding-bottom: 2rem;
+    }
+    li{
+        margin: 0;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    a{
+        color: #fff;
+    }
+}
+
+.text-xs-center{
+  min-height: 400px;
+}

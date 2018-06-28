@@ -1,0 +1,52 @@
+$blue: #2f91de;
+$red: #ff4d50;
+
+.bg-blue{
+    background: $blue;
+}
+
+.bg-greend-ligth{
+    background: #B2DFDB;
+}
+
+.bg-greend{
+    background: #00695C;
+}
+
+.bg-red{
+    background: #ff4d50;
+}
+
+.bg-inverse{
+    background: #00313e;
+}
+
+.bg-yellow{
+    background: #fda63b;
+}
+
+.bg-white{
+    background: #ffffff;
+}
+
+.text-white{
+    color: #ffffff;
+}
+
+.text-blue{
+    color: $blue;
+}
+
+.text-red{
+    color: $red;
+}
+
+[data-state="good"]::before{
+  background: #739600;
+}
+[data-state="noGood"]::before{
+  background: #f8c000;
+}
+[data-state="pending"]::before{
+  background: #4b92db;
+}
