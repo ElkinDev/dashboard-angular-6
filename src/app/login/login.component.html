@@ -16,7 +16,7 @@
                         <label for="validationServerUsername">Usuario</label>
                         <div class="form-group">
 
-                            <input name="email" #email="ngModel" ngModel  (keypress)="keyPress($event)" type="email" class="form-control" [ngClass]="{'is-invalid': (login.submitted && email.invalid) || dontExist }"
+                            <input name="email" #email="ngModel" ngModel  (keypress)="removeErrors($event,'username')" type="email" class="form-control" [ngClass]="{'is-invalid': (login.submitted && email.invalid) || dontExist }"
                                 id="email" placeholder="Correo Electrónico" aria-describedby="email" required email >
                                 <div *ngIf="login.submitted && email.invalid" class="invalid-feedback">
                                     
@@ -41,10 +41,13 @@
                         <div class="form-group">
 
                             <label for="validationServer03">Contraseña</label>
-                            <input name="password" #password="ngModel" ngModel type="password" class="form-control" id="password" [ngClass]="{ 'is-invalid': login.submitted && password.invalid }" placeholder="Contraseña" required minlength="6">
+                            <input name="password" #password="ngModel" (keypress)="removeErrors($event,'password')" ngModel type="password" class="form-control" id="password" [ngClass]="{ 'is-invalid': (login.submitted && password.invalid ) || passwordincorrect }" placeholder="Contraseña" required minlength="6">
                             <div *ngIf="login.submitted && password.invalid" class="invalid-feedback">
                                 <div *ngIf="password.errors.required">Contraseña es requerida</div>
                                 <div *ngIf="password.errors.minlength">La contraseña es mayor o igual a 6 dígitos</div>
+                            </div>
+                            <div *ngIf="passwordincorrect" class="invalid-feedback">
+                                Contraseña incorrecta
                             </div>
                         </div>
                     </div>
