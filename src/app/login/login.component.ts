@@ -35,8 +35,7 @@ export class LoginComponent implements OnInit {
 
   keyPress(event) {
     if (this.dontExist) {
-      console.log('semeteeeee')
-      event.target.classList.remove('is-invalid'); // To Remove
+      event.target.classList.remove('is-invalid'); // To Remove class child object
       this.dontExist=false
     }
   }
