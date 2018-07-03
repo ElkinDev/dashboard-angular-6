@@ -7,7 +7,9 @@ import { RouterModule, Route, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import {FunctionsService} from './functions.service';
-import { DashboardComponent } from './dashboard/dashboard.component'
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { NavbarAsideComponent } from './navbar-aside/navbar-aside.component';
+import { HeaderComponent } from './header/header.component'
 export const appRoutes:Routes = [
   {
     path:'login',
@@ -24,7 +26,9 @@ export const appRoutes:Routes = [
   declarations: [
     AppComponent,
       LoginComponent,
-      DashboardComponent
+      DashboardComponent,
+        NavbarAsideComponent,
+        HeaderComponent
   ],
   imports: [
     BrowserModule,
