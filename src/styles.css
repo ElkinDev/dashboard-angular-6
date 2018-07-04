@@ -12,10 +12,11 @@
 * Tags: html, themplate, Dashboard Angular 6 Template
 --------------------------------------------------------- */
 html,body{
-    width:100%;height:100%;margin:0;padding:0;background: #f1f2f7;
+    width:100%;height:100%;margin:0;padding:0;background-color: #f1f2f7 !important;
     font-family: 'Open Sans' sans-serif;
     font-size: 16px;
     width: 100%;
+    display:table
 }
 .section-full{
     height:100%;
@@ -30,6 +31,7 @@ html,body{
     background-color: aliceblue;    
     padding: 25px;
 }
+@import url(assets/css/animate.css);
 
 .gaugejs-wrap {
   position: relative;
@@ -770,8 +772,7 @@ html,body{
   transition: all 0.3s ease; }
 
 body {
-  background: #f1f2f7;
-  display: table;
+  background: #f1f2f7 !important;
   font-family: 'Open Sans' sans-serif !important;
   font-size: 16px;
   width: 100%; }
@@ -850,7 +851,8 @@ aside.left-panel {
   min-height: 100%;
   padding: 0 25px;
   vertical-align: top;
-  width: 280px;
+
+  width:15%;
   transition: width 0.3s ease; }
 
 .navbar {
@@ -894,7 +896,7 @@ aside.left-panel {
     clear: both;
     display: block;
     font-family: 'Open Sans';
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 700;
     line-height: 50px;
     padding: 15px 0 0 0;
@@ -915,7 +917,7 @@ aside.left-panel {
         color: #c8c9ce !important;
         display: inline-block;
         font-family: 'Open Sans';
-        font-size: 14px;
+        font-size: 16px;
         line-height: 30px;
         padding: 10px 0;
         position: relative;
@@ -1013,8 +1015,8 @@ body.open .navbar .navbar-brand.hidden {
   display: block; }
 
 .open aside.left-panel {
-  max-width: 70px;
-  width: 70px; }
+  max-width: 3%;
+  width: 2%; }
   .open aside.left-panel .navbar .navbar-brand {
     display: none; }
     .open aside.left-panel .navbar .navbar-brand.hidden {
@@ -1042,7 +1044,7 @@ body.open .navbar .navbar-brand.hidden {
       z-index: 0;
       transition: none; }
       .open aside.left-panel .navbar .navbar-nav li a .menu-icon {
-        font-size: 20px;
+        font-size: 25px;
         z-index: -1;
         width: inherit; }
       .open aside.left-panel .navbar .navbar-nav li a .menu-title-text {

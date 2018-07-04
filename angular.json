@@ -33,11 +33,8 @@
               "./node_modules/jquery/dist/jquery.min.js",
               "./node_modules/popper.js/dist/umd/popper.min.js",              
               "./node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "src/assets/js/plugins.js",
               "src/assets/js/main.js",
-              "src/assets/js/lib/chart-js/Chart.bundle.js",
-              "src/assets/js/dashboard.js",
-              "src/assets/js/widgets.js"
+              "src/assets/js/dashboard.js"
             ]
           },
           "configurations": {
