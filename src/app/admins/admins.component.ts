@@ -6,10 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./admins.component.css']
 })
 export class AdminsComponent implements OnInit {
-
+  loadingMore:boolean
   constructor() { }
 
   ngOnInit() {
+    this.loadingMore=false
   }
 
 }

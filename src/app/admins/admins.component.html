@@ -33,25 +33,232 @@
     </div>
   </div>
 
-  <div class="content mt-3">
-    <!-- box alerts    -->
-    <!-- 
-            
-            <div class="col-sm-12">
-            <div class="alert  alert-success alert-dismissible fade show" role="alert">
-                <span class="badge badge-pill badge-success">Success</span> You successfully read this important alert message.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        </div>
-    
-    -->
+  <div class="content mt-3" style="min-height:81vh;"  >
+    <div class=" text-center loading-panel" [hidden]="!loadingMore">
+            <div class="dot dot-1"></div>
+            <div class="dot dot-2"></div>
+            <div class="dot dot-3"></div>
+          
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+            <defs>
+              <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -7"/>
+              </filter>
+            </defs>
+          </svg>
+      
+    </div>
+    <div class="container " [hidden]="loadingMore">
+      <div class="row" >
+
+          <div class="col-lg-4 col-md-6">
+              <div class="feed-box ">
+                  <section class="card">
+                      <div class="media media-custom">
+                          <a href="#">
+                              <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="assets/images/admin.jpg">
+                            
+                          </a>
+                          <div class="media-body">
+                              <h3 class="display-6">Jim Doe</h3>
+                              <p>Project Manager</p>
+                          </div>
+                      </div>
+                      <div class="card-body">
+                        
+                          <div class="corner-ribon black-ribon">
+                              <i class="fa fa-edit"></i>
+                          </div>
+                          <hr>
+                          <div class="card-text m-0">
+                                  <p class="m-0 float-right color-danger"> <small> Creado: 20 de julio 2018 </small></p>
+                                  <span class="float-left"><i class="ti-trash"></i></span>
+                                    
+                                
+                          </div>
+                      </div>
+                  </section>
+              </div>
+          </div>
 
 
+          <div class="col-lg-4 col-md-6">
+              <div class="feed-box ">
+                  <section class="card">
+                      <div class="media media-custom">
+                          <a href="#">
+                              <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="assets/images/admin.jpg">
+                            
+                          </a>
+                          <div class="media-body">
+                              <h3 class="display-6">Jim Doe</h3>
+                              <p>Project Manager</p>
+                          </div>
+                      </div>
+                      <div class="card-body">
+                        
+                          <div class="corner-ribon black-ribon">
+                              <i class="fa fa-edit"></i>
+                          </div>
+                          <hr>
+                          <div class="card-text m-0">
+                                  <p class="m-0 float-right color-danger"> <small> Creado: 20 de julio 2018 </small></p>
+                                  <span class="float-left"><i class="ti-trash"></i></span>
+                                    
+                                
+                          </div>
+                      </div>
+                  </section>
+              </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+              <div class="feed-box ">
+                  <section class="card">
+                      <div class="media media-custom">
+                          <a href="#">
+                              <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="assets/images/admin.jpg">
+                            
+                          </a>
+                          <div class="media-body">
+                              <h3 class="display-6">Jim Doe</h3>
+                              <p>Project Manager</p>
+                          </div>
+                      </div>
+                      <div class="card-body">
+                        
+                          <div class="corner-ribon black-ribon">
+                              <i class="fa fa-edit"></i>
+                          </div>
+                          <hr>
+                          <div class="card-text m-0">
+                                  <p class="m-0 float-right color-danger"> <small> Creado: 20 de julio 2018 </small></p>
+                                  <span class="float-left"><i class="ti-trash"></i></span>
+                                    
+                                
+                          </div>
+                      </div>
+                  </section>
+              </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+              <div class="feed-box ">
+                  <section class="card">
+                      <div class="media media-custom">
+                          <a href="#">
+                              <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="assets/images/admin.jpg">
+                            
+                          </a>
+                          <div class="media-body">
+                              <h3 class="display-6">Jim Doe</h3>
+                              <p>Project Manager</p>
+                          </div>
+                      </div>
+                      <div class="card-body">
+                        
+                          <div class="corner-ribon black-ribon">
+                              <i class="fa fa-edit"></i>
+                          </div>
+                          <hr>
+                          <div class="card-text m-0">
+                                  <p class="m-0 float-right color-danger"> <small> Creado: 20 de julio 2018 </small></p>
+                                  <span class="float-left"><i class="ti-trash"></i></span>
+                                    
+                                
+                          </div>
+                      </div>
+                  </section>
+              </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+              <div class="feed-box ">
+                  <section class="card">
+                      <div class="media media-custom">
+                          <a href="#">
+                              <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="assets/images/admin.jpg">
+                            
+                          </a>
+                          <div class="media-body">
+                              <h3 class="display-6">Jim Doe</h3>
+                              <p>Project Manager</p>
+                          </div>
+                      </div>
+                      <div class="card-body">
+                        
+                          <div class="corner-ribon black-ribon">
+                              <i class="fa fa-edit"></i>
+                          </div>
+                          <hr>
+                          <div class="card-text m-0">
+                                  <p class="m-0 float-right color-danger"> <small> Creado: 20 de julio 2018 </small></p>
+                                  <span class="float-left"><i class="ti-trash"></i></span>
+                                    
+                                
+                          </div>
+                      </div>
+                  </section>
+              </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+              <div class="feed-box ">
+                  <section class="card">
+                      <div class="media media-custom">
+                          <a href="#">
+                              <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="assets/images/admin.jpg">
+                            
+                          </a>
+                          <div class="media-body">
+                              <h3 class="display-6">Jim Doe</h3>
+                              <p>Project Manager</p>
+                          </div>
+                      </div>
+                      <div class="card-body">
+                        
+                          <div class="corner-ribon black-ribon">
+                              <i class="fa fa-edit"></i>
+                          </div>
+                          <hr>
+                          <div class="card-text m-0">
+                                  <p class="m-0 float-right color-danger"> <small> Creado: 20 de julio 2018 </small></p>
+                                  <span class="float-left"><i class="ti-trash"></i></span>
+                                    
+                                
+                          </div>
+                      </div>
+                  </section>
+              </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+              <div class="feed-box ">
+                  <section class="card">
+                      <div class="media media-custom">
+                          <a href="#">
+                              <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="assets/images/admin.jpg">
+                            
+                          </a>
+                          <div class="media-body">
+                              <h3 class="display-6">Jim Doe</h3>
+                              <p>Project Manager</p>
+                          </div>
+                      </div>
+                      <div class="card-body">
+                        
+                          <div class="corner-ribon black-ribon">
+                              <i class="fa fa-edit"></i>
+                          </div>
+                          <hr>
+                          <div class="card-text m-0">
+                                  <p class="m-0 float-right color-danger"> <small> Creado: 20 de julio 2018 </small></p>
+                                  <span class="float-left"><i class="ti-trash"></i></span>
+                                    
+                                
+                          </div>
+                      </div>
+                  </section>
+              </div>
+          </div>
 
-    <div class="col-sm-6 col-lg-3">
-
+      </div>
     </div>
 
 
