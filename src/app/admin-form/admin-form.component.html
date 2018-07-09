@@ -1,0 +1,94 @@
+<div class="container bg-light container-form">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
+        <br>
+        <input class="btn form-control mt-3 text-center" type="file" name="myImage" accept="image/x-png,image/gif,image/jpeg" (change)="readUrl($event)" />
+
+
+      </div>
+      <div class="col-md-12">
+        <div class="row row-form">
+          <div class="col-md-10 offset-md-1">
+            <label class=" form-control-label">Nombres</label>
+            <input type="text" name="nameUser" class="form-control">
+          </div>
+          <div class="col-md-10 offset-md-1 row-form">
+            <label class=" form-control-label">Apellidos</label>
+            <input  type="text" name="LastNameUser" class="form-control" >
+          </div>
+        </div>
+        <div class="row row-form">
+          <div class="col-md-10 offset-md-1">
+            <label class=" form-control-label">Correo Electrónico</label>
+
+            <div class=" form-group">
+              <div class="input-group">
+                <div class="input-group-addon">
+                  <i class="fa fa-user"></i>
+                </div>
+                <input type="text" id="emailUser" name="emailUser" placeholder="AndresIniesta@gmail...." class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row ">
+          <div class="col-md-10 offset-md-1">
+            <label class=" form-control-label">Contraseña</label>
+
+            <div class=" form-group">
+              <div class="input-group">
+                <input type="password" id="input1-group1" name="password" placeholder="******" class="form-control">
+                <div class="input-group-addon">
+                  <i class="fa fa-asterisk"></i>
+                </div>
+              </div>
+              <small class="form-text text-muted">* Mínimo 6 caracteres alfanúmericos</small>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 offset-md-1 ">
+            <label class=" form-control-label">Repetir Contraseña</label>
+
+            <div class=" form-group">
+              <div class="input-group">
+                <input type="passwordRepeat" id="passwordRepeat" name="passwordRepeat" placeholder="******" class="form-control">
+                <div class="input-group-addon">
+                  <i class="fa fa-asterisk"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row text-center">
+        <div class="col-sm-12">
+            <label class=" form-control-label">Estado</label>
+            <div class=" form-group">
+          
+            <label class="switch switch-3d switch-success mr-3">
+            
+              <input type="checkbox" class="switch-input" checked="true">
+               <span class="switch-label"></span>
+                <span class="switch-handle"></span>
+                
+            </label> Activo
+          </div>
+        </div>            
+        </div>
+
+        <div class="row text-center">
+          <div class="col-md-10 offset-md-1"><button class="btn btn-danger">Cancelar</button> </div>
+          <div class="col-md-10 offset-md-1 row-form"><button class="btn btn-success">Guardar <i></i></button></div>
+          
+        </div>
+
+
+
+      </div>
+      <div>
+      </div>
+    </div>
+  </div>

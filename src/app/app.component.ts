@@ -1,6 +1,6 @@
 import { Component,OnInit } from '@angular/core';
 import { Router } from "@angular/router";
-import { FunctionsService } from './functions.service';
+import {WebSocketService} from './websocket.service';
 
 @Component({
   selector: 'app-root',
@@ -9,8 +9,7 @@ import { FunctionsService } from './functions.service';
 })
 export class AppComponent implements OnInit {
   constructor(private router: Router,
-    private FunctionsService: FunctionsService
-  ) {
+              private wsSocket:WebSocketService  ) {
 
   }
   title = 'app';
@@ -18,7 +17,6 @@ export class AppComponent implements OnInit {
     window.scroll(0, 0);
   }
   ngOnInit() {
-    this.FunctionsService.initSocket()
   }
 
   
