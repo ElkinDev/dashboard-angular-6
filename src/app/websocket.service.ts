@@ -6,25 +6,29 @@ import { Observable,Subject } from 'rxjs';
 import { environment } from '../environments/environment';
 
 
-const socket = socketIo(environment.ws_url);
 
 @Injectable()
 export class WebSocketService {
-  
+
+  socket
 
   constructor() { }
   public initSocket(): void {
+    this.socket = socketIo(environment.ws_url);
+    
     console.log(environment.ws_url,'veaalo');
   }
 
   public emit(nameEmit,data){
     if(data){
-      socket.emit(nameEmit), data, (res)=>{
+      this.socket.emit(nameEmit), data, (res)=>{
         console.log(res,'this is the result')
+        return res;
       }
     }else{
-      socket.emit(nameEmit), (res)=>{
+      this.socket.emit(nameEmit), (res)=>{
         console.log(res,'this is the result')
+        return res;
       }
     }
   }

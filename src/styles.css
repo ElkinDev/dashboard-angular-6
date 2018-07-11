@@ -2235,6 +2235,9 @@ header .form-inline {
 .row-form{
   padding-top:15px;
 }
+.pointer{
+  cursor: pointer;
+}
 @media (max-width: 1368px) {
   .content {
     padding: 0 15px; }

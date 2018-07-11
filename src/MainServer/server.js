@@ -33,6 +33,10 @@ io.on('connection', socket=>{
 	socket.on('getPlan', data=>{
 		socket.emit('plan', 'veaamos')
 	})
+
+	socket.on('getAllAdmins', ()=>{
+		console.log('veaaamos quee es')
+	})
 	try{
 		socket.on('disconnect', ()=>{
 			console.log('se desconecta el hombre', __filename)

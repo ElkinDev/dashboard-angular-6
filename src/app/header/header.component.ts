@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
+declare var jQuery: any;
+declare var $: any;
 @Component({
   selector: 'header-dashboard',
   templateUrl: './header.component.html',
@@ -11,5 +12,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
   }
-
+  menuToggle() {
+    $('body').toggleClass('open');
+  }
 }

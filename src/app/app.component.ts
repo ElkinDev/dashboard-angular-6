@@ -1,7 +1,8 @@
 import { Component,OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import {WebSocketService} from './websocket.service';
-
+declare var jQuery:any;
+declare var $ :any;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,7 +10,7 @@ import {WebSocketService} from './websocket.service';
 })
 export class AppComponent implements OnInit {
   constructor(private router: Router,
-              private wsSocket:WebSocketService  ) {
+              private _wsSocket:WebSocketService  ) {
 
   }
   title = 'app';
@@ -17,7 +18,9 @@ export class AppComponent implements OnInit {
     window.scroll(0, 0);
   }
   ngOnInit() {
+    this._wsSocket.initSocket()
   }
+  
 
   
 }

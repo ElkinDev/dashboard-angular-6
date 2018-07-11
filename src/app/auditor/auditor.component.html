@@ -1,61 +1,262 @@
 <aside id="left-panel" class="left-panel">
-    <navbar-aside></navbar-aside>
-  
-  </aside>
-  <!-- /#left-panel -->
-  
-  
-  <div id="right-panel" class="right-panel">
-    <header-dashboard></header-dashboard>
-  
-    <div class="breadcrumbs">
-      <div class="col-sm-4">
-        <div class="page-header float-left">
-          <div class="page-title">
-            <h1>Auditores</h1>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-8">
-        <div class="page-header float-right">
-          <div class="page-title">
-            <ol class="breadcrumb text-right">
-              <li>
-                <a routerLink="/Dashboard">Dashboard</a>
-              </li>
-              <li>
-                <a href="#">Usuarios</a>
-              </li>
-              <li class="active">Auditores</li>
-            </ol>
-          </div>
+  <navbar-aside></navbar-aside>
+
+</aside>
+<!-- /#left-panel -->
+
+
+<div id="right-panel" class="right-panel">
+  <header-dashboard></header-dashboard>
+
+  <div class="breadcrumbs">
+    <div class="col-sm-4">
+      <div class="page-header float-left">
+        <div class="page-title">
+          <h1>Auditores
+            <button (click)="openFormAuditors()" [ngClass]="{'btn-success': !addAuditor,'btn-danger':addAuditor}" class="btn btn-breadcrumbs"
+              style="color:#ffffff !important;">
+              {{ !addAuditor ? 'Nuevo' : 'Cancelar' }}
+              <i [ngClass]="{'ti-plus': !addAuditor,'ti-close':addAuditor}"></i>
+            </button>
+          </h1>
         </div>
       </div>
     </div>
-  
-    <div class="content mt-3">
-      <!-- box alerts    -->
-      <!-- 
-              
-              <div class="col-sm-12">
-              <div class="alert  alert-success alert-dismissible fade show" role="alert">
-                  <span class="badge badge-pill badge-success">Success</span> You successfully read this important alert message.
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-          </div>
-      
-      -->
-  
-  
-  
-      <div class="col-sm-6 col-lg-3">
-  
+    <div class="col-sm-8">
+      <div class="page-header float-right">
+        <div class="page-title">
+          <ol class="breadcrumb text-right">
+            <li>
+              <a routerLink="/Dashboard">Dashboard</a>
+            </li>
+            <li>
+              <a href="#">Usuarios</a>
+            </li>
+            <li class="active">Auditores</li>
+          </ol>
+        </div>
       </div>
-  
-  
     </div>
   </div>
-  
-  <!-- /#right-panel -->
+
+  <div class="content mt-3" style="min-height:81vh;">
+    <div class=" text-center loading-panel" [hidden]="!loadingMore">
+      <div class="dot dot-1"></div>
+      <div class="dot dot-2"></div>
+      <div class="dot dot-3"></div>
+
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+          <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -7" />
+          </filter>
+        </defs>
+      </svg>
+
+    </div>
+
+    <div class="container " [hidden]="loadingMore">
+      <div class="row p-3">
+        <div class="formAuditor" [hidden]='!addAuditor' [ngClass]="{'col-md-4':addAuditor }">
+          <app-users-form [rolUser]="RoleUser" (CloseFormtUserAdmin)="receiveMessage($event)"></app-users-form>
+        </div>
+        <div class="formAuditor" [hidden]='!EditAuditor' [ngClass]="{'col-md-4':EditAuditor }">
+          <div class="container bg-light container-form">
+            <form class="form-horizontal" #EditUser="ngForm" (ngSubmit)=" EditUser.form.valid && onSubmitEditUser(EditUser)">
+              <div class="row">
+                <div class="col-md-12 text-center">
+                  <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
+                  <br>
+                  <input class="btn form-control mt-3 text-center" type="file" name="ImageUserEdit" #ImageUserEdit="ngModel" id="ImageUserEdit"
+                    ngModel accept="image/x-png,image/gif,image/jpeg" (change)="readUrl($event)" />
+                </div>
+                <div class="col-md-12">
+                  <div class="row ">
+                    <div class="col-md-10 offset-md-1">
+                      <div class="form-group">
+                        <label class=" form-control-label">Nombres</label>
+
+                        <input type="text" name="nameUserEdit" #nameUserEdit="ngModel" id="nameUserEdit" ngModel class="form-control" [ngClass]="{'is-invalid': (EditUser.submitted && nameUserEdit.invalid) }"
+                          required>
+                        <div *ngIf="EditUser.submitted && nameUserEdit.invalid">
+                          <small class="form-text text-danger">Nombres Requerido</small>
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="col-md-10 offset-md-1">
+                      <label class=" form-control-label">Apellidos</label>
+
+                      <div class="form-group">
+                        <input type="text" name="LastnameUserEdit" name="LastnameUserEdit" #LastnameUserEdit="ngModel" id="LastnameUserEdit" ngModel
+                          class="form-control" [ngClass]="{'is-invalid': (EditUser.submitted && LastnameUserEdit.invalid) }"
+                          required>
+
+                        <div *ngIf="EditUser.submitted && LastnameUserEdit.invalid">
+                          <small class="form-text text-danger">*Apellidos Requerido</small>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                      <label class=" form-control-label">Correo Electrónico</label>
+                      <div class=" form-group">
+                        <div class="input-group">
+                          <div class="input-group-addon" [ngClass]="{'is-invalid': (EditUser.submitted && emailUserEdit.invalid) }">
+                            <i class="fa fa-user"></i>
+                          </div>
+                          <input type="email" id="emailUserEdit" name="emailUserEdit" #emailUserEdit="ngModel" id="emailUserEdit" ngModel [ngClass]="{'is-invalid': (EditUser.submitted && emailUserEdit.invalid) }"
+                            placeholder="AndresIniesta@gmail...." class="form-control" required email>
+                        </div>
+                        <div *ngIf="EditUser.submitted && emailUserEdit.invalid">
+                          <small class="form-text text-danger" *ngIf="emailUserEdit.errors.required">Correo electrónico requerido</small>
+                          <small class="form-text text-danger" *ngIf="emailUserEdit.errors.email">Correo electrónico inválido</small>
+                        </div>
+                        <small *ngIf="ExistUser" class="form-text text-danger">
+                          Ya está registrado un usuario con este correo electrónico
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row ">
+                    <div class="col-md-10 offset-md-1">
+                      <label class=" form-control-label">Contraseña</label>
+
+                      <div class=" form-group">
+                        <div class="input-group">
+                          <input type="password" id="PasswordUserEdit" name="PasswordUserEdit" #PasswordUserEdit="ngModel" id="PasswordUserEdit" ngModel
+                            [ngClass]="{'is-invalid': (EditUser.submitted && PasswordUserEdit.invalid) }" placeholder="******"
+                            class="form-control" required>
+                          <div class="input-group-addon">
+                            <i class="fa fa-asterisk"></i>
+                          </div>
+                        </div>
+                        <small class="form-text text-muted">* Mínimo 6 caracteres alfanúmericos</small>
+                        <div *ngIf="EditUser.submitted && PasswordUserEdit.invalid">
+                          <small class="form-text text-danger" *ngIf="PasswordUserEdit.errors.required">Contraseña Requerida</small>
+                        </div>
+                        <small *ngIf="NotEqualsPassword" class="form-text text-danger">
+                          Contraseñas no coinciden
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-10 offset-md-1 ">
+                      <label class=" form-control-label">Repetir Contraseña</label>
+                      <div class=" form-group">
+                        <div class="input-group">
+                          <input type="password" name="passwordUserRepeat" #passwordUserRepeat="ngModel" id="passwordUserRepeat" ngModel [ngClass]="{'is-invalid': (EditUser.submitted && passwordUserRepeat.invalid) }"
+                            placeholder="******" class="form-control" required>
+                          <div class="input-group-addon">
+                            <i class="fa fa-asterisk"></i>
+                          </div>
+                        </div>
+                        <div *ngIf="EditUser.submitted && passwordUserRepeat.invalid">
+                          <small class="form-text text-danger" *ngIf="passwordUserRepeat.errors.required">Contraseña Requerida</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row text-center">
+                    <div class="col-sm-12">
+                      <label class=" form-control-label">Estado</label>
+                      <div class=" form-group">
+
+                        <label class="switch switch-3d switch-success mr-3">
+
+                          <input type="checkbox" id="checModusEdit" name="checModusEdit" [ngModel]="checkedActivoUser" (change)="changeModusUser()"
+                            class="switch-input">
+                          <span class="switch-label"></span>
+                          <span class="switch-handle"></span>
+
+                        </label> {{modusEditUser}}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row text-center">
+                    <div class="col-md-10 offset-md-1">
+                      <button class="btn btn-danger" type="button" (click)="clearForm()">Cancelar</button>
+                    </div>
+                    <div class="col-md-10 offset-md-1 row-form">
+                      <button class="btn btn-success" type="submit">Guardar
+                        <i></i>
+                      </button>
+                    </div>
+
+                  </div>
+
+
+
+                </div>
+                <div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="ListAuditoresAll" [ngClass]=" {'col-md-12': !ListAllInfo ,'col-md-8': addAuditor || EditAuditor }">
+          <div class="row">
+
+            <div class="col-lg-4 col-md-6">
+              <div class="feed-box ">
+                <section class="card">
+                  <div class="media media-custom">
+                    <a href="#">
+                      <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addAuditor || EditAuditor }" style="width:85px; height:85px;"
+                        alt="" src="assets/images/admin.jpg">
+
+                    </a>
+                    <div class="media-body">
+                      <h3 class="display-6 m-0">Jim Doe</h3>
+                      <p class="m-0 p-0">Auditor</p>
+                      <span class="badge badge-success">Activo</span>
+                    </div>
+                  </div>
+                  <div class="card-body">
+
+                    <div class="corner-ribon black-ribon pointer" (click)="editAuditorUser({data:null})" title="Editar Auditor">
+                      <i class="fa fa-edit"></i>
+                    </div>
+                    <hr>
+                    <div class="card-text m-0">
+                      <p class="m-0 float-right color-danger">
+                        <small> Creado: 20 de julio 2018 </small>
+                      </p>
+                      <a (click)="removeAuditor('elkinmendoza00@gmail.com')" class="float-left pointer" title="Eliminar Auditor">
+                        <i class="ti-trash text-danger"></i>
+                      </a>
+
+
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+
+
+          </div>
+          <div class="row row-loading">
+            <div class="col-sm-2 offset-sm-5">
+              <button class="btn btn-warning">LOAD MORE</button>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- /#right-panel -->
