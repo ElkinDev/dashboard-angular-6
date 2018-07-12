@@ -1,6 +1,9 @@
 import { Component, OnInit, Output, EventEmitter  } from '@angular/core';
+import {CommercialsService} from './commercials-service.service'
 import { NgForm } from '@angular/forms';
 declare let alertify: any;
+import { environment } from '../../environments/environment';
+import { environmentProd } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-commercials',
@@ -18,19 +21,38 @@ export class CommercialsComponent implements OnInit {
   RoleUser:string;
   editSeller: boolean
   dataUserToEdit = "asdasdasdasd"
-  ListAllInfo: boolean
-  constructor() {
-    this.editSeller = false
+  ListAllInfo: boolean;
+  listCommercials;
+  urlMainServer;
+
+  constructor(private _commercialService: CommercialsService) {
+    this.editSeller = false;
     this.hrefImageUploaded = 'assets/images/noimage.png';
-    this.ExistUser = false
-    this.NotEqualsPassword = false
-    this.checkedActivoUser = true
-    this.modusEditUser = 'Activo'
-    this.ListAllInfo = false
-    this.RoleUser="Commercial"
+    this.ExistUser = false;
+    this.NotEqualsPassword = false;
+    this.checkedActivoUser = true;
+    this.modusEditUser = 'Activo';
+    this.ListAllInfo = false;
+    this.RoleUser="Comercial";
+    this.loadingMore = true;
+    this.urlMainServer=environment.ws_url+'/public'
+    
+    
   }
 
   ngOnInit() {
+    this._commercialService.getAllCommercials().then((res) => {
+      if (!res.err) {
+        this.listCommercials = res.data;
+        setTimeout(() => {
+          this.loadingMore = false;
+        }, 1000)
+      } else {
+        this.listCommercials = null
+      }
+    }, (err) => {
+      console.log(err, 'cuaaal es')
+    })
   }
 
   openFormSellers() {

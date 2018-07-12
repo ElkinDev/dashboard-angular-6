@@ -13,13 +13,13 @@
       <div class="page-header float-left">
         <div class="page-title">
           <h1>Comerciales
-              <button (click)="openFormSellers()" [ngClass]="{'btn-success': !addSeller,'btn-danger':addSeller}" class="btn btn-breadcrumbs"
+            <button (click)="openFormSellers()" [ngClass]="{'btn-success': !addSeller,'btn-danger':addSeller}" class="btn btn-breadcrumbs"
               style="color:#ffffff !important;">
               {{ !addSeller ? 'Nuevo' : 'Cancelar' }}
               <i [ngClass]="{'ti-plus': !addSeller,'ti-close':addSeller}"></i>
             </button>
           </h1>
-          
+
         </div>
       </div>
     </div>
@@ -205,35 +205,36 @@
             </form>
           </div>
         </div>
+
         <div class="ListSellersAll" [ngClass]=" {'col-md-12': !ListAllInfo ,'col-md-8':addSeller || editSeller }">
           <div class="row">
 
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6" *ngFor="let commercial of listCommercials" [hidden]="loadingMore">
               <div class="feed-box ">
                 <section class="card bg-dark border-0">
                   <div class="media media-custom">
                     <a href="#">
-                      <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addSeller || editSeller }" style="width:85px; height:85px;"
-                        alt="" src="assets/images/admin.jpg">
+                      <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addSeller || editSeller }" style="width:75px; height:75px;"
+                        alt="{{commercial.nombre +' '+ commercial.apellido}}" src="assets/images/admin.jpg" [src]="commercial.imageProfile ? urlMainServer+commercial.imageProfile : hrefImageUploaded">
 
                     </a>
                     <div class="media-body">
-                      <h3 class="display-6 m-0 text-light">Jim Doe</h3>
-                      <p class="m-0 p-0 text-light">Comercial</p>
-                      <span class="badge badge-success">Activo</span>
+                      <h5 class="display-6 m-0 text-light">{{commercial.nombre +' '+ commercial.apellido}}</h5>
+                      <p class="m-0 p-0 text-light">{{RoleUser}}</p>
+                      <span class="badge" [ngClass]="{'badge-success':commercial.status,'badge-danger':!commercial.status}">{{commercial.status ? 'Activo':'Inactivo'}}</span>
                     </div>
                   </div>
                   <div class="card-body">
 
-                    <div class="corner-ribon black-ribon pointer" (click)="editSellerUser({data:null})" title="Editar Comercial">
+                    <div class="corner-ribon black-ribon pointer" (click)="editSellerUser(commercial)" title="Editar Comercial">
                       <i class="fa fa-edit"></i>
                     </div>
                     <hr>
                     <div class="card-text m-0">
                       <p class="m-0 float-right color-danger">
-                        <small> Creado: 20 de julio 2018 </small>
+                        <small> Creado: {{commercial.fecha || ''}} </small>
                       </p>
-                      <a (click)="removeSeller('elkinmendoza00@gmail.com')" class="float-left pointer" title="Eliminar Comercial">
+                      <a (click)="removeSeller(commercial)" class="float-left pointer" title="Eliminar Comercial">
                         <i class="ti-trash text-danger"></i>
                       </a>
 
@@ -254,6 +255,7 @@
 
           </div>
         </div>
+
       </div>
 
     </div>

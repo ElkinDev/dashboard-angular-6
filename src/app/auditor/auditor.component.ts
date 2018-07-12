@@ -1,5 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { environment } from '../../environments/environment';
+import { environmentProd } from '../../environments/environment.prod';
+import {AuditorService} from './auditor.service'
 declare let alertify: any;
 
 @Component({
@@ -18,8 +21,10 @@ export class AuditorComponent implements OnInit {
   RoleUser: string;
   EditAuditor: boolean
   dataUserToEdit = "asdasdasdasd"
-  ListAllInfo: boolean
-  constructor() {
+  ListAllInfo: boolean;
+  ListEditors;
+  urlMainServer;
+  constructor(private _auditorService:AuditorService) {
     this.EditAuditor = false
     this.hrefImageUploaded = 'assets/images/noimage.png';
     this.ExistUser = false
@@ -27,10 +32,25 @@ export class AuditorComponent implements OnInit {
     this.checkedActivoUser = true
     this.modusEditUser = 'Activo'
     this.ListAllInfo = false
+    this.loadingMore = true;
+    this.urlMainServer=environment.ws_url+'/public'
     this.RoleUser = "Auditor";
   }
 
   ngOnInit() {
+    this._auditorService.getAllEditors().then((res) => {
+      if (!res.err) {
+        console.log(res,'quee lo quee')
+        this.ListEditors = res.data;
+        setTimeout(() => {
+          this.loadingMore = false;
+        }, 1000)
+      } else {
+        this.ListEditors = null
+      }
+    }, (err) => {
+      console.log(err, 'cuaaal es')
+    })
   }
   openFormAuditors() {
     this.EditAuditor = false

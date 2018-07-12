@@ -202,32 +202,32 @@
                 <div class="ListAdminsAll" [ngClass]=" {'col-md-12': !ListAllInfo ,'col-md-8':addAdmin || EditAdmin }">
                     <div class="row">
 
-                        <div class="col-lg-4 col-md-6">
+                        <div class="col-lg-4 col-md-6" *ngFor="let admin of ListAdmins" [hidden]="loadingMore">
                             <div class="feed-box ">
                                 <section class="card">
                                     <div class="media media-custom">
                                         <a href="#">
-                                            <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addAdmin || EditAdmin }" style="width:85px; height:85px;" alt=""
-                                                src="assets/images/admin.jpg">
+                                            <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addAdmin || EditAdmin }" style="width:75px; height:75px;" alt="{{admin.nombre +' '+ admin.apellido}}"
+                                               [src]="admin.imageProfile ? urlMainServer+admin.imageProfile : hrefImageUploaded">
 
                                         </a>
                                         <div class="media-body">
-                                            <h3 class="display-6 m-0">Jim Doe</h3>
-                                            <p class="m-0 p-0">Project Manager</p>
-                                            <span class="badge badge-success">Activo</span>
+                                            <h5 class="display-6 m-0">{{admin.nombre +' '+ admin.apellido}}</h5>
+                                            <p class="m-0 p-0">{{RoleUser}}</p>
+                                            <span class="badge " [ngClass]="{'badge-success':admin.status,'badge-danger':!admin.status}">{{admin.status ? 'Activo':'Inactivo'}}</span>
                                         </div>
                                     </div>
                                     <div class="card-body">
 
-                                        <div class="corner-ribon black-ribon pointer" (click)="editAdminUser({data:null})" title="Editar Administrador">
+                                        <div class="corner-ribon black-ribon pointer" (click)="editAdminUser(admin)" title="Editar Administrador">
                                             <i class="fa fa-edit"></i>
                                         </div>
                                         <hr>
                                         <div class="card-text m-0">
                                             <p class="m-0 float-right color-danger">
-                                                <small> Creado: 20 de julio 2018 </small>
+                                                <small> Creado: {{admin.fecha}} </small>
                                             </p>
-                                            <a (click)="removeAdmin('elkinmendoza00@gmail.com')" title="Eliminar Administrador" class="float-left pointer">
+                                            <a (click)="removeAdmin(admin)" title="Eliminar Administrador" class="float-left pointer">
                                                 <i class="ti-trash text-danger"></i>
                                             </a>
 

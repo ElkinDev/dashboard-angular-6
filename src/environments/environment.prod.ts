@@ -1,3 +1,5 @@
-export const environment = {
-  production: true
+export const environmentProd = {
+  production: true,
+  ws_url:'http://localhost:5151'
+  
 };

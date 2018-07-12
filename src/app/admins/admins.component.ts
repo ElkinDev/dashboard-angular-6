@@ -1,8 +1,10 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { adminsService } from './admins.service';
 import { NgForm } from '@angular/forms';
-declare let alertify: any;
+import { environment } from '../../environments/environment';
+import { environmentProd } from '../../environments/environment.prod';
 
+declare let alertify: any;
 
 @Component({
   selector: 'app-admins',
@@ -15,26 +17,42 @@ export class AdminsComponent implements OnInit {
   NotEqualsPassword: boolean;
   checkedActivoUser: boolean = true;
   modusEditUser: string;
-  loadingMore: boolean
-  addAdmin = false
+  loadingMore: boolean;
+  addAdmin = false;
   RoleUser: string;
-  EditAdmin: boolean
-  dataUserToEdit = "asdasdasdasd"
-  ListAllInfo: boolean
+  EditAdmin: boolean;
+  dataUserToEdit = "asdasdasdasd";
+  ListAllInfo: boolean;
+  ListAdmins;
+  urlMainServer;
   @Output() CloseFormtUserAdmin = new EventEmitter<object>();
 
   constructor(private _adminService: adminsService) {
     this.EditAdmin = false
-    this.hrefImageUploaded = 'assets/images/noimage.png';
+    this.hrefImageUploaded = '/assets/images/noimage.png';
     this.ExistUser = false
     this.NotEqualsPassword = false
     this.checkedActivoUser = true
     this.modusEditUser = 'Activo'
     this.ListAllInfo = false
-    this.RoleUser = "Admin";
+    this.RoleUser = "Administrador";
+    this.loadingMore = true;
+    this.urlMainServer=environment.ws_url+'/public'
   }
 
   ngOnInit() {
+    this._adminService.getAllAdmins().then((res) => {
+      if (!res.err) {
+        this.ListAdmins = res.data;
+        setTimeout(() => {
+          this.loadingMore = false;
+        }, 1000)
+      } else {
+        this.ListAdmins = null
+      }
+    }, (err) => {
+      console.log(err, 'cuaaal es')
+    })
 
   }
   openFormAdmins() {
@@ -80,7 +98,7 @@ export class AdminsComponent implements OnInit {
 
   removeAdmin(emailUser: string): void {
     alertify
-      .confirm("Administradores","¿Eliminar al Administrador " + emailUser + "?",
+      .confirm("Administradores", "¿Eliminar al Administrador " + emailUser + "?",
         function () {
           alertify.success('Ok')
         }

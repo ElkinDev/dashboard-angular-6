@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as socketIo from 'socket.io-client';
-import * as Rx from 'rxjs'
-import { Observable,Subject } from 'rxjs';
+
 
 import { environment } from '../environments/environment';
+import { Observable } from 'rxjs';
 
 
 
@@ -20,16 +20,17 @@ export class WebSocketService {
   }
 
   public emit(nameEmit,data){
-    if(data){
-      this.socket.emit(nameEmit), data, (res)=>{
-        console.log(res,'this is the result')
-        return res;
+    return Observable.create((Observer) =>{
+      if(data){
+        this.socket.emit(nameEmit, data, (res)=>{
+          Observer.next(res)
+        })
+      }else{
+        this.socket.emit(nameEmit,(res)=>{
+          Observer.next(res)
+        })
       }
-    }else{
-      this.socket.emit(nameEmit), (res)=>{
-        console.log(res,'this is the result')
-        return res;
-      }
-    }
+    });
+   
   }
 }

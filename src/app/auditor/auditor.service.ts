@@ -1,19 +1,22 @@
 import { Injectable } from '@angular/core';
 import { WebSocketService } from '../websocket.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
+export class AuditorService {
 
-export class adminsService {
   constructor(private _wsSocket: WebSocketService) {
 
   }
 
-  getAllAdmins() {
+  getAllEditors() {
     let promise = new Promise((resolve, reject) => {
       let data = {
-        mail: 'elkinmendoza00@gmail.com'
+        mail: 'elkinmendoza00@gmail.com',
+        token:'ansdjasbdhabsdyuasd'
       }
-      this._wsSocket.emit('getAllAdmins', data).subscribe(res => {
+      this._wsSocket.emit('getAllEditors', data).subscribe(res => {
         if (!res.err) {
           resolve(res)
 
@@ -25,5 +28,4 @@ export class adminsService {
     return promise;
 
   }
-
 }
