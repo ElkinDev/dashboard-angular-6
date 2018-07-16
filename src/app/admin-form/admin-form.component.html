@@ -4,8 +4,8 @@
       <div class="col-md-12 text-center">
         <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
         <br>
-        <input class="btn form-control mt-3 text-center" type="file" name="ImageUser"  #ImageUser="ngModel" id="ImageUser" ngModel accept="image/x-png,image/gif,image/jpeg" (change)="readUrl($event)"
-        />
+        <input class="btn form-control mt-3 text-center" type="file" name="imageProfile" #imageProfile="ngModel" id="imageProfile"
+          ngModel accept="image/x-png,image/gif,image/jpeg" (change)="readUrl($event)" />
       </div>
       <div class="col-md-12">
         <div class="row ">
@@ -13,9 +13,9 @@
             <div class="form-group">
               <label class=" form-control-label">Nombres</label>
 
-              <input type="text" name="nameUser" #nameUser="ngModel" id="nameUser" ngModel class="form-control" [ngClass]="{'is-invalid': (newUser.submitted && nameUser.invalid) }"
+              <input type="text" name="nombre" #nombre="ngModel" id="nombre" ngModel class="form-control" [ngClass]="{'is-invalid': (newUser.submitted && nombre.invalid) }"
                 required>
-              <div *ngIf="newUser.submitted && nameUser.invalid">
+              <div *ngIf="newUser.submitted && nombre.invalid">
                 <small class="form-text text-danger">Nombres Requerido</small>
               </div>
 
@@ -25,10 +25,10 @@
             <label class=" form-control-label">Apellidos</label>
 
             <div class="form-group">
-              <input type="text" name="LastNameUser" name="LastNameUser" #LastNameUser="ngModel" id="LastNameUser" ngModel class="form-control"
-                [ngClass]="{'is-invalid': (newUser.submitted && LastNameUser.invalid) }" required>
+              <input type="text" name="apellido" name="apellido" #apellido="ngModel" id="apellido" ngModel class="form-control" [ngClass]="{'is-invalid': (newUser.submitted && apellido.invalid) }"
+                required>
 
-              <div *ngIf="newUser.submitted && LastNameUser.invalid">
+              <div *ngIf="newUser.submitted && apellido.invalid">
                 <small class="form-text text-danger">*Apellidos Requerido</small>
               </div>
 
@@ -47,9 +47,9 @@
                 <input type="text" id="emailUser" name="emailUser" #emailUser="ngModel" id="emailUser" ngModel [ngClass]="{'is-invalid': (newUser.submitted && emailUser.invalid) }"
                   placeholder="AndresIniesta@gmail...." class="form-control" required email>
               </div>
-              <div *ngIf="newUser.submitted && emailUser.invalid" >
+              <div *ngIf="newUser.submitted && emailUser.invalid">
                 <small class="form-text text-danger" *ngIf="emailUser.errors.required">Correo electrónico requerido</small>
-                <small  class="form-text text-danger" *ngIf="emailUser.errors.email">Correo electrónico inválido</small>
+                <small class="form-text text-danger" *ngIf="emailUser.errors.email">Correo electrónico inválido</small>
               </div>
               <small *ngIf="ExistUser" class="form-text text-danger">
                 Ya está registrado un usuario con este correo electrónico
@@ -64,14 +64,13 @@
 
             <div class=" form-group">
               <div class="input-group">
-                <input type="password" id="password" name="password" #password="ngModel" id="password" ngModel [ngClass]="{'is-invalid': (newUser.submitted && password.invalid) }"
-                  placeholder="******" class="form-control" required>
+                <input type="password" id="password" name="password" #password="ngModel" id="password" ngModel [ngClass]="{'is-invalid': (newUser.submitted && password.invalid) || NotEqualsPassword }" (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
                 <div class="input-group-addon">
                   <i class="fa fa-asterisk"></i>
                 </div>
               </div>
               <small class="form-text text-muted">* Mínimo 6 caracteres alfanúmericos</small>
-              <div *ngIf="newUser.submitted && password.invalid" >
+              <div *ngIf="newUser.submitted && password.invalid">
                 <small class="form-text text-danger" *ngIf="password.errors.required">Contraseña Requerida</small>
               </div>
               <small *ngIf="NotEqualsPassword" class="form-text text-danger">
@@ -86,14 +85,18 @@
 
             <div class=" form-group">
               <div class="input-group">
-                <input type="password" name="passwordRepeat" #passwordRepeat="ngModel" id="passwordRepeat" ngModel [ngClass]="{'is-invalid': (newUser.submitted && passwordRepeat.invalid) }" placeholder="******" class="form-control" required>
+                <input type="password" name="passwordRepeat" #passwordRepeat="ngModel" id="passwordRepeat" ngModel  [ngClass]="{'is-invalid': (newUser.submitted && passwordRepeat.invalid) || NotEqualsPassword }"
+                  placeholder="******" class="form-control" required>
                 <div class="input-group-addon">
                   <i class="fa fa-asterisk"></i>
                 </div>
               </div>
               <div *ngIf="newUser.submitted && passwordRepeat.invalid">
-                  <small class="form-text text-danger" *ngIf="passwordRepeat.errors.required">Contraseña Requerida</small>
-                </div>
+                <small class="form-text text-danger" *ngIf="passwordRepeat.errors.required">Contraseña Requerida</small>
+              </div>
+              <small *ngIf="NotEqualsPassword" class="form-text text-danger">
+                Contraseñas no coinciden
+              </small>
             </div>
           </div>
         </div>
@@ -105,7 +108,7 @@
 
               <label class="switch switch-3d switch-success mr-3">
 
-                <input type="checkbox" id="checkModus" name="checkModus" [ngModel]="checkedActivoUser" (change)="changeModusUser()"  class="switch-input">
+                <input type="checkbox" id="status" name="status" [ngModel]="checkedActivoUser" (change)="changeModusUser()" class="switch-input">
                 <span class="switch-label"></span>
                 <span class="switch-handle"></span>
 

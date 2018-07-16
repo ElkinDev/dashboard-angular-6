@@ -1,9 +1,8 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { adminsService } from './admins.service';
-import { NgForm } from '@angular/forms';
+import { NgForm, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
-
 declare let alertify: any;
 
 @Component({
@@ -13,6 +12,7 @@ declare let alertify: any;
 })
 export class AdminsComponent implements OnInit {
   hrefImageUploaded;
+  hrefImageUpload2;
   ExistUser: boolean;
   NotEqualsPassword: boolean;
   checkedActivoUser: boolean = true;
@@ -25,9 +25,28 @@ export class AdminsComponent implements OnInit {
   ListAllInfo: boolean;
   ListAdmins;
   urlMainServer;
+  messageErrorQuery;
+  today: number;
+  checModusEdit
+  nameUserPhoto;
+  fileToUpload: File = null;
+  indexNowEdit;
+  EditUser = new FormGroup({
+
+    imageProfile: new FormControl(),
+    nombre: new FormControl(),
+    apellido: new FormControl(),
+    mail: new FormControl(),
+    // PasswordUserEdit: new FormControl(),
+    passwordUserRepeat1: new FormControl(),
+    passwordUserRepeat: new FormControl(),
+    checModusEdit: new FormControl(),
+
+  });
+
   @Output() CloseFormtUserAdmin = new EventEmitter<object>();
 
-  constructor(private _adminService: adminsService) {
+  constructor(private _adminService: adminsService, private cdRef: ChangeDetectorRef) {
     this.EditAdmin = false
     this.hrefImageUploaded = '/assets/images/noimage.png';
     this.ExistUser = false
@@ -37,21 +56,41 @@ export class AdminsComponent implements OnInit {
     this.ListAllInfo = false
     this.RoleUser = "Administrador";
     this.loadingMore = true;
-    this.urlMainServer=environment.ws_url+'/public'
+    this.urlMainServer = environment.ws_url + '/public/'
+    this.today = Date.now();
+    this.indexNowEdit = null;
+    this.nameUserPhoto = null;
+    this.hrefImageUpload2 = '/assets/images/noimage.png';
+  }
+
+  ngAfterViewChecked() {
+    this.cdRef.detectChanges();
   }
 
   ngOnInit() {
     this._adminService.getAllAdmins().then((res) => {
-      if (!res.err) {
-        this.ListAdmins = res.data;
-        setTimeout(() => {
-          this.loadingMore = false;
-        }, 1000)
-      } else {
+
+      if (!res) {
         this.ListAdmins = null
+        this.messageErrorQuery = "No Hay resultados"
+      } else {
+        this.ListAdmins = res;
+
       }
+      setTimeout(() => {
+        this.loadingMore = false;
+      }, 1000)
+
+
     }, (err) => {
+      this.ListAdmins = null
+      this.messageErrorQuery = err.msg ? err.msg : '¡Error inesperado, inténtelo nuevamente!'
+      setTimeout(() => {
+        this.loadingMore = false;
+      }, 1000)
+
       console.log(err, 'cuaaal es')
+
     })
 
   }
@@ -64,7 +103,6 @@ export class AdminsComponent implements OnInit {
   }
 
   receiveMessage($event) {
-    console.log('llegaaaaaaa');
     if ($event.type == 'function') {
       switch ($event.event) {
         case 'CloseFormAdmins':
@@ -79,6 +117,9 @@ export class AdminsComponent implements OnInit {
 
           }
           break;
+        case 'SubmitNewUser':
+          this.submitNewUserAdmin($event.data)
+          break;
         default:
           break
       }
@@ -87,9 +128,35 @@ export class AdminsComponent implements OnInit {
     }
   }
 
-  editAdminUser(data): void {
+  submitNewUserAdmin(data): void {
+    console.log('seee metee', data)
+    let senData = data.value;
+    senData.RoleUser = this.RoleUser;
 
-    this.dataUserToEdit = "jaujauaujauja"
+    this._adminService.CreateUserAdmin(senData).then(res => {
+      alertify.success(res);
+      senData.fecha = this.today;
+      this.ListAdmins.push(senData)
+      this.addAdmin ? this.addAdmin = false : this.addAdmin = true
+      this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+    }, err => {
+      alertify.error(err);
+
+
+    })
+
+  }
+  editAdminUser(data, index): void {
+    console.log(data,'veaa');
+    this.indexNowEdit = index;
+    this.EditUser.patchValue({
+      nombre: data.nombre,
+      apellido: data.apellido,
+      mail: data.mail,
+      checModusEdit: data.status,
+      imageProfile:null
+    });
+    data.status ? this.modusEditUser = 'Activo' : this.modusEditUser = 'Inactivo'
     this.ListAllInfo = true
     this.addAdmin = false
     this.EditAdmin = true
@@ -115,6 +182,32 @@ export class AdminsComponent implements OnInit {
   }
 
   onSubmitEditUser(data: NgForm) {
+    let dataSend = {
+      nombre: data.value.nombre,
+      apellido: data.value.apellido,
+      imageProfile: this.nameUserPhoto,
+      mailUser: data.value.mail,
+      password: data.value.passwordUserRepeat,
+      status: data.value.checModusEdit
+    }
+    this._adminService.editUser(dataSend).then(msg => {
+      alertify.success(msg);
+      this.ListAdmins[this.indexNowEdit].nombre = data.value.nombre
+      this.ListAdmins[this.indexNowEdit].apellido = data.value.apellido
+      this.ListAdmins[this.indexNowEdit].status = data.value.checModusEdit
+      this.EditAdmin ? this.EditAdmin = false : this.EditAdmin = true
+      this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+      if (this.nameUserPhoto) {
+        this.ListAdmins[this.indexNowEdit].imageProfile = this.nameUserPhoto
+      }
+    }, err => {
+      alertify.error(err);
+
+
+    })
+
+
+
 
   }
 
@@ -129,12 +222,19 @@ export class AdminsComponent implements OnInit {
 
 
   }
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+
+    console.log('file uploaded', files)
+  }
 
   readUrl(event: any) {
     if (event.target.files && event.target.files[0]) {
+      let file = event.target.files[0];
+      this.nameUserPhoto = file.name;
       var reader = new FileReader();
       reader.onload = (event: any) => {
-        this.hrefImageUploaded = event.target.result;
+        this.hrefImageUpload2 = event.target.result;
       }
       reader.readAsDataURL(event.target.files[0]);
 

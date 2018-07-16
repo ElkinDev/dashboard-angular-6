@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
-import {AuditorService} from './auditor.service'
+import { AuditorService } from './auditor.service'
 declare let alertify: any;
 
 @Component({
@@ -24,7 +24,10 @@ export class AuditorComponent implements OnInit {
   ListAllInfo: boolean;
   ListEditors;
   urlMainServer;
-  constructor(private _auditorService:AuditorService) {
+  messageErrorQuery;
+  today;
+
+  constructor(private _auditorService: AuditorService) {
     this.EditAuditor = false
     this.hrefImageUploaded = 'assets/images/noimage.png';
     this.ExistUser = false
@@ -33,23 +36,33 @@ export class AuditorComponent implements OnInit {
     this.modusEditUser = 'Activo'
     this.ListAllInfo = false
     this.loadingMore = true;
-    this.urlMainServer=environment.ws_url+'/public'
+    this.urlMainServer = environment.ws_url + '/public'
     this.RoleUser = "Auditor";
+    this.today = new Date();
+
   }
 
   ngOnInit() {
     this._auditorService.getAllEditors().then((res) => {
-      if (!res.err) {
-        console.log(res,'quee lo quee')
-        this.ListEditors = res.data;
-        setTimeout(() => {
-          this.loadingMore = false;
-        }, 1000)
-      } else {
+
+      if (!res) {
         this.ListEditors = null
+        this.messageErrorQuery = "No Hay resultados"
+
+      } else {
+        this.ListEditors = res;
+
       }
+      setTimeout(() => {
+        this.loadingMore = false;
+      }, 1000)
+
     }, (err) => {
-      console.log(err, 'cuaaal es')
+      this.ListEditors = null;
+      this.messageErrorQuery = err.msg ? err.msg : '¡Error inesperado, inténtelo nuevamente!';
+      setTimeout(() => {
+        this.loadingMore = false;
+      }, 1000)
     })
   }
   openFormAuditors() {
@@ -61,7 +74,6 @@ export class AuditorComponent implements OnInit {
   }
 
   receiveMessage($event) {
-    console.log('llegaaaaaaa');
     if ($event.type == 'function') {
       switch ($event.event) {
         case 'CloseFormAdmins':
@@ -76,12 +88,33 @@ export class AuditorComponent implements OnInit {
 
           }
           break;
+        case 'SubmitNewUser':
+          this.submitNewUserAdmin($event.data)
+          break;
         default:
           break
       }
     } else {
 
     }
+  }
+
+  submitNewUserAdmin(data): void {
+    console.log('seee metee', data)
+    let senData = data.value;
+    senData.RoleUser = this.RoleUser;
+
+    this._auditorService.CreateAuditorUser(senData).then(res => {
+      alertify.success(res);
+      senData.fecha = this.today
+      this.ListEditors.push(senData)
+      this.addAuditor ? this.addAuditor = false : this.addAuditor = true
+      this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+    }, err => {
+      alertify.error(err);
+
+    })
+
   }
 
   editAuditorUser(data): void {
@@ -95,7 +128,7 @@ export class AuditorComponent implements OnInit {
 
   removeAuditor(emailUser: string): void {
     alertify
-      .confirm("Auditores","¿Eliminar al Auditor " + emailUser + "?",
+      .confirm("Auditores", "¿Eliminar al Auditor " + emailUser + "?",
         function () {
           alertify.success('Ok')
         }

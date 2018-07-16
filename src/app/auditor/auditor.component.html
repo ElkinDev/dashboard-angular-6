@@ -206,7 +206,7 @@
         <div class="ListAuditoresAll" [ngClass]=" {'col-md-12': !ListAllInfo ,'col-md-8': addAuditor || EditAuditor }">
           <div class="row">
 
-            <div class="col-lg-4 col-md-6" *ngFor="let auditor of ListEditors" [hidden]="loadingMore">
+            <div class="col-lg-4 col-md-6" *ngFor="let auditor of ListEditors" [hidden]="loadingMore && ListEditors">
               <div class="feed-box ">
                 <section class="card">
                   <div class="media media-custom">
@@ -230,7 +230,7 @@
                     <div class="card-text m-0">
                       <p class="m-0 float-right color-danger">
                         <small> Creado: {{auditor.fecha}} </small>
-                     </p>
+                      </p>
                       <a (click)="removeAuditor(auditor)" class="float-left pointer" title="Eliminar Auditor">
                         <i class="ti-trash text-danger"></i>
                       </a>
@@ -242,9 +242,15 @@
               </div>
             </div>
 
+            <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="!ListEditors" [hidden]="loadingMore">
+              <div class="display-middle">
+                <i class="ti-reload display-1"></i>
+                <h4 class="upper mt-3">{{messageErrorQuery}}</h4>
+              </div>
+            </div>
 
           </div>
-          <div class="row row-loading">
+          <div class="row row-loading" *ngIf="ListEditors" [hidden]="loadingMore">
             <div class="col-sm-2 offset-sm-5">
               <button class="btn btn-warning">LOAD MORE</button>
 

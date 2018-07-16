@@ -1,5 +1,5 @@
-import { Component, OnInit, Output, EventEmitter  } from '@angular/core';
-import {CommercialsService} from './commercials-service.service'
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { CommercialsService } from './commercials-service.service'
 import { NgForm } from '@angular/forms';
 declare let alertify: any;
 import { environment } from '../../environments/environment';
@@ -18,12 +18,15 @@ export class CommercialsComponent implements OnInit {
   modusEditUser: string;
   loadingMore: boolean
   addSeller = false
-  RoleUser:string;
+  RoleUser: string;
   editSeller: boolean
   dataUserToEdit = "asdasdasdasd"
   ListAllInfo: boolean;
   listCommercials;
   urlMainServer;
+  messageErrorQuery;
+  today;
+
 
   constructor(private _commercialService: CommercialsService) {
     this.editSeller = false;
@@ -33,24 +36,36 @@ export class CommercialsComponent implements OnInit {
     this.checkedActivoUser = true;
     this.modusEditUser = 'Activo';
     this.ListAllInfo = false;
-    this.RoleUser="Comercial";
+    this.RoleUser = "Comercial";
     this.loadingMore = true;
-    this.urlMainServer=environment.ws_url+'/public'
-    
-    
+    this.urlMainServer = environment.ws_url + '/public'
+    this.today = new Date();
+
+
   }
 
   ngOnInit() {
     this._commercialService.getAllCommercials().then((res) => {
-      if (!res.err) {
-        this.listCommercials = res.data;
-        setTimeout(() => {
-          this.loadingMore = false;
-        }, 1000)
-      } else {
+
+      if (!res) {
         this.listCommercials = null
+        this.messageErrorQuery = "No Hay resultados"
+
+      } else {
+        this.listCommercials = res;
       }
+
+      setTimeout(() => {
+        this.loadingMore = false;
+      }, 1000)
+
     }, (err) => {
+      this.listCommercials = null;
+      this.messageErrorQuery = err.msg ? err.msg : '¡Error inesperado, inténtelo nuevamente!';
+      setTimeout(() => {
+        this.loadingMore = false;
+      }, 1000)
+
       console.log(err, 'cuaaal es')
     })
   }
@@ -70,7 +85,7 @@ export class CommercialsComponent implements OnInit {
         case 'CloseFormAdmins':
           if ($event.formType) {
             this.ListAllInfo = false
-            
+
             this.editSeller ? this.editSeller = false : this.editSeller = true
 
           } else {
@@ -79,6 +94,9 @@ export class CommercialsComponent implements OnInit {
 
           }
           break;
+        case 'SubmitNewUser':
+          this.submitNewUserAdmin($event.data)
+          break;
         default:
           break
       }
@@ -86,11 +104,28 @@ export class CommercialsComponent implements OnInit {
 
     }
   }
+  submitNewUserAdmin(data): void {
+    console.log('seee metee', data)
+    let senData = data.value;
+    senData.RoleUser = this.RoleUser;
 
+    this._commercialService.CreateSellerUser(senData).then(res => {
+      alertify.success(res);
+      senData.fecha = this.today
+      this.listCommercials.push(senData)
+      this.addSeller ? this.addSeller = false : this.addSeller = true
+      this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+    }, err => {
+      alertify.error(err);
+
+
+    })
+
+  }
   editSellerUser(data): void {
 
     this.dataUserToEdit = "jaujauaujauja"
-    this.ListAllInfo =true
+    this.ListAllInfo = true
     this.addSeller = false
     this.editSeller = true
 
@@ -98,7 +133,7 @@ export class CommercialsComponent implements OnInit {
 
   removeSeller(emailUser: string): void {
     alertify
-      .confirm("Comerciales","¿Eliminar al Comercial " + emailUser + "?",
+      .confirm("Comerciales", "¿Eliminar al Comercial " + emailUser + "?",
         function () {
           alertify.success('Ok')
         }
@@ -122,7 +157,7 @@ export class CommercialsComponent implements OnInit {
     this.modusEditUser === 'Activo' ? this.modusEditUser = 'Inactivo' : this.modusEditUser = 'Activo'
   }
   clearForm() {
-    
+
     this.editSeller ? this.editSeller = false : this.editSeller = true
     this.ListAllInfo = false
 

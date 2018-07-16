@@ -132,8 +132,7 @@
                       <div class=" form-group">
                         <div class="input-group">
                           <input type="password" id="PasswordUserEdit" name="PasswordUserEdit" #PasswordUserEdit="ngModel" id="PasswordUserEdit" ngModel
-                            [ngClass]="{'is-invalid': (EditUser.submitted && PasswordUserEdit.invalid) }" placeholder="******"
-                            class="form-control" required>
+                            [ngClass]="{'is-invalid': (EditUser.submitted && PasswordUserEdit.invalid) }" placeholder="******" class="form-control" required>
                           <div class="input-group-addon">
                             <i class="fa fa-asterisk"></i>
                           </div>
@@ -245,9 +244,15 @@
               </div>
             </div>
 
+            <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="!listCommercials" [hidden]="loadingMore">
+              <div class="display-middle">
+                <i class="ti-reload display-1"></i>
+                <h4 class="upper mt-3">{{messageErrorQuery}}</h4>
+              </div>
+            </div>
 
           </div>
-          <div class="row row-loading">
+          <div class="row row-loading" *ngIf="listCommercials" [hidden]="loadingMore">
             <div class="col-sm-2 offset-sm-5">
               <button class="btn btn-warning">LOAD MORE</button>
 
