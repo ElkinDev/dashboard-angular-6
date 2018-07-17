@@ -1,5 +1,5 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { NgForm, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
 import { AuditorService } from './auditor.service'
@@ -20,28 +20,48 @@ export class AuditorComponent implements OnInit {
   addAuditor = false
   RoleUser: string;
   EditAuditor: boolean
-  dataUserToEdit = "asdasdasdasd"
   ListAllInfo: boolean;
   ListEditors;
   urlMainServer;
   messageErrorQuery;
   today;
+  nameUserPhoto;
+  indexNowEdit;
+  hrefImageUpload2;
+  ListEditorsNull;
+  EditUser = new FormGroup({
 
-  constructor(private _auditorService: AuditorService) {
+    imageProfile: new FormControl(),
+    nombre: new FormControl(),
+    apellido: new FormControl(),
+    mail: new FormControl(),
+    // PasswordUserEdit: new FormControl(),
+    passwordUserRepeat1: new FormControl(),
+    passwordUserRepeat: new FormControl(),
+    checModusEdit: new FormControl(),
+
+  });
+
+  constructor(private _auditorService: AuditorService, private cdRef: ChangeDetectorRef) {
     this.EditAuditor = false
-    this.hrefImageUploaded = 'assets/images/noimage.png';
     this.ExistUser = false
     this.NotEqualsPassword = false
     this.checkedActivoUser = true
     this.modusEditUser = 'Activo'
     this.ListAllInfo = false
     this.loadingMore = true;
-    this.urlMainServer = environment.ws_url + '/public'
     this.RoleUser = "Auditor";
+    this.urlMainServer = environment.ws_url + '/public/dashboard/assets/images/'
     this.today = new Date();
+    this.indexNowEdit = null;
+    this.nameUserPhoto = null;
+    this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+    this.hrefImageUploaded = this.urlMainServer + 'noimage.png';
 
   }
-
+  ngAfterViewChecked() {
+    this.cdRef.detectChanges();
+  }
   ngOnInit() {
     this._auditorService.getAllEditors().then((res) => {
 
@@ -103,8 +123,11 @@ export class AuditorComponent implements OnInit {
     console.log('seee metee', data)
     let senData = data.value;
     senData.RoleUser = this.RoleUser;
-
+    if (data.value.imageProfile) {
+      senData.imageProfile = this.urlMainServer + data.value.imageProfile
+    }
     this._auditorService.CreateAuditorUser(senData).then(res => {
+      this.ListEditorsNull=false
       alertify.success(res);
       senData.fecha = this.today
       this.ListEditors.push(senData)
@@ -112,27 +135,79 @@ export class AuditorComponent implements OnInit {
       this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
     }, err => {
       alertify.error(err);
-
     })
 
   }
 
-  editAuditorUser(data): void {
+  editAuditorUser(data, index): void {
+    console.log(data, 'veaa');
+    this.indexNowEdit = index;
+    this.EditUser.patchValue({
+      nombre: data.nombre,
+      apellido: data.apellido,
+      mail: data.mail,
+      checModusEdit: data.status,
+      imageProfile: null
+    });
 
-    this.dataUserToEdit = "jaujauaujauja"
+    if (data.imageProfile) {
+      this.hrefImageUpload2 = data.imageProfile
+    } else {
+      this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+
+    }
+    data.status ? this.modusEditUser = 'Activo' : this.modusEditUser = 'Inactivo'
     this.ListAllInfo = true
     this.addAuditor = false
     this.EditAuditor = true
 
   }
+  onSubmitEditUser(data: NgForm) {
+    let dataSend = {
+      nombre: data.value.nombre,
+      apellido: data.value.apellido,
+      imageProfile: this.nameUserPhoto,
+      mailUser: data.value.mail,
+      password: data.value.passwordUserRepeat,
+      status: data.value.checModusEdit
+    }
+    this._auditorService.editUser(dataSend).then(msg => {
+      alertify.success(msg);
+      this.ListEditors[this.indexNowEdit].nombre = data.value.nombre
+      this.ListEditors[this.indexNowEdit].apellido = data.value.apellido
+      this.ListEditors[this.indexNowEdit].mail = data.value.mail
+      this.ListEditors[this.indexNowEdit].status = data.value.checModusEdit
+      this.EditAuditor ? this.EditAuditor = false : this.EditAuditor = true
+      this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+      if (this.nameUserPhoto) {
+        console.log('que es esto', this.nameUserPhoto)
+        this.ListEditors[this.indexNowEdit].imageProfile = this.urlMainServer + this.nameUserPhoto
+      }
+    }, err => {
+      alertify.error(err);
 
-  removeAuditor(emailUser: string): void {
+
+    })
+  }
+
+  removeAuditor(data, index): void {
+
     alertify
-      .confirm("Auditores", "¿Eliminar al Auditor " + emailUser + "?",
-        function () {
-          alertify.success('Ok')
-        }
-        , function () {
+      .confirm("Administradores", "¿Eliminar al Administrador " + data.mail + "?",
+        (() => {
+          this._auditorService.RemoveUserAdmin(data.mail).then(msg => {
+            alertify.success(msg);
+            this.ListEditors.splice(index, 1);
+            if (this.ListEditors.length <= 0) {
+              this.ListEditorsNull = true;
+              this.messageErrorQuery = "- Sin usuarios Auditores -"
+
+            }
+          }, err => {
+            alertify.error(err)
+          })
+        })
+        , () => {
         }
       )
       .set({
@@ -144,9 +219,7 @@ export class AuditorComponent implements OnInit {
       }).autoCancel(15);
   }
 
-  onSubmitEditUser(data: NgForm) {
 
-  }
 
   changeModusUser() {
     this.modusEditUser === 'Activo' ? this.modusEditUser = 'Inactivo' : this.modusEditUser = 'Activo'
@@ -162,9 +235,11 @@ export class AuditorComponent implements OnInit {
 
   readUrl(event: any) {
     if (event.target.files && event.target.files[0]) {
+      let file = event.target.files[0];
+      this.nameUserPhoto = file.name;
       var reader = new FileReader();
       reader.onload = (event: any) => {
-        this.hrefImageUploaded = event.target.result;
+        this.hrefImageUpload2 = event.target.result;
       }
       reader.readAsDataURL(event.target.files[0]);
 

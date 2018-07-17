@@ -70,5 +70,24 @@ export class adminsService {
       })
     });
   }
+  RemoveUserAdmin(email) {
+    return new Promise((resolve, reject) => {
+      let senData = {
+        emailUser:email,
+        mail:this.session.mail,
+        token:this.session.token
+      } 
+      this._wsSocket.emit('RemoveUserPanel', senData).subscribe((res) => {
+        if (!res.err) {
+          resolve(res.msg)
+        } else {
+          reject(res.msg)
+        }
+      }, (error) => {
+        reject({ err: true, msg: error.msg })
+
+      })
+    });
+  }
 
 }

@@ -210,7 +210,7 @@
                   <div class="media media-custom">
                     <a href="#">
                       <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addAdmin || EditAdmin }" style="width:75px; height:75px;"
-                        alt="{{admin.nombre +' '+ admin.apellido}}" [src]="admin.imageProfile ? urlMainServer+admin.imageProfile : hrefImageUploaded">
+                        alt="{{admin.nombre +' '+ admin.apellido}}" [src]="admin.imageProfile ? admin.imageProfile : hrefImageUploaded">
 
                     </a>
                     <div class="media-body">
@@ -229,7 +229,7 @@
                       <p class="m-0 float-right color-danger">
                         <small> Creado: {{admin.fecha}} </small>
                       </p>
-                      <a (click)="removeAdmin(admin)" title="Eliminar {{RoleUser}}" class="float-left pointer">
+                      <a (click)="removeAdmin(admin,i)" title="Eliminar {{RoleUser}}" class="float-left pointer">
                         <i class="ti-trash text-danger"></i>
                       </a>
 
@@ -240,7 +240,7 @@
               </div>
             </div>
 
-            <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="!ListAdmins" [hidden]="loadingMore">
+            <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="ListAdmins==null || ListAdminsnull" >
               <div class="display-middle">
                 <i class="ti-reload display-1"></i>
                 <h4 class="upper mt-3">{{messageErrorQuery}}</h4>
@@ -249,12 +249,7 @@
 
 
           </div>
-          <div class="row row-loading" *ngIf="ListAdmins" [hidden]="loadingMore">
-            <div class="col-sm-2 offset-sm-5">
-              <button class="btn btn-warning">LOAD MORE</button>
-            </div>
 
-          </div>
         </div>
       </div>
 

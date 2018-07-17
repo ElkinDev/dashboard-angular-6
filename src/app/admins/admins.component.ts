@@ -31,6 +31,7 @@ export class AdminsComponent implements OnInit {
   nameUserPhoto;
   fileToUpload: File = null;
   indexNowEdit;
+  ListAdminsnull;
   EditUser = new FormGroup({
 
     imageProfile: new FormControl(),
@@ -48,7 +49,6 @@ export class AdminsComponent implements OnInit {
 
   constructor(private _adminService: adminsService, private cdRef: ChangeDetectorRef) {
     this.EditAdmin = false
-    this.hrefImageUploaded = '/assets/images/noimage.png';
     this.ExistUser = false
     this.NotEqualsPassword = false
     this.checkedActivoUser = true
@@ -56,11 +56,12 @@ export class AdminsComponent implements OnInit {
     this.ListAllInfo = false
     this.RoleUser = "Administrador";
     this.loadingMore = true;
-    this.urlMainServer = environment.ws_url + '/public/'
+    this.urlMainServer = environment.ws_url + '/public/dashboard/assets/images/'
     this.today = Date.now();
     this.indexNowEdit = null;
     this.nameUserPhoto = null;
-    this.hrefImageUpload2 = '/assets/images/noimage.png';
+    this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+    this.hrefImageUploaded = this.urlMainServer + 'noimage.png';
   }
 
   ngAfterViewChecked() {
@@ -132,13 +133,17 @@ export class AdminsComponent implements OnInit {
     console.log('seee metee', data)
     let senData = data.value;
     senData.RoleUser = this.RoleUser;
-
+    if (data.value.imageProfile) {
+      senData.imageProfile = this.urlMainServer + data.value.imageProfile
+    }
     this._adminService.CreateUserAdmin(senData).then(res => {
+      this.ListAdminsnull = false;
       alertify.success(res);
       senData.fecha = this.today;
       this.ListAdmins.push(senData)
       this.addAdmin ? this.addAdmin = false : this.addAdmin = true
       this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+      this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
     }, err => {
       alertify.error(err);
 
@@ -147,40 +152,28 @@ export class AdminsComponent implements OnInit {
 
   }
   editAdminUser(data, index): void {
-    console.log(data,'veaa');
+    console.log(data, 'veaa');
     this.indexNowEdit = index;
     this.EditUser.patchValue({
       nombre: data.nombre,
       apellido: data.apellido,
       mail: data.mail,
       checModusEdit: data.status,
-      imageProfile:null
+      imageProfile: null
     });
+
+    if (data.imageProfile) {
+      this.hrefImageUpload2 = data.imageProfile
+    } else {
+      this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+
+    }
     data.status ? this.modusEditUser = 'Activo' : this.modusEditUser = 'Inactivo'
     this.ListAllInfo = true
     this.addAdmin = false
     this.EditAdmin = true
 
   }
-
-  removeAdmin(emailUser: string): void {
-    alertify
-      .confirm("Administradores", "¿Eliminar al Administrador " + emailUser + "?",
-        function () {
-          alertify.success('Ok')
-        }
-        , function () {
-        }
-      )
-      .set({
-
-        'labels': {
-          'ok': 'Eliminar',
-          'cancel': 'Cancelar'
-        }
-      }).autoCancel(15);
-  }
-
   onSubmitEditUser(data: NgForm) {
     let dataSend = {
       nombre: data.value.nombre,
@@ -195,21 +188,49 @@ export class AdminsComponent implements OnInit {
       this.ListAdmins[this.indexNowEdit].nombre = data.value.nombre
       this.ListAdmins[this.indexNowEdit].apellido = data.value.apellido
       this.ListAdmins[this.indexNowEdit].status = data.value.checModusEdit
+      this.ListAdmins[this.indexNowEdit].mail = data.value.mail
+
       this.EditAdmin ? this.EditAdmin = false : this.EditAdmin = true
       this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
       if (this.nameUserPhoto) {
-        this.ListAdmins[this.indexNowEdit].imageProfile = this.nameUserPhoto
+        this.ListAdmins[this.indexNowEdit].imageProfile = this.urlMainServer + this.nameUserPhoto
       }
     }, err => {
       alertify.error(err);
 
 
     })
-
-
-
-
   }
+
+  removeAdmin(data, index): void {
+
+    alertify
+      .confirm("Administradores", "¿Eliminar al Administrador " + data.mail + "?",
+        (() => {
+          this._adminService.RemoveUserAdmin(data.mail).then(msg => {
+            alertify.success(msg);
+            this.ListAdmins.splice(index, 1);
+            if (this.ListAdmins.length <= 0) {
+              this.ListAdminsnull = true;
+              this.messageErrorQuery = "- Sin usuarios Administradores -"
+
+            }
+          }, err => {
+            alertify.error(err)
+          })
+        })
+        , () => {
+        }
+      )
+      .set({
+
+        'labels': {
+          'ok': 'Eliminar',
+          'cancel': 'Cancelar'
+        }
+      }).autoCancel(15);
+  }
+
 
   changeModusUser() {
     this.modusEditUser === 'Activo' ? this.modusEditUser = 'Inactivo' : this.modusEditUser = 'Activo'

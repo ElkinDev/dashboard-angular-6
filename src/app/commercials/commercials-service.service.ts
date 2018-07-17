@@ -24,12 +24,12 @@ export class CommercialsService {
             resolve(null)
           }
         } else {
-          reject({ err: true, msg:res.msg })
-          
+          reject({ err: true, msg: res.msg })
+
         }
       }, err => {
-        reject({ err: true, msg:err.msg })
-        
+        reject({ err: true, msg: err.msg })
+
 
       })
     });
@@ -46,7 +46,7 @@ export class CommercialsService {
         if (!res.err) {
           resolve(res.msg)
         } else {
-          reject(res.msg )
+          reject(res.msg)
         }
       }, (error) => {
         reject({ err: true, msg: error.msg })
@@ -54,5 +54,41 @@ export class CommercialsService {
       })
     });
 
+  }
+  editUser(data) {
+    return new Promise((resolve, reject) => {
+      let senData = data;
+      senData.mail = this.session.mail
+      senData.token = this.session.token
+      this._wsSocket.emit('editUserPanel', senData).subscribe((res) => {
+        if (!res.err) {
+          resolve(res.msg)
+        } else {
+          reject(res.msg)
+        }
+      }, (error) => {
+        reject({ err: true, msg: error.msg })
+
+      })
+    });
+  }
+  RemoveUserAdmin(email) {
+    return new Promise((resolve, reject) => {
+      let senData = {
+        emailUser:email,
+        mail:this.session.mail,
+        token:this.session.token
+      } 
+      this._wsSocket.emit('RemoveUserPanel', senData).subscribe((res) => {
+        if (!res.err) {
+          resolve(res.msg)
+        } else {
+          reject(res.msg)
+        }
+      }, (error) => {
+        reject({ err: true, msg: error.msg })
+
+      })
+    });
   }
 }

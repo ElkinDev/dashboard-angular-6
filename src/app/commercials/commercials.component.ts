@@ -1,6 +1,6 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { CommercialsService } from './commercials-service.service'
-import { NgForm } from '@angular/forms';
+import { NgForm, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 declare let alertify: any;
 import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
@@ -20,17 +20,29 @@ export class CommercialsComponent implements OnInit {
   addSeller = false
   RoleUser: string;
   editSeller: boolean
-  dataUserToEdit = "asdasdasdasd"
   ListAllInfo: boolean;
   listCommercials;
   urlMainServer;
   messageErrorQuery;
   today;
+  nameUserPhoto;
+  indexNowEdit;
+  hrefImageUpload2;
+  ListSellerNull;
+  EditUser = new FormGroup({
 
+    imageProfile: new FormControl(),
+    nombre: new FormControl(),
+    apellido: new FormControl(),
+    mail: new FormControl(),
+    // PasswordUserEdit: new FormControl(),
+    passwordUserRepeat1: new FormControl(),
+    passwordUserRepeat: new FormControl(),
+    checModusEdit: new FormControl(),
 
-  constructor(private _commercialService: CommercialsService) {
+  });
+  constructor(private _commercialService: CommercialsService, private cdRef: ChangeDetectorRef) {
     this.editSeller = false;
-    this.hrefImageUploaded = 'assets/images/noimage.png';
     this.ExistUser = false;
     this.NotEqualsPassword = false;
     this.checkedActivoUser = true;
@@ -38,12 +50,17 @@ export class CommercialsComponent implements OnInit {
     this.ListAllInfo = false;
     this.RoleUser = "Comercial";
     this.loadingMore = true;
-    this.urlMainServer = environment.ws_url + '/public'
+    this.urlMainServer = environment.ws_url + '/public/dashboard/assets/images/'
     this.today = new Date();
-
+    this.indexNowEdit = null;
+    this.nameUserPhoto = null;
+    this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+    this.hrefImageUploaded = this.urlMainServer + 'noimage.png';
 
   }
-
+  ngAfterViewChecked() {
+    this.cdRef.detectChanges();
+  }
   ngOnInit() {
     this._commercialService.getAllCommercials().then((res) => {
 
@@ -105,11 +122,15 @@ export class CommercialsComponent implements OnInit {
     }
   }
   submitNewUserAdmin(data): void {
-    console.log('seee metee', data)
     let senData = data.value;
     senData.RoleUser = this.RoleUser;
+    if (data.value.imageProfile){
+      senData.imageProfile = this.urlMainServer + data.value.imageProfile
+    }
+    
 
     this._commercialService.CreateSellerUser(senData).then(res => {
+      this.ListSellerNull=false;
       alertify.success(res);
       senData.fecha = this.today
       this.listCommercials.push(senData)
@@ -122,22 +143,77 @@ export class CommercialsComponent implements OnInit {
     })
 
   }
-  editSellerUser(data): void {
+  editSellerUser(data, index): void {
+    console.log(data, 'veaa');
+    this.indexNowEdit = index;
+    this.EditUser.patchValue({
+      nombre: data.nombre,
+      apellido: data.apellido,
+      mail: data.mail,
+      checModusEdit: data.status,
+      imageProfile: null
+    });
 
-    this.dataUserToEdit = "jaujauaujauja"
+    if (data.imageProfile) {
+      this.hrefImageUpload2 = data.imageProfile
+    } else {
+      this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+
+    }
+    data.status ? this.modusEditUser = 'Activo' : this.modusEditUser = 'Inactivo'
     this.ListAllInfo = true
     this.addSeller = false
     this.editSeller = true
 
+
+  }
+  onSubmitEditUser(data: NgForm) {
+    let dataSend = {
+      nombre: data.value.nombre,
+      apellido: data.value.apellido,
+      imageProfile: this.nameUserPhoto,
+      mailUser: data.value.mail,
+      password: data.value.passwordUserRepeat,
+      status: data.value.checModusEdit
+    }
+    this._commercialService.editUser(dataSend).then(msg => {
+      alertify.success(msg);
+      this.listCommercials[this.indexNowEdit].nombre = data.value.nombre
+      this.listCommercials[this.indexNowEdit].apellido = data.value.apellido
+      this.listCommercials[this.indexNowEdit].status = data.value.checModusEdit
+      this.listCommercials[this.indexNowEdit].mail = data.value.mail
+      this.editSeller ? this.editSeller = false : this.editSeller = true
+      this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+      if (this.nameUserPhoto) {
+        console.log('que es esto', this.nameUserPhoto)
+        this.listCommercials[this.indexNowEdit].imageProfile = this.urlMainServer + this.nameUserPhoto
+      }
+    }, err => {
+      alertify.error(err);
+
+
+    })
   }
 
-  removeSeller(emailUser: string): void {
+
+  removeSeller(data, index): void {
+
     alertify
-      .confirm("Comerciales", "¿Eliminar al Comercial " + emailUser + "?",
-        function () {
-          alertify.success('Ok')
-        }
-        , function () {
+      .confirm("Administradores", "¿Eliminar al Administrador " + data.mail + "?",
+        (() => {
+          this._commercialService.RemoveUserAdmin(data.mail).then(msg => {
+            alertify.success(msg);
+            this.listCommercials.splice(index, 1);
+            if (this.listCommercials.length <= 0) {
+              this.ListSellerNull = true;
+              this.messageErrorQuery = "- Sin usuarios Comerciales -"
+
+            }
+          }, err => {
+            alertify.error(err)
+          })
+        })
+        , () => {
         }
       )
       .set({
@@ -149,9 +225,6 @@ export class CommercialsComponent implements OnInit {
       }).autoCancel(15);
   }
 
-  onSubmitEditUser(data: NgForm) {
-
-  }
 
   changeModusUser() {
     this.modusEditUser === 'Activo' ? this.modusEditUser = 'Inactivo' : this.modusEditUser = 'Activo'
@@ -167,9 +240,11 @@ export class CommercialsComponent implements OnInit {
 
   readUrl(event: any) {
     if (event.target.files && event.target.files[0]) {
+      let file = event.target.files[0];
+      this.nameUserPhoto = file.name;
       var reader = new FileReader();
       reader.onload = (event: any) => {
-        this.hrefImageUploaded = event.target.result;
+        this.hrefImageUpload2 = event.target.result;
       }
       reader.readAsDataURL(event.target.files[0]);
 
