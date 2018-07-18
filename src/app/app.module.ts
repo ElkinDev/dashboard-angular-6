@@ -15,7 +15,6 @@ import { HeaderComponent } from './header/header.component';
 import { AdminsComponent } from './admins/admins.component';
 import { CommercialsComponent } from './commercials/commercials.component';
 import { AuditorComponent } from './auditor/auditor.component';
-import { CustomersCompaniesComponent } from './customers-companies/customers-companies.component';
 import { CustomersPeopleComponent } from './customers-people/customers-people.component';
 import { FilterPlansComponent } from './filter-plans/filter-plans.component';
 import { FilterRolesComponent } from './filter-roles/filter-roles.component';
@@ -46,10 +45,6 @@ export const appRoutes:Routes = [
     component:AuditorComponent,
   },
   {
-    path:'Dashboard/customers/companies',
-    component:CustomersCompaniesComponent,
-  },
-  {
     path:'Dashboard/customers/people',
     component:CustomersPeopleComponent,
   },
@@ -77,7 +72,6 @@ export const appRoutes:Routes = [
           AdminsComponent,
           CommercialsComponent,
           AuditorComponent,
-          CustomersCompaniesComponent,
           CustomersPeopleComponent,
           FilterPlansComponent,
           FilterRolesComponent,
