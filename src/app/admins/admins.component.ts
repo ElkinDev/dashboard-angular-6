@@ -21,7 +21,6 @@ export class AdminsComponent implements OnInit {
   addAdmin = false;
   RoleUser: string;
   EditAdmin: boolean;
-  dataUserToEdit = "asdasdasdasd";
   ListAllInfo: boolean;
   ListAdmins;
   urlMainServer;

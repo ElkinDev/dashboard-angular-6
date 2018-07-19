@@ -12,7 +12,13 @@
     <div class="col-sm-4">
       <div class="page-header float-left">
         <div class="page-title">
-          <h1>Clientes</h1>
+          <h1>Clientes
+            <button routerLink="/Dashboard/customers/create"  class="btn btn-breadcrumbs btn-success"
+            style="color:#ffffff !important;">
+            Nuevo <i class="ti-plus"></i>
+          </button>
+
+          </h1>
         </div>
       </div>
     </div>
@@ -62,7 +68,7 @@
                 <section class="card">
                   <div class="media media-custom">
                     <a href="#">
-                      <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addAdmin || EditAdmin }" style="width:75px; height:75px;"
+                      <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addCustomer || EditAdmin }" style="width:75px; height:75px;"
                         alt="Elkin Mendoza" [src]="hrefImageUploaded">
 
                     </a>
@@ -92,7 +98,7 @@
                   <div class="card-footer card-footer-custom">
                     <div class="row text-center m-0 p-0 ">
                       <div class="col-sm-3 p-1 bg-warning pointer text-dark" title="Usuarios">
-                        <i class="fa fa-users " aria-hidden="true"></i>
+                        <i class="fa fa-users " aria-hidden="true"></i> <br>
                         <small>Usuarios</small>
                       </div>
                       <div class="col-sm-3 p-1 pointer text-dark" title="Saldos">
@@ -121,28 +127,28 @@
 
             <div class="col-lg-4 col-md-6">
               <div class="feed-box ">
-                <section class="card">
+                <section class="card bg-dark text-light">
                   <div class="media media-custom">
                     <a href="#">
-                      <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addAdmin || EditAdmin }" style="width:75px; height:75px;"
+                      <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addCustomer || EditAdmin }" style="width:75px; height:75px;"
                         alt="Elkin Mendoza" [src]="hrefImageUploaded">
 
                     </a>
-                    <div class="media-body card-body-custom pb-4 pr-1">
+                    <div class="media-body card-body-custom pb-4 pr-1 text-light">
                       <h6 class="display-6 m-0">Elkin Mendoza cova</h6>
-                      <p class="m-0 p-0" title="Identificación">
+                      <p class="m-0 p-0 text-light" title="Identificación">
                         <small>
                           <i class="fa fa-id-card" aria-hidden="true"></i> C.C 1129529251</small>
                       </p>
-                      <p class="m-0 p-0" title="Dirección Fiscal">
+                      <p class="m-0 p-0 text-light" title="Dirección Fiscal">
                         <small>
                           <i class="fa fa-map-marker" aria-hidden="true"></i> Calle 70 #15 65</small>
                       </p>
-                      <p class="m-0 p-0">
+                      <p class="m-0 p-0 text-light">
                         <small>
                           <i class="fa fa-phone" aria-hidden="true"></i> +5785412514</small>
                       </p>
-                      <p class="m-0 p-0">
+                      <p class="m-0 p-0 text-light">
                         <small>
                           Creado: 20 de julio de 2018</small>
                       </p>
@@ -150,7 +156,7 @@
                     </div>
 
                   </div>
-                  <div class="card-footer card-footer-custom">
+                  <div class="card-footer card-footer-custom border-top-0">
                     <div class="row text-center m-0 p-0 ">
                      
                       <div class="col-sm-4 p-1 pointer text-dark" title="Saldos">

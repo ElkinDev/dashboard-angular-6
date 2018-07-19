@@ -20,6 +20,7 @@ import { FilterPlansComponent } from './filter-plans/filter-plans.component';
 import { FilterRolesComponent } from './filter-roles/filter-roles.component';
 import { LoadingTableComponent } from './loading-table/loading-table.component';
 import { AdminFormComponent } from './admin-form/admin-form.component';
+import { CustomersFormComponent } from './customers-form/customers-form.component';
 
 export const appRoutes:Routes = [
   { path: '', redirectTo: '/Dashboard', pathMatch: 'full' },
@@ -45,8 +46,12 @@ export const appRoutes:Routes = [
     component:AuditorComponent,
   },
   {
-    path:'Dashboard/customers/people',
+    path:'Dashboard/customers',
     component:CustomersPeopleComponent,
+  },
+  {
+    path:'Dashboard/customers/create',
+    component:CustomersFormComponent,
   },
   {
     path:'Dashboard/filters/plans',
@@ -77,6 +82,7 @@ export const appRoutes:Routes = [
           FilterRolesComponent,
           LoadingTableComponent,
           AdminFormComponent,
+          CustomersFormComponent,
   ],
   imports: [
     BrowserModule,

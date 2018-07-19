@@ -1,0 +1,152 @@
+<aside id="left-panel" class="left-panel">
+  <navbar-aside></navbar-aside>
+
+</aside>
+<!-- /#left-panel -->
+
+
+<div id="right-panel" class="right-panel">
+  <header-dashboard></header-dashboard>
+
+  <div class="breadcrumbs">
+    <div class="col-sm-4">
+      <div class="page-header float-left">
+        <div class="page-title">
+          <h1>Clientes
+            <button (click)="backClicked()" class="btn btn-breadcrumbs btn-danger" style="color:#ffffff !important;">
+              Cancelar
+              <i class="ti-close"></i>
+            </button>
+
+          </h1>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-8">
+      <div class="page-header float-right">
+        <div class="page-title">
+          <ol class="breadcrumb text-right">
+            <li>
+              <a routerLink="/Dashboard">Dashboard</a>
+            </li>
+            <li>
+              <a href="#">Usuarios</a>
+            </li>
+            <li class="active">Clientes</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content mt-3" style="min-height:81vh;">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-2">
+          <label class=" form-control-label">Tipo de Cliente</label>
+          <div class=" form-group">
+
+            <label class="switch switch-3d switch-success mr-3">
+
+              <input type="checkbox" id="status" name="status" [ngModel]="checkedActivoUser" (change)="changeModusUser()" class="switch-input">
+              <span class="switch-label bg-primary"></span>
+              <span class="switch-handle"></span>
+
+            </label> {{modusNewCustomer}}
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="formCustomerPeople" [hidden]="modusNewCustomer!='Persona'">
+            <div class="card">
+              <div class="card-header">
+                <strong class="card-title">Nuevo Cliente</strong>
+              </div>
+              <div class="card-body">
+                <form [formGroup]="newCustomerPeople" (ngSubmit)="newCustomerPeople.valid && onSubmitNewCustomerPeople(newCustomerPeople)">
+                  <div class="row">
+
+                    <div class="col-md-4 offset-md-1">
+                      <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
+                      <br>
+                      <input class="btn form-control mt-3 text-center" type="file" formControlName="imageProfile" accept="image/x-png,image/gif,image/jpeg"
+                        (change)="readUrl($event)" />
+                    </div>
+                    <div class="col-md-6 ">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class=" form-control-label">Nombres</label>
+
+                            <input type="text" formControlName="nombre" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.nombre.invalid }"
+                              required>
+                            <div *ngIf="submittedFormPeople && newCustomerPeople.controls.nombre.invalid">
+                              <small class="form-text text-danger">Nombres Requerido</small>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class=" form-control-label">Apellidos</label>
+
+                            <input type="text" formControlName="apellidos" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.apellidos.invalid }"
+                              required>
+                            <div *ngIf="submittedFormPeople && newCustomerPeople.controls.apellidos.invalid">
+                              <small class="form-text text-danger">Apellidos Requerido</small>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="form-group">
+                            <label class=" form-control-label">Dirección de domicilio</label>
+
+                            <input type="text" formControlName="direccion" placeholder="Calle 12 # 45-26 Bogotá" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.direccion.invalid }">
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="form-group">
+                            <label class=" form-control-label">N° de teléfonico de Contacto</label>
+
+                            <input type="text" formControlName="telefono" placeholder="+57 318 5624" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.telefono.invalid }"
+                              required>
+                            <div *ngIf="submittedFormPeople && newCustomerPeople.controls.telefono.invalid">
+                              <small class="form-text text-danger">Apellidos Requerido</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-2">
+                          <select class="custom-select" formControlName="TipoIdentificacion">
+                              <option *ngFor="let c of typeId" [ngValue]="c.name" [selected]="c.name=='CC'" [ngValue]="c">{{c.name}}</option>
+
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
+
+
+
+              </div>
+            </div>
+          </div>
+          <div class="formCustomerCompany" [hidden]="modusNewCustomer!='Empresa'"> FORM CUSTOMER COMPANY</div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+</div>
+
+<!-- /#right-panel -->
