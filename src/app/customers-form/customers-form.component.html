@@ -59,10 +59,10 @@
           <div class="formCustomerPeople" [hidden]="modusNewCustomer!='Persona'">
             <div class="card">
               <div class="card-header">
-                <strong class="card-title">Nuevo Cliente</strong>
+                <strong class="card-title">{{modusNewCustomer}}</strong>
               </div>
               <div class="card-body">
-                <form [formGroup]="newCustomerPeople" (ngSubmit)="newCustomerPeople.valid && onSubmitNewCustomerPeople(newCustomerPeople)">
+                <form [formGroup]="newCustomerPeople" (ngSubmit)="onSubmitNewCustomerPeople(newCustomerPeople)">
                   <div class="row">
 
                     <div class="col-md-4 offset-md-1">
@@ -89,9 +89,9 @@
                           <div class="form-group">
                             <label class=" form-control-label">Apellidos</label>
 
-                            <input type="text" formControlName="apellidos" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.apellidos.invalid }"
+                            <input type="text" formControlName="apellido" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.apellido.invalid }"
                               required>
-                            <div *ngIf="submittedFormPeople && newCustomerPeople.controls.apellidos.invalid">
+                            <div *ngIf="submittedFormPeople && newCustomerPeople.controls.apellido.invalid">
                               <small class="form-text text-danger">Apellidos Requerido</small>
                             </div>
 
@@ -116,19 +116,84 @@
                             <input type="text" formControlName="telefono" placeholder="+57 318 5624" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.telefono.invalid }"
                               required>
                             <div *ngIf="submittedFormPeople && newCustomerPeople.controls.telefono.invalid">
-                              <small class="form-text text-danger">Apellidos Requerido</small>
+                              <small class="form-text text-danger">Número de teléfono Requerido</small>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-2">
-                          <select class="custom-select" formControlName="TipoIdentificacion">
-                              <option *ngFor="let c of typeId" [ngValue]="c.name" [selected]="c.name=='CC'" [ngValue]="c">{{c.name}}</option>
+                        <div class="col-md-12">
+                          <label class=" form-control-label">Identificación </label>
 
+                        </div>
+                        <div class="col-md-4">
+
+                          <select class="custom-select" formControlName="TipoIdentificacion" required>
+                            <option *ngFor="let c of typeId;let i= index" [value]="i" [selected]="i==2">{{c.name}}</option>
                           </select>
+                          <div *ngIf="submittedFormPeople && newCustomerPeople.controls.TipoIdentificacion.invalid">
+                            <small class="form-text text-danger">Tipo Requerido</small>
+                          </div>
+                          <div *ngIf="!submittedFormPeople && newCustomerPeople.controls.TipoIdentificacion.valid">
+                            <small class="form-text text-muted">Tipo</small>
+                          </div>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="form-group">
+                            <input type="text" formControlName="numeroIdentificacion" placeholder="111155555" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.numeroIdentificacion.invalid }"
+                              required>
+                            <div *ngIf="submittedFormPeople && newCustomerPeople.controls.numeroIdentificacion.invalid">
+                              <small class="form-text text-danger">Número de identificación requerido</small>
+                            </div>
+                            <div *ngIf="!submittedFormPeople">
+                              <small class="form-text text-muted"> Número de identificación</small>
+                            </div>
+                          </div>
                         </div>
                       </div>
+
+                    </div>
+                  </div>
+                  <div class="row bg-light p-2">
+                    <div class="col-md-12">
+                      <h5 class="mt-3">Información de Sesión</h5>
+                      <div class="col-md-6 offset-md-3">
+                        <div class=" form-group">
+                          <label class=" form-control-label">Correo electrónico</label>
+                          <input type="email" id="mail" name="mailUser" formControlName="mailUser" id="mailUser" [ngClass]="{'is-invalid': ( submittedFormPeople && newCustomerPeople.controls.mailUser.invalid) }"
+                            placeholder="...." class="form-control" required email>
+                          <div *ngIf="submittedFormPeople &&  newCustomerPeople.controls.mailUser.invalid">
+                            <small class="form-text text-danger" *ngIf="newCustomerPeople.controls.mailUser.errors.required">Correo electrónico requerido</small>
+                            <small class="form-text text-danger" *ngIf="newCustomerPeople.controls.mailUser.errors.email">Correo electrónico inválido</small>
+                          </div>
+                          <small *ngIf="ExistUser" class="form-text text-danger">
+                            Ya está registrado un usuario con este correo electrónico
+                          </small>
+                        </div>
+                        <div class="col-sm-12">
+                          <label class=" form-control-label">Estado</label>
+                          <div class=" form-group">
+
+                            <label class="switch switch-3d switch-success mr-3">
+
+                              <input type="checkbox" id="checkmodusNew" name="checkmodusNew" formControlName="checkmodusNew" (change)="changeStatusCustomer()"
+                                class="switch-input">
+                              <span class="switch-label"></span>
+                              <span class="switch-handle"></span>
+
+                            </label> {{statusNewCustomer}}
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 text-center">
+                      <button class="btn btn-success" type="submit">Guardar
+                        <i></i>
+                      </button>
                     </div>
                   </div>
 
@@ -139,7 +204,139 @@
               </div>
             </div>
           </div>
-          <div class="formCustomerCompany" [hidden]="modusNewCustomer!='Empresa'"> FORM CUSTOMER COMPANY</div>
+          <div class="formCustomerCompany" [hidden]="modusNewCustomer!='Empresa'">
+            <div class="card">
+              <div class="card-header">
+                <strong class="card-title">{{modusNewCustomer}}</strong>
+              </div>
+              <div class="card-body">
+                <form [formGroup]="newCompanyCustomer" (ngSubmit)="onSubmitNewCustomerPeople(newCompanyCustomer)">
+                  <div class="row">
+
+                    <div class="col-md-4 offset-md-1">
+                      <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
+                      <br>
+                      <input class="btn form-control mt-3 text-center" type="file" formControlName="imageProfile" accept="image/x-png,image/gif,image/jpeg"
+                        (change)="readUrl($event)" />
+                    </div>
+                    <div class="col-md-6 ">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="form-group">
+                            <label class=" form-control-label">Nombre</label>
+
+                            <input type="text" formControlName="nombre" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.nombre.invalid }"
+                              required>
+                            <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.nombre.invalid">
+                              <small class="form-text text-danger">Nombre Requerido</small>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="form-group">
+                            <label class=" form-control-label">Dirección de domicilio</label>
+
+                            <input type="text" formControlName="direccion" placeholder="Calle 12 # 45-26 Bogotá" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.direccion.invalid }">
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label class=" form-control-label" title="Número de Identificación Tributaria">NIT </label>
+
+                          <div class="form-group">
+                            <input type="text" formControlName="numeroIdentificacion" placeholder="111155555" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.numeroIdentificacion.invalid }"
+                              required>
+                            <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.numeroIdentificacion.invalid">
+                              <small class="form-text text-danger">Número de identificación requerido</small>
+                            </div>
+                            <div *ngIf="!submittedFormPeople">
+                              <small class="form-text text-muted"> Número de identificación</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="row bg-light p-2">
+                    <div class="col-md-12">
+                      <h5 class="m-3">Información Persona de Contacto</h5>
+                    </div>
+                    <div class="col-md-6 offset-md-3">
+                      <div class="form-group">
+                        <label class=" form-control-label">Nombre Completo</label>
+                        <input type="text" formControlName="nombreContacto" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.nombreContacto.invalid }"
+                          required>
+                        <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.nombreContacto.invalid">
+                          <small class="form-text text-danger">Nombre Requerido</small>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 offset-md-3">
+                      <div class=" form-group">
+                        <label class=" form-control-label">Correo electrónico</label>
+                        <input type="email" id="mail" name="mailContact" formControlName="mailUser" id="mail" [ngClass]="{'is-invalid': ( submittedFormPeople && newCompanyCustomer.controls.mailUser.invalid) }"
+                          placeholder="...." class="form-control" required email>
+                        <div *ngIf="submittedFormPeople &&  newCompanyCustomer.controls.mailUser.invalid">
+                          <small class="form-text text-danger" *ngIf="newCompanyCustomer.controls.mailUser.errors.required">Correo electrónico requerido</small>
+                          <small class="form-text text-danger" *ngIf="newCompanyCustomer.controls.mailUser.errors.email">Correo electrónico inválido</small>
+                        </div>
+                        <small *ngIf="ExistUser" class="form-text text-danger">
+                          Ya está registrado un usuario con este correo electrónico
+                        </small>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 offset-md-3">
+                      <div class="form-group">
+                        <label class=" form-control-label">N° de teléfono</label>
+                        <input type="text" formControlName="telefono" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.telefono.invalid }"
+                          required>
+                        <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.telefono.invalid">
+                          <small class="form-text text-danger">telefono Requerido</small>
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="col-md-6 offset-md-3">
+                      <label class=" form-control-label">Estado</label>
+                      <div class=" form-group">
+                        <label class="switch switch-3d switch-success mr-3">
+
+                          <input type="checkbox" id="checkmodusNew" name="checkmodusNew" formControlName="checkmodusNew" (change)="changeStatusCustomer()"
+                            class="switch-input">
+                          <span class="switch-label"></span>
+                          <span class="switch-handle"></span>
+
+                        </label> {{statusNewCustomer}}
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12 text-center">
+                      <button class="btn btn-success" type="submit">Guardar
+                        <i></i>
+                      </button>
+                    </div>
+                  </div>
+
+                </form>
+
+
+
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

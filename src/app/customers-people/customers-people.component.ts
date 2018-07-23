@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
 import {WebSocketService} from '../websocket.service';
+import {CustomersService} from './customers-service.service';
 declare let alertify: any;
 
 declare var jQuery:any;
