@@ -15,12 +15,12 @@ import { HeaderComponent } from './header/header.component';
 import { AdminsComponent } from './admins/admins.component';
 import { CommercialsComponent } from './commercials/commercials.component';
 import { AuditorComponent } from './auditor/auditor.component';
-import { CustomersCompaniesComponent } from './customers-companies/customers-companies.component';
 import { CustomersPeopleComponent } from './customers-people/customers-people.component';
 import { FilterPlansComponent } from './filter-plans/filter-plans.component';
 import { FilterRolesComponent } from './filter-roles/filter-roles.component';
 import { LoadingTableComponent } from './loading-table/loading-table.component';
 import { AdminFormComponent } from './admin-form/admin-form.component';
+import { CustomersFormComponent } from './customers-form/customers-form.component';
 
 export const appRoutes:Routes = [
   { path: '', redirectTo: '/Dashboard', pathMatch: 'full' },
@@ -46,12 +46,12 @@ export const appRoutes:Routes = [
     component:AuditorComponent,
   },
   {
-    path:'Dashboard/customers/companies',
-    component:CustomersCompaniesComponent,
+    path:'Dashboard/customers',
+    component:CustomersPeopleComponent,
   },
   {
-    path:'Dashboard/customers/people',
-    component:CustomersPeopleComponent,
+    path:'Dashboard/customers/create',
+    component:CustomersFormComponent,
   },
   {
     path:'Dashboard/filters/plans',
@@ -77,12 +77,12 @@ export const appRoutes:Routes = [
           AdminsComponent,
           CommercialsComponent,
           AuditorComponent,
-          CustomersCompaniesComponent,
           CustomersPeopleComponent,
           FilterPlansComponent,
           FilterRolesComponent,
           LoadingTableComponent,
           AdminFormComponent,
+          CustomersFormComponent,
   ],
   imports: [
     BrowserModule,

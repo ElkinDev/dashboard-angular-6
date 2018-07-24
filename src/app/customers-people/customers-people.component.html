@@ -1,61 +1,206 @@
 <aside id="left-panel" class="left-panel">
-    <navbar-aside></navbar-aside>
-  
-  </aside>
-  <!-- /#left-panel -->
-  
-  
-  <div id="right-panel" class="right-panel">
-    <header-dashboard></header-dashboard>
-  
-    <div class="breadcrumbs">
-      <div class="col-sm-4">
-        <div class="page-header float-left">
-          <div class="page-title">
-            <h1>Clientes Personas naturales</h1>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-8">
-        <div class="page-header float-right">
-          <div class="page-title">
-            <ol class="breadcrumb text-right">
-              <li>
-                <a routerLink="/Dashboard">Dashboard</a>
-              </li>
-              <li>
-                <a href="#">Usuarios</a>
-              </li>
-              <li class="active">Clientes Personas naturales</li>
-            </ol>
-          </div>
+  <navbar-aside></navbar-aside>
+
+</aside>
+<!-- /#left-panel -->
+
+
+<div id="right-panel" class="right-panel">
+  <header-dashboard></header-dashboard>
+
+  <div class="breadcrumbs">
+    <div class="col-sm-4">
+      <div class="page-header float-left">
+        <div class="page-title">
+          <h1>Clientes
+            <button routerLink="/Dashboard/customers/create"  class="btn btn-breadcrumbs btn-success"
+            style="color:#ffffff !important;">
+            Nuevo <i class="ti-plus"></i>
+          </button>
+
+          </h1>
         </div>
       </div>
     </div>
-  
-    <div class="content mt-3">
-      <!-- box alerts    -->
-      <!-- 
-              
-              <div class="col-sm-12">
-              <div class="alert  alert-success alert-dismissible fade show" role="alert">
-                  <span class="badge badge-pill badge-success">Success</span> You successfully read this important alert message.
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-          </div>
-      
-      -->
-  
-  
-  
-      <div class="col-sm-6 col-lg-3">
-  
+    <div class="col-sm-8">
+      <div class="page-header float-right">
+        <div class="page-title">
+          <ol class="breadcrumb text-right">
+            <li>
+              <a routerLink="/Dashboard">Dashboard</a>
+            </li>
+            <li>
+              <a href="#">Usuarios</a>
+            </li>
+            <li class="active">Clientes</li>
+          </ol>
+        </div>
       </div>
-  
-  
     </div>
   </div>
-  
-  <!-- /#right-panel -->
+
+  <div class="content mt-3" style="min-height:81vh;">
+
+    <div class=" text-center loading-panel" [hidden]="!loadingMore">
+      <div class="dot dot-1"></div>
+      <div class="dot dot-2"></div>
+      <div class="dot dot-3"></div>
+
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+          <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -7" />
+          </filter>
+        </defs>
+      </svg>
+
+    </div>
+
+    <div class="container " [hidden]="loadingMore">
+      <div class="row p-3">
+
+        <div class="ListAdminsAll col-md-12">
+          <div class="row">
+
+            <div class="col-lg-4 col-md-6">
+              <div class="feed-box ">
+                <section class="card">
+                  <div class="media media-custom">
+                    <a href="#">
+                      <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addCustomer || EditAdmin }" style="width:75px; height:75px;"
+                        alt="Elkin Mendoza" [src]="hrefImageUploaded">
+
+                    </a>
+                    <div class="media-body card-body-custom pb-4 pr-1">
+                      <h6 class="display-6 m-0">Transforma Publicidad </h6>
+                      <p class="m-0 p-0" title="Identificación">
+                        <small>
+                          <i class="fa fa-building" aria-hidden="true"></i> Nit 1215581-0</small>
+                      </p>
+                      <p class="m-0 p-0" title="Dirección Fiscal">
+                        <small>
+                          <i class="fa fa-map-marker" aria-hidden="true"></i> Calle 70 #15 65</small>
+                      </p>
+                      <p class="m-0 p-0">
+                        <small>
+                          <i class="fa fa-phone" aria-hidden="true"></i> +5785412514</small>
+                      </p>
+                      <p class="m-0 p-0">
+                        <small>
+                          Creado: 20 de julio de 2018</small>
+                      </p>
+                      <span class="badge badge-success">Activo</span>
+
+                    </div>
+
+                  </div>
+                  <div class="card-footer card-footer-custom">
+                    <div class="row text-center m-0 p-0 ">
+                      <div class="col-sm-3 p-1 bg-warning pointer text-dark" title="Usuarios">
+                        <i class="fa fa-users " aria-hidden="true"></i> <br>
+                        <small>Usuarios</small>
+                      </div>
+                      <div class="col-sm-3 p-1 pointer text-dark" title="Saldos">
+                        <i class="ti-layout-list-thumb-alt" aria-hidden="true"></i>
+                        <br>
+                        <small>Saldos</small>
+
+                      </div>
+                      <div class="col-sm-3 p-1 text-light bg-dark pointer" title="Editar">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                        <br>
+                        <small>Editar</small>
+                      </div>
+                      <div class="col-sm-3 p-1 text-light bg-danger pointer" title="Eliminar Cliente">
+                        <i class="ti-trash" aria-hidden="true"></i>
+                        <br>
+                        <small>Eliminar</small>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </section>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+              <div class="feed-box ">
+                <section class="card bg-dark text-light">
+                  <div class="media media-custom">
+                    <a href="#">
+                      <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addCustomer || EditAdmin }" style="width:75px; height:75px;"
+                        alt="Elkin Mendoza" [src]="hrefImageUploaded">
+
+                    </a>
+                    <div class="media-body card-body-custom pb-4 pr-1 text-light">
+                      <h6 class="display-6 m-0">Elkin Mendoza cova</h6>
+                      <p class="m-0 p-0 text-light" title="Identificación">
+                        <small>
+                          <i class="fa fa-id-card" aria-hidden="true"></i> C.C 1129529251</small>
+                      </p>
+                      <p class="m-0 p-0 text-light" title="Dirección Fiscal">
+                        <small>
+                          <i class="fa fa-map-marker" aria-hidden="true"></i> Calle 70 #15 65</small>
+                      </p>
+                      <p class="m-0 p-0 text-light">
+                        <small>
+                          <i class="fa fa-phone" aria-hidden="true"></i> +5785412514</small>
+                      </p>
+                      <p class="m-0 p-0 text-light">
+                        <small>
+                          Creado: 20 de julio de 2018</small>
+                      </p>
+                      <span class="badge badge-success">Activo</span>
+                    </div>
+
+                  </div>
+                  <div class="card-footer card-footer-custom border-top-0">
+                    <div class="row text-center m-0 p-0 ">
+                     
+                      <div class="col-sm-4 p-1 pointer text-dark" title="Saldos">
+                        <i class="ti-layout-list-thumb-alt" aria-hidden="true"></i>
+                        <br>
+                        <small>Saldos</small>
+
+                      </div>
+                      <div class="col-sm-4 p-1 text-light bg-dark pointer" title="Editar">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                        <br>
+                        <small>Editar</small>
+                      </div>
+                      <div class="col-sm-4 p-1 text-light bg-danger pointer" title="Eliminar Cliente">
+                        <i class="ti-trash" aria-hidden="true"></i>
+                        <br>
+                        <small>Eliminar</small>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </section>
+              </div>
+            </div>
+
+
+            <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center">
+              <div class="display-middle">
+                <i class="ti-reload display-1"></i>
+                <h4 class="upper mt-3">ErrorMessage</h4>
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+</div>
+
+<!-- /#right-panel -->

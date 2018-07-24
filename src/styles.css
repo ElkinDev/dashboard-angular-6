@@ -2238,6 +2238,27 @@ header .form-inline {
 .pointer{
   cursor: pointer;
 }
+.card-footer-custom,.card-body-custom{
+  padding:0 !important;
+}
+.card-footer-custom i{
+ font-size:20px;
+ line-height:30px; 
+}
+.card-body-custom p{
+  line-height: 20px;
+}
+.card-body-custom .div-body{
+  min-height: 200px;
+  height:auto;
+}
+.row-buttons-card-custom{
+  width: 100%;
+}
+.img-profile-customer{
+  min-height:200px;
+  height: 200px;
+}
 @media (max-width: 1368px) {
   .content {
     padding: 0 15px; }
