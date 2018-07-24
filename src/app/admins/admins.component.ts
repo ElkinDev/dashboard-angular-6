@@ -152,7 +152,7 @@ export class AdminsComponent implements OnInit {
 
   }
   editAdminUser(data, index): void {
-    console.log(data, 'veaa');
+    console.log(data, 'veas6erg6rea');
     this.indexNowEdit = index;
     this.EditUser.patchValue({
       nombre: data.nombre,

@@ -10,6 +10,8 @@ export class NavbarAsideComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  	console.log('hacer el emit acá, para ver todos los tipos de usuarios')
+  	
   }
 
 }
