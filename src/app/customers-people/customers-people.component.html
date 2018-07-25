@@ -13,10 +13,10 @@
       <div class="page-header float-left">
         <div class="page-title">
           <h1>Clientes
-            <button routerLink="/Dashboard/customers/create"  class="btn btn-breadcrumbs btn-success"
-            style="color:#ffffff !important;">
-            Nuevo <i class="ti-plus"></i>
-          </button>
+            <button routerLink="/Dashboard/customers/create" class="btn btn-breadcrumbs btn-success" style="color:#ffffff !important;">
+              Nuevo
+              <i class="ti-plus"></i>
+            </button>
 
           </h1>
         </div>
@@ -60,134 +60,255 @@
     <div class="container " [hidden]="loadingMore">
       <div class="row p-3">
 
-        <div class="ListAdminsAll col-md-12">
+        <div class="ListAdminsAll col-md-12" [hidden]="loadingMore">
           <div class="row">
+            <div class="col-md-8 offset-md-2" *ngIf="editCustomer">
+              <div class="formCustomerPeople">
+                <div class="card">
+                  <div class="card-header">
+                    <strong class="card-title">Editar Cliente</strong>
+                  </div>
+                  <div class="card-body">
+                    <form [formGroup]="EditCustomer" (ngSubmit)="onSubmitEdtitCustomer(EditCustomer)">
+                      <div class="row">
 
-            <div class="col-lg-4 col-md-6">
-              <div class="feed-box ">
-                <section class="card">
-                  <div class="media media-custom">
-                    <a href="#">
-                      <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addCustomer || EditAdmin }" style="width:75px; height:75px;"
-                        alt="Elkin Mendoza" [src]="hrefImageUploaded">
+                        <div class="col-md-4 offset-md-1">
+                          <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
+                          <br>
+                          <input class="btn form-control mt-3 text-center" type="file" formControlName="imageProfile" accept="image/x-png,image/gif,image/jpeg"
+                            (change)="readUrl($event)" />
+                        </div>
+                        <div class="col-md-6 ">
+                          <div class="row">
+                            <div class="col-md-6" [ngClass]="{'col-md-12': EditCustomer.controls.TipoIdentificacion.value=='NIT','col-md-6':EditCustomer.controls.TipoIdentificacion.value!='NIT'}">
+                              <div class="form-group">
+                                <label class=" form-control-label">Nombres</label>
 
-                    </a>
-                    <div class="media-body card-body-custom pb-4 pr-1">
-                      <h6 class="display-6 m-0">Transforma Publicidad </h6>
-                      <p class="m-0 p-0" title="Identificación">
-                        <small>
-                          <i class="fa fa-building" aria-hidden="true"></i> Nit 1215581-0</small>
-                      </p>
-                      <p class="m-0 p-0" title="Dirección Fiscal">
-                        <small>
-                          <i class="fa fa-map-marker" aria-hidden="true"></i> Calle 70 #15 65</small>
-                      </p>
-                      <p class="m-0 p-0">
-                        <small>
-                          <i class="fa fa-phone" aria-hidden="true"></i> +5785412514</small>
-                      </p>
-                      <p class="m-0 p-0">
-                        <small>
-                          Creado: 20 de julio de 2018</small>
-                      </p>
-                      <span class="badge badge-success">Activo</span>
+                                <input type="text" formControlName="nombre" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.nombre.invalid }"
+                                  required>
+                                <div *ngIf="EditCustomer.controls.nombre.invalid">
+                                  <small class="form-text text-danger">Nombres Requerido</small>
+                                </div>
 
-                    </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6" *ngIf="EditCustomer.controls.TipoIdentificacion.value!='NIT'">
+                              <div class="form-group">
+                                <label class=" form-control-label">Apellidos</label>
+
+                                <input type="text" formControlName="apellido" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.apellido.invalid }"
+                                  required>
+                                <div *ngIf="EditCustomer.controls.apellido.invalid">
+                                  <small class="form-text text-danger">Apellidos Requerido</small>
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div class="form-group">
+                                <label class=" form-control-label">Dirección de domicilio</label>
+
+                                <input type="text" formControlName="direccion" placeholder="Calle 12 # 45-26 Bogotá" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.direccion.invalid }">
+
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row" *ngIf="EditCustomer.controls.TipoIdentificacion.value!='NIT'">
+                            <div class="col-md-12">
+                              <div class="form-group">
+                                <label class=" form-control-label">N° de teléfonico de Contacto</label>
+
+                                <input type="text" formControlName="telefono" placeholder="+57 318 5624" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.telefono.invalid }"
+                                  required>
+                                <div *ngIf="EditCustomer.controls.telefono.invalid">
+                                  <small class="form-text text-danger">Número de teléfono Requerido</small>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label class=" form-control-label">{{EditCustomer.controls.TipoIdentificacion.value!='NIT'?'Identificación':'NIT'}}</label>
+
+                            </div>
+                            <div class="col-md-4" *ngIf="EditCustomer.controls.TipoIdentificacion.value!='NIT'">
+
+                              <select class="custom-select" formControlName="TipoIdentificacion" required>
+                                <option *ngFor="let c of typeId;let i= index" [value]="i" [selected]="c.name===EditCustomer.controls.TipoIdentificacion.value">{{c.name}}</option>
+                              </select>
+                              <div *ngIf="EditCustomer.controls.TipoIdentificacion.invalid">
+                                <small class="form-text text-danger">Tipo Requerido</small>
+                              </div>
+                              <div *ngIf="EditCustomer.controls.TipoIdentificacion.valid">
+                                <small class="form-text text-muted">Tipo</small>
+                              </div>
+                            </div>
+                            <div [ngClass]="{'col-md-12': EditCustomer.controls.TipoIdentificacion.value=='NIT','col-md-8':EditCustomer.controls.TipoIdentificacion.value!='NIT'}">
+                              <div class="form-group">
+                                <input type="text" formControlName="numeroIdentificacion" placeholder="111155555" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.numeroIdentificacion.invalid }"
+                                  required>
+                                <div *ngIf="EditCustomer.controls.numeroIdentificacion.invalid">
+                                  <small class="form-text text-danger">Número de identificación requerido</small>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                      <div class="row bg-light p-2">
+                        <div class="col-md-12">
+                          <h5 class="mt-3">{{EditCustomer.controls.TipoIdentificacion.value!='NIT'?'Información de Sesión':'Información persona
+                            de contacto'}}</h5>
+
+                          <div class="col-md-6 offset-md-3" *ngIf="EditCustomer.controls.TipoIdentificacion.value=='NIT'">
+                            <div class="form-group">
+                              <label class=" form-control-label">Nombre Completo</label>
+                              <input type="text" formControlName="nombreContacto" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.nombreContacto.invalid }"
+                                required>
+                              <div *ngIf="EditCustomer.controls.nombreContacto.invalid">
+                                <small class="form-text text-danger">Nombre completo Requerido</small>
+                              </div>
+
+                            </div>
+                          </div>
+                          <div class="col-md-6 offset-md-3">
+                            <div class=" form-group">
+                              <label class=" form-control-label">Correo electrónico</label>
+                              <input type="email" id="mail" name="mailUser" formControlName="mailUser" id="mailUser" [ngClass]="{'is-invalid': EditCustomer.controls.mailUser.invalid }"
+                                placeholder="...." class="form-control" required email>
+                              <div *ngIf="EditCustomer.controls.mailUser.invalid">
+                                <small class="form-text text-danger" *ngIf="EditCustomer.controls.mailUser.errors.required">Correo electrónico requerido</small>
+                                <small class="form-text text-danger" *ngIf="EditCustomer.controls.mailUser.errors.email">Correo electrónico inválido</small>
+                              </div>
+                              <small *ngIf="ExistUser" class="form-text text-danger">
+                                Ya está registrado un usuario con este correo electrónico
+                              </small>
+                            </div>
+                            <div class="col-sm-12">
+                              <label class=" form-control-label">Estado</label>
+                              <div class=" form-group">
+
+                                <label class="switch switch-3d switch-success mr-3">
+
+                                  <input type="checkbox" id="checModusEdit" name="checModusEdit" formControlName="checModusEdit" (change)="changeStatusCustomer()"
+                                    class="switch-input">
+                                  <span class="switch-label"></span>
+                                  <span class="switch-handle"></span>
+
+                                </label> {{statusEditCustomer}}
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6 offset-md-3" *ngIf="EditCustomer.controls.TipoIdentificacion.value=='NIT'">
+                            <div class="form-group">
+                              <label class=" form-control-label">N° de teléfono</label>
+                              <input type="text" formControlName="telefono" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.telefono.invalid }"
+                                required>
+                              <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.telefono.invalid">
+                                <small class="form-text text-danger">telefono Requerido</small>
+                              </div>
+
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                          <button class="btn btn-success" type="submit">Guardar
+                            <i></i>
+                          </button>
+                        </div>
+                      </div>
+
+                    </form>
+
+
 
                   </div>
-                  <div class="card-footer card-footer-custom">
-                    <div class="row text-center m-0 p-0 ">
-                      <div class="col-sm-3 p-1 bg-warning pointer text-dark" title="Usuarios">
-                        <i class="fa fa-users " aria-hidden="true"></i> <br>
-                        <small>Usuarios</small>
-                      </div>
-                      <div class="col-sm-3 p-1 pointer text-dark" title="Saldos">
-                        <i class="ti-layout-list-thumb-alt" aria-hidden="true"></i>
-                        <br>
-                        <small>Saldos</small>
-
-                      </div>
-                      <div class="col-sm-3 p-1 text-light bg-dark pointer" title="Editar">
-                        <i class="fa fa-edit" aria-hidden="true"></i>
-                        <br>
-                        <small>Editar</small>
-                      </div>
-                      <div class="col-sm-3 p-1 text-light bg-danger pointer" title="Eliminar Cliente">
-                        <i class="ti-trash" aria-hidden="true"></i>
-                        <br>
-                        <small>Eliminar</small>
-
-                      </div>
-                    </div>
-                  </div>
-
-                </section>
+                </div>
               </div>
             </div>
 
-            <div class="col-lg-4 col-md-6">
-              <div class="feed-box ">
-                <section class="card bg-dark text-light">
-                  <div class="media media-custom">
-                    <a href="#">
-                      <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addCustomer || EditAdmin }" style="width:75px; height:75px;"
-                        alt="Elkin Mendoza" [src]="hrefImageUploaded">
+            <div *ngIf="!editCustomer">
+              <div class="col-lg-4 col-md-6" *ngFor="let customer of ListCustomers; let i = index" [hidden]="(loadingMore && ListCustomers)">
+                <div class="feed-box ">
+                  <section class="card" [ngClass]="{'bg-dark text-light':customer.TipoIdentificacion!='NIT'}">
+                    <div class="media media-custom">
+                      <a href="#">
+                        <img class="align-self-center rounded-circle mr-3" style="width:75px; height:75px;" alt="Elkin Mendoza" [alt]="customer.TipoIdentificacion!='NIT'? customer.nombre + customer.apellido : customer.nombre"
+                          [src]="customer.imageProfile ? customer.imageProfile : hrefImageUploaded">
 
-                    </a>
-                    <div class="media-body card-body-custom pb-4 pr-1 text-light">
-                      <h6 class="display-6 m-0">Elkin Mendoza cova</h6>
-                      <p class="m-0 p-0 text-light" title="Identificación">
-                        <small>
-                          <i class="fa fa-id-card" aria-hidden="true"></i> C.C 1129529251</small>
-                      </p>
-                      <p class="m-0 p-0 text-light" title="Dirección Fiscal">
-                        <small>
-                          <i class="fa fa-map-marker" aria-hidden="true"></i> Calle 70 #15 65</small>
-                      </p>
-                      <p class="m-0 p-0 text-light">
-                        <small>
-                          <i class="fa fa-phone" aria-hidden="true"></i> +5785412514</small>
-                      </p>
-                      <p class="m-0 p-0 text-light">
-                        <small>
-                          Creado: 20 de julio de 2018</small>
-                      </p>
-                      <span class="badge badge-success">Activo</span>
+                      </a>
+                      <div class="media-body card-body-custom pb-4 pr-1">
+                        <h6 class="display-6 m-0">{{customer.TipoIdentificacion!='NIT'? customer.nombre + customer.apellido : customer.nombre}} </h6>
+                        <p class="m-0 p-0" title="Identificación">
+                          <small>
+                            <i class="fa" [ngClass]="{' fa-id-card':customer.TipoIdentificacion!='NIT','fa-building':customer.TipoIdentificacion=='NIT'}"
+                              aria-hidden="true"></i> {{customer.TipoIdentificacion}} {{customer.numeroIdentificacion}}</small>
+                        </p>
+                        <p class="m-0 p-0" title="Dirección Fiscal">
+                          <small>
+                            <i class="fa fa-map-marker" aria-hidden="true"></i> {{customer.direccion}}</small>
+                        </p>
+                        <p class="m-0 p-0">
+                          <small>
+                            <i class="fa fa-phone" aria-hidden="true"></i> {{customer.telefono}}</small>
+                        </p>
+                        <p class="m-0 p-0">
+                          <small>
+                            Creado: {{customer.fecha}}</small>
+                        </p>
+                        <span class="badge" [ngClass]="{'badge-success': customer.status,'badge-danger':!customer.status}">{{customer.status?'Activo':'Inactivo'}}</span>
+
+                      </div>
+
+                    </div>
+                    <div class="card-footer card-footer-custom border-0 rounded-0">
+                      <div class="row text-center m-0 p-0 ">
+                        <div class=" p-1 bg-warning pointer text-dark" *ngIf="customer.TipoIdentificacion=='NIT'" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                          title="Usuarios">
+                          <i class="fa fa-users " aria-hidden="true"></i>
+                          <br>
+                          <small>Usuarios</small>
+                        </div>
+                        <div class="p-1 pointer text-dark" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                          title="Saldos">
+                          <i class="ti-layout-list-thumb-alt" aria-hidden="true"></i>
+                          <br>
+                          <small>Saldos</small>
+
+                        </div>
+                        <div class="p-1 text-light bg-dark pointer" (click)="editCustomerf(customer,i)" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                          title="Editar">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                          <br>
+                          <small>Editar</small>
+                        </div>
+                        <div class="p-1 text-light bg-danger pointer" (click)="removeCustomer(customer,i)" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                          title="Eliminar Cliente">
+                          <i class="ti-trash" aria-hidden="true"></i>
+                          <br>
+                          <small>Eliminar</small>
+
+                        </div>
+                      </div>
                     </div>
 
-                  </div>
-                  <div class="card-footer card-footer-custom border-top-0">
-                    <div class="row text-center m-0 p-0 ">
-                     
-                      <div class="col-sm-4 p-1 pointer text-dark" title="Saldos">
-                        <i class="ti-layout-list-thumb-alt" aria-hidden="true"></i>
-                        <br>
-                        <small>Saldos</small>
-
-                      </div>
-                      <div class="col-sm-4 p-1 text-light bg-dark pointer" title="Editar">
-                        <i class="fa fa-edit" aria-hidden="true"></i>
-                        <br>
-                        <small>Editar</small>
-                      </div>
-                      <div class="col-sm-4 p-1 text-light bg-danger pointer" title="Eliminar Cliente">
-                        <i class="ti-trash" aria-hidden="true"></i>
-                        <br>
-                        <small>Eliminar</small>
-
-                      </div>
-                    </div>
-                  </div>
-
-                </section>
+                  </section>
+                </div>
               </div>
             </div>
 
 
-            <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center">
+            <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="ListCustomers==null || ListAdminsnull">
               <div class="display-middle">
                 <i class="ti-reload display-1"></i>
-                <h4 class="upper mt-3">ErrorMessage</h4>
+                <h4 class="upper mt-3">{{messageErrorQuery}}</h4>
               </div>
             </div>
 

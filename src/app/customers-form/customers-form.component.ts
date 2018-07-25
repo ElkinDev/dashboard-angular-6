@@ -4,7 +4,9 @@ import { Location } from '@angular/common';
 import { NgForm, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
-import {CustomersService} from '../customers-people/customers-service.service';
+import { CustomersService } from '../customers-people/customers-service.service';
+import { FunctionsService } from '../functions.service'
+
 declare let alertify: any;
 @Component({
   selector: 'app-customers-form',
@@ -23,7 +25,7 @@ export class CustomersFormComponent implements OnInit {
   submittedFormPeople: boolean;
   typeId;
   ExistUser: boolean;
-  RoleUser:string;
+  RoleUser: string;
   newCustomerPeople = new FormGroup({
     imageProfile: new FormControl(null),
     nombre: new FormControl(null),
@@ -46,7 +48,7 @@ export class CustomersFormComponent implements OnInit {
     numeroIdentificacion: new FormControl(null),
     checkmodusNew: new FormControl(null),
   });
-  constructor(private _location: Location, private cdRef: ChangeDetectorRef,private _CustomersService:CustomersService,private router: Router) {
+  constructor(private _location: Location, private cdRef: ChangeDetectorRef, private _CustomersService: CustomersService, private router: Router, private _FunctionsService: FunctionsService) {
     this.urlMainServer = environment.ws_url + '/public/dashboard/assets/images/'
     this.modusNewCustomer = 'Persona'
     this.statusNewCustomer = 'Activo'
@@ -54,18 +56,15 @@ export class CustomersFormComponent implements OnInit {
     this.NotEqualsPassword = false;
     this.checkedActivoUser = false;
     this.submittedFormPeople = false;
-    this.typeId = [
-      { name: 'CE', description: 'Cedula de Extranjeria' },
-      { name: 'TI', description: 'Tarjeta de Identidad' },
-      { name: 'CC', description: 'Cedula de Ciudadanía' },
-
-    ]
-    this.newCustomerPeople.controls['TipoIdentificacion'].setValue("CC");
-    this.newCompanyCustomer.controls['TipoIdentificacion'].setValue("CC");
+    this._FunctionsService.getAllDocumentsType().then(res => {
+      this.typeId = res;
+    });
+    this.newCustomerPeople.controls['TipoIdentificacion'].setValue("C.C");
+    this.newCompanyCustomer.controls['TipoIdentificacion'].setValue("C.C");
     this.newCompanyCustomer.controls['checkmodusNew'].setValue(true);
     this.newCustomerPeople.controls['checkmodusNew'].setValue(true);
     this.ExistUser = false;
-    this.RoleUser='NaturalCustomer'
+    this.RoleUser = 'NaturalCustomer'
 
   }
   ngAfterViewChecked() {
@@ -75,7 +74,7 @@ export class CustomersFormComponent implements OnInit {
   }
   backClicked() {
     this._location.back();
-  } 
+  }
   changeModusUser() {
     this.modusNewCustomer === 'Persona' ? this.modusNewCustomer = 'Empresa' : this.modusNewCustomer = 'Persona'
     if (this.modusNewCustomer != 'Persona') {
@@ -90,7 +89,7 @@ export class CustomersFormComponent implements OnInit {
       this.newCustomerPeople.controls['telefono'].setValue(null);
       this.newCustomerPeople.controls['numeroIdentificacion'].setValue(null);
       this.newCustomerPeople.controls['imageProfile'].setValue(null);
-    }else{
+    } else {
       this.newCompanyCustomer.controls['TipoIdentificacion'].setValue("CC");
       this.newCompanyCustomer.controls['checkmodusNew'].setValue(true);
       this.newCompanyCustomer.controls['nombre'].setValue(null);
@@ -100,11 +99,11 @@ export class CustomersFormComponent implements OnInit {
       this.newCompanyCustomer.controls['telefono'].setValue(null);
       this.newCompanyCustomer.controls['numeroIdentificacion'].setValue(null);
       this.newCompanyCustomer.controls['imageProfile'].setValue(null);
-      this.hrefImageUploaded = this.urlMainServer + 'noimage.png';      
+      this.hrefImageUploaded = this.urlMainServer + 'noimage.png';
       this.submittedFormPeople = false;
       this.statusNewCustomer = 'Activo';
       this.newCompanyCustomer.controls['checkmodusNew'].setValue(true);
-      
+
     }
   }
   changeStatusCustomer() {
@@ -114,17 +113,17 @@ export class CustomersFormComponent implements OnInit {
     this.submittedFormPeople = true;
     if (data.valid) {
       let senData = data.value;
-      senData.RoleUser =this.RoleUser;
+      senData.RoleUser = this.RoleUser;
       if (data.value.imageProfile) {
         senData.imageProfile = this.urlMainServer + this.nameUserPhoto
       }
       this._CustomersService.createCustomer(senData).then(res => {
-        
+
         alertify.success(res);
-        setTimeout(()=>{
+        setTimeout(() => {
           this.router.navigate(['/Dashboard/customers'])
 
-        },3000)
+        }, 3000)
       }, err => {
         alertify.error(err);
       })
