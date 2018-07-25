@@ -45,6 +45,24 @@ export class adminsService {
 
   CreateUserAdmin(data) {
     return new Promise((resolve, reject) => {
+
+      //add new user admin
+      // socket.emit('userRolesEvents', {
+        // nombre: 'serg',
+        // apellido: 'drthdr',
+        // emailUser: 'sonickfaber6@gmail.com',
+        // password: 'SSl123456',
+        // passwordRepeat: 'SSl123456',
+        // status: true,
+        // RoleUser: 'Administrador',
+        // opt:3,
+        // mail: 'sonickfaber7@yahoo.es',
+        // token: '96f0279ac90a57fd8df19e7a'
+      // }, resp=>{
+        // console.log(resp)
+      // })
+
+
       let senData = data;
       senData.mail = this.session.mail
       senData.token = this.session.token
@@ -64,6 +82,22 @@ export class adminsService {
   }
   editUser(data) {
     return new Promise((resolve, reject) => {
+      // // forma de enviar imagen cuando forma JAVACRIPT
+      // if(window.FormData){
+      //   var formdata=new FormData();
+      //   if(formdata){
+      //     formdata.append('imgProfile', main.data.fileTest)
+      //     formdata.append('id', 'b764ad29-0e75-49aa-a247-fd4077298d7e')
+      //     formdata.append('mail', 'sonickfaber7@yahoo.es')
+      //     // formdata.append('mail', 'sonickfaber7@yahoo.is')
+      //     formdata.append('token', '96f0279ac90a57fd8df19e7a')
+      //     main.logic.ajaxHttpRequest(formdata, main.logic.progress, resp=>{
+      //       console.log(resp)
+      //     })
+      //   }
+      // }else
+      //   alert('Tu explorador es muy viejo, por favor usa uno mas actualizado')
+
 
       // // editar usuarios administradores
       // socket.emit('userRolesEvents', {
