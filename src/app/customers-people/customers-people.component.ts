@@ -24,10 +24,10 @@ export class CustomersPeopleComponent implements OnInit {
   ListAdminsnull;
   nameUserPhoto;
   ExistUser;
-  statusNewCustomer;
   statusEditCustomer;
   editCustomer;
-  typeId;  
+  typeId;
+  indexNowEdit;
   EditCustomer = new FormGroup({
     imageProfile: new FormControl(),
     nombreContacto: new FormControl(null),
@@ -39,6 +39,7 @@ export class CustomersPeopleComponent implements OnInit {
     TipoIdentificacion: new FormControl(),
     numeroIdentificacion: new FormControl(null),
     checModusEdit: new FormControl(),
+    fecha: new FormControl,
 
   });
   constructor(private cdRef: ChangeDetectorRef, private _FunctionsService: FunctionsService, private _customersService: CustomersService) {
@@ -46,12 +47,14 @@ export class CustomersPeopleComponent implements OnInit {
     this.urlMainServer = environment.ws_url + '/public/dashboard/assets/images/'
     this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
     this.hrefImageUploaded = this.urlMainServer + 'noimage.png';
-    this.statusNewCustomer = 'Activo';
     this.ExistUser = false;
     this.editCustomer = false
     this._FunctionsService.getAllDocumentsType().then(res => {
       this.typeId = res;
     });
+    this.indexNowEdit = null;
+    this.nameUserPhoto = null;
+
   }
   ngAfterViewChecked() {
     this.cdRef.detectChanges();
@@ -109,7 +112,40 @@ export class CustomersPeopleComponent implements OnInit {
         }
       }).autoCancel(15);
   }
-  onSubmitEdtitCustomer() {
+  onSubmitEdtitCustomer(data: NgForm) {
+    console.log(data.value, 'VEAAMOS');
+    let sendData = {
+      imageProfile: data.value.imageProfile,
+      nombre: data.value.nombre,
+      apellido: data.value.apellido,
+      mailUser: data.value.mailUser,
+      direccion: data.value.direccion,
+      TipoIdentificacion: data.value.TipoIdentificacion,
+      numeroIdentificacion: data.value.numeroIdentificacion,
+      telefono: data.value.telefono,
+      nombreContacto: data.value.nombreContacto,
+      status: data.value.checModusEdit,
+      fecha: data.value.fecha
+
+    }
+    if (this.nameUserPhoto) {
+      sendData.imageProfile = this.nameUserPhoto;
+    }
+    this._FunctionsService.editUser(sendData).then(msg => {
+      alertify.success(msg);
+      this.ListCustomers[this.indexNowEdit] = sendData;
+      if (this.nameUserPhoto) {
+        this.ListCustomers[this.indexNowEdit].imageProfile = this.urlMainServer + this.nameUserPhoto;
+      } else {
+        this.ListCustomers[this.indexNowEdit].imageProfile = this.hrefImageUpload2;
+      }
+      this.editCustomer ? this.editCustomer = false : this.editCustomer = true
+
+    }, err => {
+      alertify.error(err);
+
+
+    })
 
   }
   readUrl(event: any) {
@@ -118,7 +154,7 @@ export class CustomersPeopleComponent implements OnInit {
       this.nameUserPhoto = file.name;
       var reader = new FileReader();
       reader.onload = (event: any) => {
-        this.hrefImageUploaded = event.target.result;
+        this.hrefImageUpload2 = event.target.result;
       }
       reader.readAsDataURL(event.target.files[0]);
 
@@ -126,13 +162,14 @@ export class CustomersPeopleComponent implements OnInit {
   }
 
   changeStatusCustomer() {
-    this.statusNewCustomer === 'Activo' ? this.statusNewCustomer = 'Inactivo' : this.statusNewCustomer = 'Activo'
+    this.statusEditCustomer === 'Activo' ? this.statusEditCustomer = 'Inactivo' : this.statusEditCustomer = 'Activo'
   }
   editCustomerf(customer, i) {
-    console.log(customer.TipoIdentificacion, 'Veaamos', i)
-    let tipo=(customer.TipoIdentificacion).trim();
-    this.statusEditCustomer= customer.status? 'Activo':'Inactivo';
+    console.log(customer, 'Veaamos')
+    let tipo = (customer.TipoIdentificacion).trim();
+    this.statusEditCustomer = customer.status ? 'Activo' : 'Inactivo';
     this.editCustomer = true;
+    this.hrefImageUpload2 = customer.imageProfile ? customer.imageProfile : this.hrefImageUpload2;
     this.EditCustomer.patchValue({
       imageProfile: null,
       nombreContacto: customer.nombreContacto,
@@ -144,7 +181,11 @@ export class CustomersPeopleComponent implements OnInit {
       TipoIdentificacion: tipo,
       numeroIdentificacion: customer.numeroIdentificacion,
       checModusEdit: customer.status,
+      fecha: customer.fecha
     });
+    this.indexNowEdit = i;
+
+
   }
 
 }

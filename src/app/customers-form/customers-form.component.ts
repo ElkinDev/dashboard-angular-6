@@ -58,6 +58,8 @@ export class CustomersFormComponent implements OnInit {
     this.submittedFormPeople = false;
     this._FunctionsService.getAllDocumentsType().then(res => {
       this.typeId = res;
+    });this._FunctionsService.getAllDocumentsType().then(res => {
+      this.typeId = res;
     });
     this.newCustomerPeople.controls['TipoIdentificacion'].setValue("C.C");
     this.newCompanyCustomer.controls['TipoIdentificacion'].setValue("C.C");

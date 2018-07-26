@@ -73,7 +73,7 @@
                       <div class="row">
 
                         <div class="col-md-4 offset-md-1">
-                          <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
+                          <img class="rounded-circle img-fluid" [src]="hrefImageUpload2" alt="" width="200">
                           <br>
                           <input class="btn form-control mt-3 text-center" type="file" formControlName="imageProfile" accept="image/x-png,image/gif,image/jpeg"
                             (change)="readUrl($event)" />
@@ -233,75 +233,76 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <div *ngIf="!editCustomer">
-              <div class="col-lg-4 col-md-6" *ngFor="let customer of ListCustomers; let i = index" [hidden]="(loadingMore && ListCustomers)">
-                <div class="feed-box ">
-                  <section class="card" [ngClass]="{'bg-dark text-light':customer.TipoIdentificacion!='NIT'}">
-                    <div class="media media-custom">
-                      <a href="#">
-                        <img class="align-self-center rounded-circle mr-3" style="width:75px; height:75px;" alt="Elkin Mendoza" [alt]="customer.TipoIdentificacion!='NIT'? customer.nombre + customer.apellido : customer.nombre"
-                          [src]="customer.imageProfile ? customer.imageProfile : hrefImageUploaded">
+          <div class="row" *ngIf="!editCustomer">
+            <div class="col-lg-4 col-md-6" *ngFor="let customer of ListCustomers; let i = index" [hidden]="(loadingMore && ListCustomers)">
+              <div class="feed-box ">
+                <section class="card" [ngClass]="{'bg-dark text-light':customer.TipoIdentificacion!='NIT'}">
+                  <div class="media media-custom media-customer">
+                    <a href="#">
+                      <img class="align-self-center rounded-circle mr-3" style="width:75px; height:75px;" alt="Elkin Mendoza" [alt]="customer.TipoIdentificacion!='NIT'? customer.nombre + customer.apellido : customer.nombre"
+                        [src]="customer.imageProfile ? customer.imageProfile : hrefImageUploaded">
 
-                      </a>
-                      <div class="media-body card-body-custom pb-4 pr-1">
-                        <h6 class="display-6 m-0">{{customer.TipoIdentificacion!='NIT'? customer.nombre + customer.apellido : customer.nombre}} </h6>
-                        <p class="m-0 p-0" title="Identificación">
-                          <small>
-                            <i class="fa" [ngClass]="{' fa-id-card':customer.TipoIdentificacion!='NIT','fa-building':customer.TipoIdentificacion=='NIT'}"
-                              aria-hidden="true"></i> {{customer.TipoIdentificacion}} {{customer.numeroIdentificacion}}</small>
-                        </p>
-                        <p class="m-0 p-0" title="Dirección Fiscal">
-                          <small>
-                            <i class="fa fa-map-marker" aria-hidden="true"></i> {{customer.direccion}}</small>
-                        </p>
-                        <p class="m-0 p-0">
-                          <small>
-                            <i class="fa fa-phone" aria-hidden="true"></i> {{customer.telefono}}</small>
-                        </p>
-                        <p class="m-0 p-0">
-                          <small>
-                            Creado: {{customer.fecha}}</small>
-                        </p>
-                        <span class="badge" [ngClass]="{'badge-success': customer.status,'badge-danger':!customer.status}">{{customer.status?'Activo':'Inactivo'}}</span>
-
-                      </div>
+                    </a>
+                    <div class="media-body card-body-custom pb-4 pr-1">
+                      <h6 class="display-6 m-0">{{customer.TipoIdentificacion!='NIT'? customer.nombre + customer.apellido : customer.nombre}} </h6>
+                      <p class="m-0 p-0" title="Identificación">
+                        <small>
+                          <i class="fa" [ngClass]="{' fa-id-card':customer.TipoIdentificacion!='NIT','fa-building':customer.TipoIdentificacion=='NIT'}"
+                            aria-hidden="true"></i> {{customer.TipoIdentificacion}} {{customer.numeroIdentificacion}}</small>
+                      </p>
+                      <p class="m-0 p-0" title="Dirección Fiscal">
+                        <small>
+                          <i class="fa fa-map-marker" aria-hidden="true"></i> {{customer.direccion}}</small>
+                      </p>
+                      <p class="m-0 p-0">
+                        <small>
+                          <i class="fa fa-phone" aria-hidden="true"></i> {{customer.telefono}}</small>
+                      </p>
+                      <p class="m-0 p-0">
+                        <small>
+                          Creado: {{customer.fecha}}</small>
+                      </p>
+                      <span class="badge" [ngClass]="{'badge-success': customer.status,'badge-danger':!customer.status}">{{customer.status?'Activo':'Inactivo'}}</span>
 
                     </div>
-                    <div class="card-footer card-footer-custom border-0 rounded-0">
-                      <div class="row text-center m-0 p-0 ">
-                        <div class=" p-1 bg-warning pointer text-dark" *ngIf="customer.TipoIdentificacion=='NIT'" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
-                          title="Usuarios">
-                          <i class="fa fa-users " aria-hidden="true"></i>
-                          <br>
-                          <small>Usuarios</small>
-                        </div>
-                        <div class="p-1 pointer text-dark" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
-                          title="Saldos">
-                          <i class="ti-layout-list-thumb-alt" aria-hidden="true"></i>
-                          <br>
-                          <small>Saldos</small>
 
-                        </div>
-                        <div class="p-1 text-light bg-dark pointer" (click)="editCustomerf(customer,i)" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
-                          title="Editar">
-                          <i class="fa fa-edit" aria-hidden="true"></i>
-                          <br>
-                          <small>Editar</small>
-                        </div>
-                        <div class="p-1 text-light bg-danger pointer" (click)="removeCustomer(customer,i)" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
-                          title="Eliminar Cliente">
-                          <i class="ti-trash" aria-hidden="true"></i>
-                          <br>
-                          <small>Eliminar</small>
+                  </div>
+                  <div class="card-footer card-footer-custom border-0 rounded-0">
+                    <div class="row text-center m-0 p-0 ">
+                      <div class=" p-1 bg-warning pointer text-dark" *ngIf="customer.TipoIdentificacion=='NIT'" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                        title="Usuarios">
+                        <i class="fa fa-users " aria-hidden="true"></i>
+                        <br>
+                        <small>Usuarios</small>
+                      </div>
+                      <div class="p-1 pointer text-dark" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                        title="Saldos">
+                        <i class="ti-layout-list-thumb-alt" aria-hidden="true"></i>
+                        <br>
+                        <small>Saldos</small>
 
-                        </div>
+                      </div>
+                      <div class="p-1 text-light bg-dark pointer" (click)="editCustomerf(customer,i)" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                        title="Editar">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                        <br>
+                        <small>Editar</small>
+                      </div>
+                      <div class="p-1 text-light bg-danger pointer" (click)="removeCustomer(customer,i)" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                        title="Eliminar Cliente">
+                        <i class="ti-trash" aria-hidden="true"></i>
+                        <br>
+                        <small>Eliminar</small>
+
                       </div>
                     </div>
+                  </div>
 
-                  </section>
-                </div>
+                </section>
               </div>
+
             </div>
 
 
