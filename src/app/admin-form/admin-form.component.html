@@ -4,7 +4,7 @@
       <div class="col-md-12 text-center">
         <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
         <br>
-        <input class="btn form-control mt-3 text-center" type="file" name="imageProfile" #imageProfile="ngModel" id="imageProfile"
+        <input class="btn form-control mt-3 text-center" type="file" name="imgProfile" #imgProfile="ngModel" id="imgProfile"
           ngModel accept="image/x-png,image/gif,image/jpeg" (change)="readUrl($event)" />
       </div>
       <div class="col-md-12">
@@ -100,6 +100,7 @@
             </div>
           </div>
         </div>
+
 
         <div class="row text-center">
           <div class="col-sm-12">

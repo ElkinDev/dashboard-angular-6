@@ -33,4 +33,12 @@ export class WebSocketService {
     });
    
   }
+  public on(nameOn){
+    return Observable.create((Observer) =>{
+      this.socket.on(nameOn,(res)=>{
+        Observer.next(res)
+      })
+    });
+   
+  }
 }

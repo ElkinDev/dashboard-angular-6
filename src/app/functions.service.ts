@@ -8,32 +8,33 @@ export class FunctionsService {
 
   constructor(private _wsSocket: WebSocketService) { }
   session = {
-    mail: 'elkinmendoza00@gmail.com',
-    token: 'asdasdasdasdasdasd'
+    mail: 'sonickfaber7@yahoo.es',
+    token: '96f0279ac90a57fd8df19e7a'
   }
- 
+
 
   generateTime() {
     var now = new Date(), time = now.getTime(),
       expireTime = time + 1000 * 36000000
     now.setTime(expireTime)
     return now.toUTCString()
-  
+
   }
   createSessionStorage(data) {
     localStorage.setItem('user', JSON.stringify(data))
     console.log(localStorage.user)
 
   }
-  CreateUser(data) {
+  CreateUser(data,opt) {
     return new Promise((resolve, reject) => {
+
       let senData = data;
       senData.mail = this.session.mail
       senData.token = this.session.token
-      this._wsSocket.emit('addUserPanel', senData).subscribe((res) => {
-        console.log('llegaaaa', res)
+      senData.opt = opt
+      this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
         if (!res.err) {
-          resolve(res.msg)
+          resolve({msg:res.msg,link:res.link,type:res.type})
         } else {
           reject(res.msg)
         }
@@ -64,10 +65,10 @@ export class FunctionsService {
   RemoveUser(email) {
     return new Promise((resolve, reject) => {
       let senData = {
-        emailUser:email,
-        mail:this.session.mail,
-        token:this.session.token
-      } 
+        emailUser: email,
+        mail: this.session.mail,
+        token: this.session.token
+      }
       this._wsSocket.emit('RemoveUserPanel', senData).subscribe((res) => {
         if (!res.err) {
           resolve(res.msg)
@@ -80,13 +81,13 @@ export class FunctionsService {
       })
     });
   }
-  getAllDocumentsType(){
+  getAllDocumentsType() {
     return new Promise((resolve, reject) => {
-      let ar=[
+      let ar = [
         { name: 'CE', description: 'Cedula de Extranjeria' },
         { name: 'TI', description: 'Tarjeta de Identidad' },
         { name: 'CC', description: 'Cedula de Ciudadanía' },
-  
+
       ]
       resolve(ar)
     });

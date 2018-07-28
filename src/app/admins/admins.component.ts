@@ -1,5 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { WebSocketService } from '../websocket.service';
 import { adminsService } from './admins.service';
+import { FunctionsService } from '../functions.service'
 import { NgForm, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
@@ -24,6 +26,7 @@ export class AdminsComponent implements OnInit {
   ListAllInfo: boolean;
   ListAdmins;
   urlMainServer;
+  urlMainServerPhotos;
   messageErrorQuery;
   today: number;
   checModusEdit
@@ -31,22 +34,24 @@ export class AdminsComponent implements OnInit {
   fileToUpload: File = null;
   indexNowEdit;
   ListAdminsnull;
+  senData;
+  sendImage;
   EditUser = new FormGroup({
 
-    imageProfile: new FormControl(),
+    imgProfile: new FormControl(),
     nombre: new FormControl(),
     apellido: new FormControl(),
     mail: new FormControl(),
-    // PasswordUserEdit: new FormControl(),
-    passwordUserRepeat1: new FormControl(),
-    passwordUserRepeat: new FormControl(),
     checModusEdit: new FormControl(),
 
   });
-
+  session = {
+    mail: 'sonickfaber7@yahoo.es',
+    token: '96f0279ac90a57fd8df19e7a'
+  }
   @Output() CloseFormtUserAdmin = new EventEmitter<object>();
 
-  constructor(private _adminService: adminsService, private cdRef: ChangeDetectorRef) {
+  constructor(private _adminService: adminsService, private cdRef: ChangeDetectorRef, private _FunctionsService: FunctionsService, private _wsSocket: WebSocketService) {
     this.EditAdmin = false
     this.ExistUser = false
     this.NotEqualsPassword = false
@@ -55,12 +60,16 @@ export class AdminsComponent implements OnInit {
     this.ListAllInfo = false
     this.RoleUser = "Administrador";
     this.loadingMore = true;
-    this.urlMainServer = environment.ws_url + '/public/dashboard/assets/images/'
+    this.urlMainServerPhotos = environment.ws_url + '/public/dashboard/assets/images/'
+    this.urlMainServer = environment.ws_url + '/public/imgs/'
     this.today = Date.now();
     this.indexNowEdit = null;
     this.nameUserPhoto = null;
     this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
     this.hrefImageUploaded = this.urlMainServer + 'noimage.png';
+    this.ListAdmins = [];
+    this.senData = null;
+    this.sendImage = null;
   }
 
   ngAfterViewChecked() {
@@ -129,27 +138,101 @@ export class AdminsComponent implements OnInit {
   }
 
   submitNewUserAdmin(data): void {
-    console.log('seee metee', data)
-    let senData = data.value;
-    senData.RoleUser = this.RoleUser;
-    if (data.value.imageProfile) {
-      senData.imageProfile = this.urlMainServer + data.value.imageProfile
+    let resd: any = null;
+    this.senData = data;
+    this.senData.RoleUser = this.RoleUser;
+
+    if (data.imgProfile) {
+      this.senData.imgProfile = this.urlMainServerPhotos + data.imgProfile
     }
-    this._adminService.CreateUserAdmin(senData).then(res => {
-      this.ListAdminsnull = false;
-      alertify.success(res);
-      senData.fecha = this.today;
-      this.ListAdmins.push(senData)
-      this.addAdmin ? this.addAdmin = false : this.addAdmin = true
-      this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
-      this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+    if (this.senData.imageProfileFile) {
+      console.log('si hay manito', this.senData.imageProfileFile)
+      this.sendImage = this.senData.imageProfileFile;
+    }
+    this._FunctionsService.CreateUser(this.senData, 3).then(res => {
+      resd = res;
+      if (resd.type == 'createdUserNew') {
+        alertify.alert("Confirma el registro de usuario", function () {
+          window.open(resd.link, "_blank")
+
+        });
+      }
+      // this.ListAdminsnull = false;
+      // alertify.success(res);
+      // this.senData.fecha = this.today;
+      // this.ListAdmins = this.ListAdmins || [];
+
+      // this.ListAdmins.push(this.senData)
+      // this.addAdmin ? this.addAdmin = false : this.addAdmin = true
+      // this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+      // this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+
     }, err => {
       alertify.error(err);
 
 
     })
 
+
+    this._wsSocket.on('createUser').subscribe((res) => {
+      console.log('quiero vert  estoo', res.mail === this.senData.emailUser);
+      if (res.mail === this.senData.emailUser) {
+        var formdata = new FormData();
+        if (formdata && this.sendImage != null) {
+          console.log('se meteeeee', this.sendImage != null)
+          formdata.append('imgProfile', this.sendImage)
+          formdata.append('id', res.id)
+          formdata.append('opt', '0')
+          formdata.append('mail', this.session.mail)
+          formdata.append('token', this.session.token)
+          this.ajaxHttpRequest(formdata, this.progressImage, resp => {
+            this.senData.imgProfile = resp.imageProfile;
+            console.log('que es??',this.senData.imgProfile)
+            this.ListAdminsnull = false;
+            alertify.success('Usuario Creado Exitosamente');
+            this.senData.fecha = this.today;
+            this.senData.id = res.id;
+            this.ListAdmins = this.ListAdmins || [];
+            this.ListAdmins.push(this.senData)
+            this.addAdmin ? this.addAdmin = false : this.addAdmin = true
+            this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+          })
+        } else {
+          console.log('see metee veaaa')
+          this.ListAdminsnull = false;
+          alertify.success('Usuario Creado Exitosamente');
+          this.senData.fecha = this.today;
+          this.senData.id = res.id;
+          this.ListAdmins = this.ListAdmins || [];
+          this.ListAdmins.push(this.senData)
+          this.addAdmin ? this.addAdmin = false : this.addAdmin = true
+          this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+          this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+
+        }
+      }
+
+    }, (error) => {
+
+    })
+
   }
+  progressImage(ev) {
+    // console.log('veaa veaa veaa',ev)
+  }
+  ajaxHttpRequest(datos, prog, cb) {
+    let oReq = new XMLHttpRequest()
+    oReq.upload.addEventListener('progress', prog, false);
+    oReq.open('POST', environment.ws_url + `/upDashBoardImg`, true);
+    oReq.onreadystatechange = function (yy) {
+      if (this.readyState === 4) {
+        cb(this.responseText)
+      }
+    }
+    oReq.send(datos);
+  }
+
   editAdminUser(data, index): void {
     console.log(data, 'veas6erg6rea');
     this.indexNowEdit = index;
@@ -158,11 +241,11 @@ export class AdminsComponent implements OnInit {
       apellido: data.apellido,
       mail: data.mail,
       checModusEdit: data.status,
-      imageProfile: null
+      imgProfile: null
     });
 
-    if (data.imageProfile) {
-      this.hrefImageUpload2 = data.imageProfile
+    if (data.imgProfile) {
+      this.hrefImageUpload2 = data.imgProfile
     } else {
       this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
 
@@ -177,9 +260,8 @@ export class AdminsComponent implements OnInit {
     let dataSend = {
       nombre: data.value.nombre,
       apellido: data.value.apellido,
-      imageProfile: this.nameUserPhoto,
+      imgProfile: this.nameUserPhoto,
       mailUser: data.value.mail,
-      password: data.value.passwordUserRepeat,
       status: data.value.checModusEdit
     }
     this._adminService.editUser(dataSend).then(msg => {
@@ -192,7 +274,7 @@ export class AdminsComponent implements OnInit {
       this.EditAdmin ? this.EditAdmin = false : this.EditAdmin = true
       this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
       if (this.nameUserPhoto) {
-        this.ListAdmins[this.indexNowEdit].imageProfile = this.urlMainServer + this.nameUserPhoto
+        this.ListAdmins[this.indexNowEdit].imgProfile = this.urlMainServer + this.nameUserPhoto
       }
     }, err => {
       alertify.error(err);
@@ -206,7 +288,7 @@ export class AdminsComponent implements OnInit {
     alertify
       .confirm("Administradores", "¿Eliminar al Administrador " + data.mail + "?",
         (() => {
-          this._adminService.RemoveUserAdmin(data.mail).then(msg => {
+          this._adminService.RemoveUserAdmin(data.mail, data.id).then(msg => {
             alertify.success(msg);
             this.ListAdmins.splice(index, 1);
             if (this.ListAdmins.length <= 0) {

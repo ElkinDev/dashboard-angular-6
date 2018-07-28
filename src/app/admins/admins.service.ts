@@ -8,8 +8,8 @@ export class adminsService {
 
   }
   session = {
-    mail: 'elkinmendoza00@gmail.com',
-    token: 'asdasdasdasdasdasd'
+    mail: 'sonickfaber7@yahoo.es',
+    token: '96f0279ac90a57fd8df19e7a'
   }
   getAllAdmins() {
     let promise = new Promise((resolve, reject) => {
@@ -22,7 +22,7 @@ export class adminsService {
       //   console.log(resp)
       // })
 
-      this._wsSocket.emit('getAllAdmins', this.session).subscribe((res) => {
+      this._wsSocket.emit('userRolesEvents', {opt:0,mail:'sonickfaber7@yahoo.es',token:'96f0279ac90a57fd8df19e7a'}).subscribe((res) => {
         console.log(res, 'FT iopuhsergsergh')
         if (!res.err) {
           if (res.data.length) {
@@ -46,27 +46,11 @@ export class adminsService {
   CreateUserAdmin(data) {
     return new Promise((resolve, reject) => {
 
-      //add new user admin
-      // socket.emit('userRolesEvents', {
-        // nombre: 'serg',
-        // apellido: 'drthdr',
-        // emailUser: 'sonickfaber6@gmail.com',
-        // password: 'SSl123456',
-        // passwordRepeat: 'SSl123456',
-        // status: true,
-        // RoleUser: 'Administrador',
-        // opt:3,
-        // mail: 'sonickfaber7@yahoo.es',
-        // token: '96f0279ac90a57fd8df19e7a'
-      // }, resp=>{
-        // console.log(resp)
-      // })
-
-
       let senData = data;
       senData.mail = this.session.mail
       senData.token = this.session.token
-      this._wsSocket.emit('addUserPanel', senData).subscribe((res) => {
+      senData.opt = 3
+      this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
         console.log('llegaaaa', res)
         if (!res.err) {
           resolve(res.msg)
@@ -99,25 +83,15 @@ export class adminsService {
       //   alert('Tu explorador es muy viejo, por favor usa uno mas actualizado')
 
 
-      // // editar usuarios administradores
-      // socket.emit('userRolesEvents', {
-      //   opt:1,
-      //   mail: 'sonickfaber7@yahoo.es',
-      //   token: '96f0279ac90a57fd8df19e7a',
-      //   userEdit:{
-      //     nombre: 'Elkin Brayan',
-      //     apellido: 'Mendoza Urrea',
-      //     mail: 'elkinmendoza00@gmail.com',
-      //     id: 'b764ad29-0e75-49aa-a247-fd4077298d7e'
-      //   }
-      // }, resp=>{
-      //   console.log(resp)
-      // })
-
-
-      let senData = data;
+      let senData = {
+        opt:1,
+        mail:this.session.mail,
+        token:this.session.token,
+        userDel:data
+      } 
       senData.mail = this.session.mail
       senData.token = this.session.token
+
       this._wsSocket.emit('editUserPanel', senData).subscribe((res) => {
         if (!res.err) {
           resolve(res.msg)
@@ -130,28 +104,19 @@ export class adminsService {
       })
     });
   }
-  RemoveUserAdmin(email) {
+  RemoveUserAdmin(email,id) {
     return new Promise((resolve, reject) => {
-
-      // //delete users admins
-      // socket.emit('userRolesEvents', {
-      //  opt:2,
-      //  mail: 'sonickfaber7@yahoo.es',
-      //  token: '96f0279ac90a57fd8df19e7a',
-      //  userDel:{
-      //    mail: 'elkinmendoza00@gmail.com',
-      //    id: 'b764ad29-0e75-49aa-a247-fd4077298d7e'
-      //  }
-      // }, resp=>{
-      //  console.log(resp)
-      // })
-
       let senData = {
-        emailUser:email,
+        opt:2,
         mail:this.session.mail,
-        token:this.session.token
+        token:this.session.token,
+        userDel:{
+          mail: email,
+          id: id
+        }
       } 
-      this._wsSocket.emit('RemoveUserPanel', senData).subscribe((res) => {
+
+      this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
         console.log(res)
         if (!res.err) {
           resolve(res.msg)
