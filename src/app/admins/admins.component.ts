@@ -36,6 +36,8 @@ export class AdminsComponent implements OnInit {
   ListAdminsnull;
   senData;
   sendImage;
+  fileImageEdit;
+  idUserEditNow;
   EditUser = new FormGroup({
 
     imgProfile: new FormControl(),
@@ -47,7 +49,7 @@ export class AdminsComponent implements OnInit {
   });
   session = {
     mail: 'sonickfaber7@yahoo.es',
-    token: '96f0279ac90a57fd8df19e7a'
+    token: 'edbee4f4050c98ad293df52d'
   }
   @Output() CloseFormtUserAdmin = new EventEmitter<object>();
 
@@ -70,6 +72,8 @@ export class AdminsComponent implements OnInit {
     this.ListAdmins = [];
     this.senData = null;
     this.sendImage = null;
+    this.fileImageEdit = null;
+    this.idUserEditNow = null;
   }
 
   ngAfterViewChecked() {
@@ -143,10 +147,6 @@ export class AdminsComponent implements OnInit {
     this.senData.RoleUser = this.RoleUser;
 
     if (data.imgProfile) {
-      this.senData.imgProfile = this.urlMainServerPhotos + data.imgProfile
-    }
-    if (this.senData.imageProfileFile) {
-      console.log('si hay manito', this.senData.imageProfileFile)
       this.sendImage = this.senData.imageProfileFile;
     }
     this._FunctionsService.CreateUser(this.senData, 3).then(res => {
@@ -157,15 +157,6 @@ export class AdminsComponent implements OnInit {
 
         });
       }
-      // this.ListAdminsnull = false;
-      // alertify.success(res);
-      // this.senData.fecha = this.today;
-      // this.ListAdmins = this.ListAdmins || [];
-
-      // this.ListAdmins.push(this.senData)
-      // this.addAdmin ? this.addAdmin = false : this.addAdmin = true
-      // this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
-      // this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
 
     }, err => {
       alertify.error(err);
@@ -175,29 +166,28 @@ export class AdminsComponent implements OnInit {
 
 
     this._wsSocket.on('createUser').subscribe((res) => {
-      console.log('quiero vert  estoo', res.mail === this.senData.emailUser);
       if (res.mail === this.senData.emailUser) {
         var formdata = new FormData();
         if (formdata && this.sendImage != null) {
-          console.log('se meteeeee', this.sendImage != null)
           formdata.append('imgProfile', this.sendImage)
           formdata.append('id', res.id)
           formdata.append('opt', '0')
           formdata.append('mail', this.session.mail)
           formdata.append('token', this.session.token)
-          this.ajaxHttpRequest(formdata, this.progressImage, resp => {
-            this.senData.imgProfile = resp.imageProfile;
-            console.log('que es??',this.senData.imgProfile)
+          this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
+            let resp1 = JSON.parse(resp);
+            this.senData.imgProfile = resp1.imageProfile;
             this.ListAdminsnull = false;
-            alertify.success('Usuario Creado Exitosamente');
             this.senData.fecha = this.today;
             this.senData.id = res.id;
             this.ListAdmins = this.ListAdmins || [];
             this.ListAdmins.push(this.senData)
-            this.addAdmin ? this.addAdmin = false : this.addAdmin = true
-            this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+            this.addAdmin = false;
+            this.ListAllInfo = false;
             this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
-          })
+            alertify.success('Usuario Creado Exitosamente');
+
+          });
         } else {
           console.log('see metee veaaa')
           this.ListAdminsnull = false;
@@ -206,8 +196,8 @@ export class AdminsComponent implements OnInit {
           this.senData.id = res.id;
           this.ListAdmins = this.ListAdmins || [];
           this.ListAdmins.push(this.senData)
-          this.addAdmin ? this.addAdmin = false : this.addAdmin = true
-          this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
+          this.addAdmin = false;
+          this.ListAllInfo = false;
           this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
 
         }
@@ -221,18 +211,6 @@ export class AdminsComponent implements OnInit {
   progressImage(ev) {
     // console.log('veaa veaa veaa',ev)
   }
-  ajaxHttpRequest(datos, prog, cb) {
-    let oReq = new XMLHttpRequest()
-    oReq.upload.addEventListener('progress', prog, false);
-    oReq.open('POST', environment.ws_url + `/upDashBoardImg`, true);
-    oReq.onreadystatechange = function (yy) {
-      if (this.readyState === 4) {
-        cb(this.responseText)
-      }
-    }
-    oReq.send(datos);
-  }
-
   editAdminUser(data, index): void {
     console.log(data, 'veas6erg6rea');
     this.indexNowEdit = index;
@@ -248,8 +226,8 @@ export class AdminsComponent implements OnInit {
       this.hrefImageUpload2 = data.imgProfile
     } else {
       this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
-
     }
+    this.idUserEditNow = data.id;
     data.status ? this.modusEditUser = 'Activo' : this.modusEditUser = 'Inactivo'
     this.ListAllInfo = true
     this.addAdmin = false
@@ -257,27 +235,60 @@ export class AdminsComponent implements OnInit {
 
   }
   onSubmitEditUser(data: NgForm) {
-    let dataSend = {
+    console.log('quiero verte esotoo', data.value)
+    var dataSend = {
       nombre: data.value.nombre,
       apellido: data.value.apellido,
-      imgProfile: this.nameUserPhoto,
-      mailUser: data.value.mail,
-      status: data.value.checModusEdit
+      mail: data.value.mail,
+      status: data.value.checModusEdit,
+      id: this.idUserEditNow
     }
     this._adminService.editUser(dataSend).then(msg => {
-      alertify.success(msg);
-      this.ListAdmins[this.indexNowEdit].nombre = data.value.nombre
-      this.ListAdmins[this.indexNowEdit].apellido = data.value.apellido
-      this.ListAdmins[this.indexNowEdit].status = data.value.checModusEdit
-      this.ListAdmins[this.indexNowEdit].mail = data.value.mail
+      let respF: any = msg;
+      if (respF.type === 'updateData' && !this.fileImageEdit) {
+        alertify.error('No haz realizado ningún cambio');
 
-      this.EditAdmin ? this.EditAdmin = false : this.EditAdmin = true
-      this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
-      if (this.nameUserPhoto) {
-        this.ListAdmins[this.indexNowEdit].imgProfile = this.urlMainServer + this.nameUserPhoto
       }
+      else {
+        if (this.fileImageEdit) {
+
+          var formdata = new FormData();
+          if (formdata) {
+
+            formdata.append('imgProfile', this.fileImageEdit)
+            formdata.append('id', dataSend.id)
+            formdata.append('opt', '0')
+            formdata.append('mail', this.session.mail)
+            formdata.append('token', this.session.token)
+            this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
+              let respF:any=JSON.parse(resp)
+              this.ListAdmins[this.indexNowEdit].nombre = data.value.nombre
+              this.ListAdmins[this.indexNowEdit].apellido = data.value.apellido
+              this.ListAdmins[this.indexNowEdit].status = data.value.checModusEdit
+              this.ListAdmins[this.indexNowEdit].mail = data.value.mail
+
+              this.ListAdmins[this.indexNowEdit].imgProfile = respF.imageProfile;
+              alertify.success('Usuario ' + dataSend.mail + ' editado exitosamente');
+              this.EditAdmin = false;
+              this.ListAllInfo = false;
+
+            });
+          }
+        } else {
+          this.ListAdmins[this.indexNowEdit].nombre = data.value.nombre
+          this.ListAdmins[this.indexNowEdit].apellido = data.value.apellido
+          this.ListAdmins[this.indexNowEdit].status = data.value.checModusEdit
+          this.ListAdmins[this.indexNowEdit].mail = data.value.mail
+          this.EditAdmin = false;
+          this.ListAllInfo = false;
+          alertify.success('Usuario ' + dataSend.mail + ' editado exitosamente');          
+        }
+
+      }
+
     }, err => {
-      alertify.error(err);
+
+      alertify.error(err.sjsj);
 
 
     })
@@ -333,6 +344,7 @@ export class AdminsComponent implements OnInit {
   readUrl(event: any) {
     if (event.target.files && event.target.files[0]) {
       let file = event.target.files[0];
+      this.fileImageEdit = event.target.files[0];
       this.nameUserPhoto = file.name;
       var reader = new FileReader();
       reader.onload = (event: any) => {

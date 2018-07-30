@@ -70,7 +70,7 @@
                 <div class="col-md-12 text-center">
                   <img class="rounded-circle img-fluid" [src]="hrefImageUpload2" alt="" width="200">
                   <br>
-                  <input class="btn form-control mt-3 text-center" type="file" formControlName="imageProfile" accept="image/x-png,image/gif,image/jpeg"
+                  <input class="btn form-control mt-3 text-center" type="file" formControlName="imgProfile" accept="image/x-png,image/gif,image/jpeg"
                     (change)="readUrl($event)" />
                 </div>
                 <div class="col-md-12">
@@ -123,47 +123,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row text-center">
-                    <div class="col-md-12 text-center">
-                      <h6>Cambiar Contraseña</h6>
-                    </div>
-                  </div>
-                  <div class="row">
 
-                    <div class="col-md-10 offset-md-1 ">
-                      <label class=" form-control-label"> Contraseña</label>
-                      <div class=" form-group">
-                        <div class="input-group">
-                          <input type="password" name="passwordUserRepeat1" formControlName="passwordUserRepeat1" id="passwordUserRepeat1" [ngClass]="{'is-invalid': EditUser.controls.passwordUserRepeat1.invalid }"
-                            placeholder="******" class="form-control">
-                          <div class="input-group-addon">
-                            <i class="fa fa-asterisk"></i>
-                          </div>
-                        </div>
-                        <div *ngIf="EditUser.controls.passwordUserRepeat1.value!=EditUser.controls.passwordUserRepeat.value">
-                          <small class="form-text text-danger">Contraseña no coinciden</small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-10 offset-md-1 ">
-                      <label class=" form-control-label">Repetir Contraseña</label>
-                      <div class=" form-group">
-                        <div class="input-group">
-                          <input type="password" name="passwordUserRepeat" formControlName="passwordUserRepeat" id="passwordUserRepeat" [ngClass]="{'is-invalid': EditUser.controls.passwordUserRepeat.invalid }"
-                            placeholder="******" class="form-control">
-                          <div class="input-group-addon">
-                            <i class="fa fa-asterisk"></i>
-                          </div>
-                        </div>
-                        <div *ngIf="EditUser.controls.passwordUserRepeat1.value!=EditUser.controls.passwordUserRepeat.value">
-                          <small class="form-text text-danger">Contraseña no coinciden</small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
                   <div class="row text-center">
                     <div class="col-sm-12">
@@ -212,7 +172,7 @@
                   <div class="media media-custom">
                     <a href="#">
                       <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addSeller || editSeller }" style="width:75px; height:75px;"
-                        alt="{{commercial.nombre +' '+ commercial.apellido}}" [src]="commercial.imageProfile ? commercial.imageProfile : hrefImageUploaded">
+                        alt="{{commercial.nombre +' '+ commercial.apellido}}"  [src]="commercial.imgProfile ? commercial.imgProfile : hrefImageUploaded">
 
                     </a>
                     <div class="media-body">

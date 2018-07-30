@@ -25,8 +25,8 @@ export class AdminFormComponent implements OnInit {
     this.ExistUser = false;
     this.checkedActivoUser = true;
     this.modusNewUser = 'Activo';
-    this.NotEqualsPassword=false;
-    this.fileImage=null;
+    this.NotEqualsPassword = false;
+    this.fileImage = null;
   }
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
@@ -48,7 +48,7 @@ export class AdminFormComponent implements OnInit {
   }
   onSubmitNewUser(newUser: NgForm): void {
     var dataSend = newUser.value;
-    dataSend.status=dataSend.status==null?false:dataSend.status;
+    dataSend.status = dataSend.status == null ? false : dataSend.status;
     if (newUser.value.password == newUser.value.passwordRepeat) {
       this.nameUserPhoto ? dataSend.imgProfile = this.nameUserPhoto : null;
       dataSend.imageProfileFile = this.fileImage
@@ -59,16 +59,18 @@ export class AdminFormComponent implements OnInit {
       }
       this.CloseFormtUserAdmin.emit(data)
       newUser.resetForm(); // or form.reset();
-      this.modusNewUser ='Inactivo'
+      this.hrefImageUploaded = 'assets/images/noimage.png';
+
+      this.modusNewUser = 'Inactivo'
     } else {
-      this.NotEqualsPassword=true
+      this.NotEqualsPassword = true
     }
 
   }
 
-  disabledPassErr():void{
-    this.NotEqualsPassword=false
-    
+  disabledPassErr(): void {
+    this.NotEqualsPassword = false
+
   }
 
   changeModusUser() {

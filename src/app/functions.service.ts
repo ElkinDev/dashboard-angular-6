@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as socketIo from 'socket.io-client';
 import { WebSocketService } from './websocket.service';
-
+import { environment } from '../environments/environment';
+import { environmentProd } from '../environments/environment.prod';
 @Injectable()
 
 export class FunctionsService {
@@ -9,7 +10,7 @@ export class FunctionsService {
   constructor(private _wsSocket: WebSocketService) { }
   session = {
     mail: 'sonickfaber7@yahoo.es',
-    token: '96f0279ac90a57fd8df19e7a'
+    token: 'edbee4f4050c98ad293df52d'
   }
 
 
@@ -45,31 +46,43 @@ export class FunctionsService {
     });
 
   }
-  editUser(data) {
+  editUser(data,opt) {
     return new Promise((resolve, reject) => {
-      let senData = data;
-      senData.mail = this.session.mail
-      senData.token = this.session.token
-      this._wsSocket.emit('editUserPanel', senData).subscribe((res) => {
+      let senData = {
+        opt:opt,
+        mail:this.session.mail,
+        token:this.session.token,
+        userEdit:data
+      }
+
+      this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
+        console.log('traeme toda esta shit',res);
         if (!res.err) {
-          resolve(res.msg)
+          resolve({type:res.type,msg:res.msg})
         } else {
-          reject(res.msg)
+          resolve({type:res.type,msg:res.msg})
+          
         }
       }, (error) => {
-        reject({ err: true, msg: error.msg })
+        reject({ err: true, msg: error.msg, type:error.type })
 
       })
     });
   }
-  RemoveUser(email) {
+  RemoveUser(email,id,opt) {
     return new Promise((resolve, reject) => {
       let senData = {
-        emailUser: email,
-        mail: this.session.mail,
-        token: this.session.token
-      }
-      this._wsSocket.emit('RemoveUserPanel', senData).subscribe((res) => {
+        opt:opt,
+        mail:this.session.mail,
+        token:this.session.token,
+        userDel:{
+          mail: email,
+          id: id
+        }
+      } 
+
+      this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
+        console.log(res)
         if (!res.err) {
           resolve(res.msg)
         } else {
@@ -91,5 +104,16 @@ export class FunctionsService {
       ]
       resolve(ar)
     });
+  }
+  ajaxHttpRequest(datos, prog, cb) {
+    let oReq = new XMLHttpRequest()
+    oReq.upload.addEventListener('progress', prog, false);
+    oReq.open('POST', environment.ws_url + `/upDashBoardImg`, true);
+    oReq.onreadystatechange = function (yy) {
+      if (this.readyState === 4) {
+        cb(this.responseText)
+      }
+    }
+    oReq.send(datos);
   }
 }

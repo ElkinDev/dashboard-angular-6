@@ -29,7 +29,7 @@ export class CustomersPeopleComponent implements OnInit {
   typeId;
   indexNowEdit;
   EditCustomer = new FormGroup({
-    imageProfile: new FormControl(),
+    imgProfile: new FormControl(),
     nombreContacto: new FormControl(null),
     nombre: new FormControl(),
     apellido: new FormControl(),
@@ -115,7 +115,7 @@ export class CustomersPeopleComponent implements OnInit {
   onSubmitEdtitCustomer(data: NgForm) {
     console.log(data.value, 'VEAAMOS');
     let sendData = {
-      imageProfile: data.value.imageProfile,
+      imgProfile: data.value.imgProfile,
       nombre: data.value.nombre,
       apellido: data.value.apellido,
       mailUser: data.value.mailUser,
@@ -129,15 +129,15 @@ export class CustomersPeopleComponent implements OnInit {
 
     }
     if (this.nameUserPhoto) {
-      sendData.imageProfile = this.nameUserPhoto;
+      sendData.imgProfile = this.nameUserPhoto;
     }
     this._FunctionsService.editUser(sendData).then(msg => {
       alertify.success(msg);
       this.ListCustomers[this.indexNowEdit] = sendData;
       if (this.nameUserPhoto) {
-        this.ListCustomers[this.indexNowEdit].imageProfile = this.urlMainServer + this.nameUserPhoto;
+        this.ListCustomers[this.indexNowEdit].imgProfile = this.urlMainServer + this.nameUserPhoto;
       } else {
-        this.ListCustomers[this.indexNowEdit].imageProfile = this.hrefImageUpload2;
+        this.ListCustomers[this.indexNowEdit].imgProfile = this.hrefImageUpload2;
       }
       this.editCustomer ? this.editCustomer = false : this.editCustomer = true
 
@@ -169,9 +169,9 @@ export class CustomersPeopleComponent implements OnInit {
     let tipo = (customer.TipoIdentificacion).trim();
     this.statusEditCustomer = customer.status ? 'Activo' : 'Inactivo';
     this.editCustomer = true;
-    this.hrefImageUpload2 = customer.imageProfile ? customer.imageProfile : this.hrefImageUpload2;
+    this.hrefImageUpload2 = customer.imgProfile ? customer.imgProfile : this.hrefImageUpload2;
     this.EditCustomer.patchValue({
-      imageProfile: null,
+      imgProfile: null,
       nombreContacto: customer.nombreContacto,
       nombre: customer.nombre,
       apellido: customer.apellido,

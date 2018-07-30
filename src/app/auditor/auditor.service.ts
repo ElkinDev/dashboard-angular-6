@@ -15,11 +15,8 @@ export class AuditorService {
   }
   getAllEditors() {
     let promise = new Promise((resolve, reject) => {
-      let data = {
-        mail: 'elkinmendoza00@gmail.com',
-        token: 'ansdjasbdhabsdyuasd'
-      }
-      this._wsSocket.emit('getAllEditors', data).subscribe(res => {
+      
+      this._wsSocket.emit('userRolesEvents', {opt:8,mail:'sonickfaber7@yahoo.es',token:'edbee4f4050c98ad293df52d'}).subscribe(res => {
         if (!res.err) {
           if (res.data.length) {
             resolve(res.data)
@@ -28,6 +25,7 @@ export class AuditorService {
           }
         } else {
           reject({ err: true, msg: res.msg })
+
         }
       }, err => {
         reject({ err: true, msg: err.msg })

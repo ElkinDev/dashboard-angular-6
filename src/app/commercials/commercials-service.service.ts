@@ -8,14 +8,7 @@ export class CommercialsService {
 
   //guias de uso faber para uso de API en comerciales
 
-  // // get all users comercials
-  // socket.emit('userRolesEvents', {
-  //  opt:4,
-  //  mail: 'sonickfaber7@yahoo.es',
-  //  token: '96f0279ac90a57fd8df19e7a'
-  // }, resp=>{
-  //  console.log(resp)
-  // })
+  
 
   // // edit users comercials
   // socket.emit('userRolesEvents', {
@@ -67,10 +60,8 @@ export class CommercialsService {
   }
   getAllCommercials() {
     let promise = new Promise((resolve, reject) => {
-      let data = {
-        mail: 'elkinmendoza00@gmail.com'
-      }
-      this._wsSocket.emit('getAllCommercials', data).subscribe(res => {
+      
+      this._wsSocket.emit('userRolesEvents', {opt:4,mail:'sonickfaber7@yahoo.es',token:'edbee4f4050c98ad293df52d'}).subscribe(res => {
         if (!res.err) {
           if (res.data.length) {
             resolve(res.data)

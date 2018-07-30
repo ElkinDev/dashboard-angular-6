@@ -68,7 +68,7 @@
                 <div class="col-md-12 text-center">
                   <img class="rounded-circle img-fluid" [src]="hrefImageUpload2" alt="" width="200">
                   <br>
-                  <input class="btn form-control mt-3 text-center"  [src]="EditUser.imgProfile ? EditUser.imgProfile : hrefImageUploaded" accept="image/x-png,image/gif,image/jpeg"
+                  <input type="file" class="btn form-control mt-3 text-center"   accept="image/x-png,image/gif,image/jpeg"
                   (change)="readUrl($event)" />
                 </div>
                 <div class="col-md-12">
@@ -169,7 +169,7 @@
                   <div class="media media-custom">
                     <a href="#">
                       <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addAdmin || EditAdmin }" style="width:75px; height:75px;"
-                        alt="{{admin.nombre +' '+ admin.apellido}}"  [src]="admin.imgProfile ? admin.imgProfile : hrefImageUploaded">
+                        alt="{{admin.nombre +' '+ admin.apellido}}" [src]="admin.imgProfile ? admin.imgProfile : hrefImageUploaded">
 
                     </a>
                     <div class="media-body">
