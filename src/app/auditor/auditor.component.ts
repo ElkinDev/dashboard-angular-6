@@ -140,7 +140,7 @@ export class AuditorComponent implements OnInit {
   submitNewUserAdmin(data): void {
     let resd: any = null;
     this.senData = data;
-    console.log(data,'veamos que lo que tenemos EM;C_:ASD');
+    
     if (data.imgProfile) {
       this.sendImage = this.senData.imageProfileFile;
     }
@@ -159,7 +159,6 @@ export class AuditorComponent implements OnInit {
 
     })
     this._wsSocket.on('createUser').subscribe((res) => {
-      console.log('vealo EMC:')
       if (res.mail === this.senData.emailUser) {
         var formdata = new FormData();
         if (formdata && this.sendImage != null) {
@@ -170,30 +169,40 @@ export class AuditorComponent implements OnInit {
           formdata.append('token', this.session.token)
           this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
             let resp1 = JSON.parse(resp);
-            console.log('aquiii entraaaa????', resp1);
             this.senData.imgProfile = resp1.imageProfile;
             this.ListEditorsNull = false;
             this.senData.fecha = this.today;
             this.senData.id = res.id;
             this.ListEditors = this.ListEditors || [];
-            this.ListEditors.push(this.senData)
-            this.addAuditor = false;
-            this.ListAllInfo = false;
-            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
-            alertify.success('Usuario Creado Exitosamente');
+            let resultAdmin = this.ListEditors.find(obj => {
+              return obj.emailUser === this.senData.emailUser
+            });
+            if (!resultAdmin) {
+              this.ListEditors.push(this.senData)
+              this.addAuditor = false;
+              this.ListAllInfo = false;
+
+              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+              alertify.success('Usuario Creado Exitosamente');
+            };
 
           });
         } else {
-          console.log('see metee veaaa')
           this.ListEditorsNull = false;
           alertify.success('Usuario Creado Exitosamente');
           this.senData.fecha = this.today;
           this.senData.id = res.id;
           this.ListEditors = this.ListEditors || [];
-          this.ListEditors.push(this.senData)
-          this.addAuditor = false;
-          this.ListAllInfo = false;
-          this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+          let resultAdmin = this.ListEditors.find(obj => {
+            return obj.emailUser === this.senData.emailUser
+          });
+          if (!resultAdmin) {
+            this.ListEditors.push(this.senData)
+            this.addAuditor = false;
+            this.ListAllInfo = false;
+            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+            alertify.success('Usuario Creado Exitosamente');
+          };
 
         }
       }

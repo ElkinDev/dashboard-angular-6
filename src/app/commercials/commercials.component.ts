@@ -177,11 +177,17 @@ export class CommercialsComponent implements OnInit {
             this.senData.fecha = this.today;
             this.senData.id = res.id;
             this.listCommercials = this.listCommercials || [];
-            this.listCommercials.push(this.senData)
-            this.addSeller = false;
-            this.ListAllInfo = false;
-            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
-            alertify.success('Usuario Creado Exitosamente');
+            let resultAdmin = this.listCommercials.find(obj => {
+              return obj.emailUser === this.senData.emailUser
+            });
+            if (!resultAdmin) {
+              this.listCommercials.push(this.senData)
+              this.addSeller = false;
+              this.ListAllInfo = false;
+
+              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+              alertify.success('Usuario Creado Exitosamente');
+            };
 
           });
         } else {
@@ -191,10 +197,17 @@ export class CommercialsComponent implements OnInit {
           this.senData.fecha = this.today;
           this.senData.id = res.id;
           this.listCommercials = this.listCommercials || [];
-          this.listCommercials.push(this.senData)
-          this.addSeller = false;
-          this.ListAllInfo = false;
-          this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+          let resultAdmin = this.listCommercials.find(obj => {
+            return obj.emailUser === this.senData.emailUser
+          });
+          if (!resultAdmin) {
+            this.listCommercials.push(this.senData)
+            this.addSeller = false;
+            this.ListAllInfo = false;
+
+            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+            alertify.success('Usuario Creado Exitosamente');
+          };
 
         }
       }

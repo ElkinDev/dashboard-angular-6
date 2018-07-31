@@ -145,7 +145,7 @@ export class AdminsComponent implements OnInit {
     let resd: any = null;
     this.senData = data;
     this.senData.RoleUser = this.RoleUser;
-
+    console.log('traeme toda la data del submit', data);
     if (data.imgProfile) {
       this.sendImage = this.senData.imageProfileFile;
     }
@@ -181,11 +181,19 @@ export class AdminsComponent implements OnInit {
             this.senData.fecha = this.today;
             this.senData.id = res.id;
             this.ListAdmins = this.ListAdmins || [];
-            this.ListAdmins.push(this.senData)
-            this.addAdmin = false;
-            this.ListAllInfo = false;
-            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
-            alertify.success('Usuario Creado Exitosamente');
+            let resultAdmin = this.ListAdmins.find(obj => {
+              return obj.emailUser === this.senData.emailUser
+            });
+            if (!resultAdmin) {
+              this.ListAdmins.push(this.senData)
+              this.addAdmin = false;
+              this.ListAllInfo = false;
+
+              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+              alertify.success('Usuario Creado Exitosamente');
+            };
+
+
 
           });
         } else {
@@ -195,10 +203,17 @@ export class AdminsComponent implements OnInit {
           this.senData.fecha = this.today;
           this.senData.id = res.id;
           this.ListAdmins = this.ListAdmins || [];
-          this.ListAdmins.push(this.senData)
-          this.addAdmin = false;
-          this.ListAllInfo = false;
-          this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+          let resultAdmin = this.ListAdmins.find(obj => {
+            return obj.emailUser === this.senData.emailUser
+          });
+          if (!resultAdmin) {
+            this.ListAdmins.push(this.senData)
+            this.addAdmin = false;
+            this.ListAllInfo = false;
+
+            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+            alertify.success('Usuario Creado Exitosamente');
+          };
 
         }
       }
@@ -261,7 +276,7 @@ export class AdminsComponent implements OnInit {
             formdata.append('mail', this.session.mail)
             formdata.append('token', this.session.token)
             this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
-              let respF:any=JSON.parse(resp)
+              let respF: any = JSON.parse(resp)
               this.ListAdmins[this.indexNowEdit].nombre = data.value.nombre
               this.ListAdmins[this.indexNowEdit].apellido = data.value.apellido
               this.ListAdmins[this.indexNowEdit].status = data.value.checModusEdit
@@ -281,7 +296,7 @@ export class AdminsComponent implements OnInit {
           this.ListAdmins[this.indexNowEdit].mail = data.value.mail
           this.EditAdmin = false;
           this.ListAllInfo = false;
-          alertify.success('Usuario ' + dataSend.mail + ' editado exitosamente');          
+          alertify.success('Usuario ' + dataSend.mail + ' editado exitosamente');
         }
 
       }
@@ -295,7 +310,6 @@ export class AdminsComponent implements OnInit {
   }
 
   removeAdmin(data, index): void {
-
     alertify
       .confirm("Administradores", "¿Eliminar al Administrador " + data.mail + "?",
         (() => {
