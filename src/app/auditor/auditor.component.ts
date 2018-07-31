@@ -140,7 +140,7 @@ export class AuditorComponent implements OnInit {
   submitNewUserAdmin(data): void {
     let resd: any = null;
     this.senData = data;
-
+    console.log(data,'veamos que lo que tenemos EM;C_:ASD');
     if (data.imgProfile) {
       this.sendImage = this.senData.imageProfileFile;
     }
@@ -159,6 +159,7 @@ export class AuditorComponent implements OnInit {
 
     })
     this._wsSocket.on('createUser').subscribe((res) => {
+      console.log('vealo EMC:')
       if (res.mail === this.senData.emailUser) {
         var formdata = new FormData();
         if (formdata && this.sendImage != null) {
@@ -312,7 +313,7 @@ export class AuditorComponent implements OnInit {
     alertify
     .confirm("Auditores", "¿Eliminar al Auditor " + data.mail + "?",
       (() => {
-        this._FunctionsService.RemoveUser(data.mail,data.id,6).then(msg => {
+        this._FunctionsService.RemoveUser(data.mail,data.id,11).then(msg => {
           alertify.success(msg);
           this.ListEditors.splice(index, 1);
           if (this.ListEditors.length <= 0) {

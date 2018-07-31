@@ -89,7 +89,7 @@ export class CustomersPeopleComponent implements OnInit {
     alertify
       .confirm("Clientes", "¿Eliminar al Cliente " + data.mailUser + "?",
         (() => {
-          this._FunctionsService.RemoveUser(data.mailUser).then(msg => {
+          this._FunctionsService.RemoveUser(data.mailUser,5,8).then(msg => {
             alertify.success(msg);
             this.ListCustomers.splice(index, 1);
             if (this.ListCustomers.length <= 0) {
@@ -131,7 +131,7 @@ export class CustomersPeopleComponent implements OnInit {
     if (this.nameUserPhoto) {
       sendData.imgProfile = this.nameUserPhoto;
     }
-    this._FunctionsService.editUser(sendData).then(msg => {
+    this._FunctionsService.editUser(sendData,6).then(msg => {
       alertify.success(msg);
       this.ListCustomers[this.indexNowEdit] = sendData;
       if (this.nameUserPhoto) {
