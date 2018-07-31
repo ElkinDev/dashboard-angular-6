@@ -64,18 +64,15 @@
 
             <div class=" form-group">
               <div class="input-group">
-                <input type="password" id="password" name="password" #password="ngModel" id="password" ngModel [ngClass]="{'is-invalid': (newUser.submitted && password.invalid) || NotEqualsPassword }" (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
-                <div class="input-group-addon">
-                  <i class="fa fa-asterisk"></i>
+                <input type="password" id="password" name="password" #password="ngModel" id="password" ngModel (keyup)="ValidatePasswordPower($event)" [ngClass]="{'is-invalid': (newUser.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte' }" (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
+                <div class="input-group-addon" [ngClass]="{'is-invalid': (newUser.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','border border-success': PowerPassword=='Fuerte'}">
+                  <i class="fa" [ngClass]="{'fa-times': (newUser.submitted && password.invalid),'fa-times': PowerPassword=='Débil','fa-exclamation': PowerPassword=='Aceptable','fa-check': PowerPassword=='Fuerte', 'fa-asterisk':password.value=='' }"></i>
                 </div>
               </div>
-              <small class="form-text text-muted">* Mínimo 6 caracteres alfanúmericos</small>
+              <small class="form-text font-weight-bold" *ngIf="password.valid" [ngClass]="{'text-danger': PowerPassword=='Débil','text-warning': PowerPassword=='Aceptable','text-success': PowerPassword=='Fuerte'}">{{PowerPassword}}</small>
               <div *ngIf="newUser.submitted && password.invalid">
                 <small class="form-text text-danger" *ngIf="password.errors.required">Contraseña Requerida</small>
               </div>
-              <small *ngIf="NotEqualsPassword" class="form-text text-danger">
-                Contraseñas no coinciden
-              </small>
             </div>
           </div>
         </div>
@@ -85,10 +82,10 @@
 
             <div class=" form-group">
               <div class="input-group">
-                <input type="password" name="passwordRepeat" #passwordRepeat="ngModel" id="passwordRepeat" ngModel  [ngClass]="{'is-invalid': (newUser.submitted && passwordRepeat.invalid) || NotEqualsPassword }"
+                <input type="password" name="passwordRepeat" #passwordRepeat="ngModel" id="passwordRepeat" ngModel (keyup)="validatePasswordRepeat($event,password)"  [ngClass]="{'is-invalid': (newUser.submitted && passwordRepeat.invalid) || NotEqualsPassword  }"
                   placeholder="******" class="form-control" required>
-                <div class="input-group-addon">
-                  <i class="fa fa-asterisk"></i>
+                <div class="input-group-addon" [ngClass]="{'border border-danger':NotEqualsPassword,'border border-success': (!NotEqualsPassword && passwordRepeat.value!='' )  }">
+                  <i class="fa fa-asterisk"[ngClass]="{'fa-times':NotEqualsPassword,'fa-check': (!NotEqualsPassword && passwordRepeat.value!=''), 'fa-asterisk':passwordRepeat.value=='' }" ></i>
                 </div>
               </div>
               <div *ngIf="newUser.submitted && passwordRepeat.invalid">

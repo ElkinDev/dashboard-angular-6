@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { WebSocketService } from '../websocket.service';
 import { adminsService } from './admins.service';
-import { FunctionsService } from '../functions.service'
+import { FunctionsService } from '../functions.service';
 import { NgForm, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
@@ -38,6 +38,7 @@ export class AdminsComponent implements OnInit {
   sendImage;
   fileImageEdit;
   idUserEditNow;
+  
   EditUser = new FormGroup({
 
     imgProfile: new FormControl(),

@@ -1,5 +1,7 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { WebSocketService } from '../websocket.service';
+import { FunctionsService } from '../functions.service';
 
 @Component({
   selector: 'app-users-form',
@@ -16,10 +18,13 @@ export class AdminFormComponent implements OnInit {
   fileToUpload: File = null;
   NotEqualsPassword;
   fileImage;
+  PowerPassword;
+  classPassword;
+  passwordinput;
   @Output() CloseFormtUserAdmin = new EventEmitter<object>();
   @Input() rolUser: string;
 
-  constructor() {
+  constructor(private _FunctionsService: FunctionsService, private _wsSocket: WebSocketService) {
 
     this.hrefImageUploaded = 'assets/images/noimage.png';
     this.ExistUser = false;
@@ -27,6 +32,14 @@ export class AdminFormComponent implements OnInit {
     this.modusNewUser = 'Activo';
     this.NotEqualsPassword = false;
     this.fileImage = null;
+    this.PowerPassword=null;
+    this.classPassword='fa-asterisk';
+    this.passwordinput='';
+  }
+
+  ngOnInit() {
+
+
   }
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
@@ -47,6 +60,8 @@ export class AdminFormComponent implements OnInit {
     }
   }
   onSubmitNewUser(newUser: NgForm): void {
+
+    console.log('traemee el newuser',newUser)
     var dataSend = newUser.value;
     dataSend.status = dataSend.status == null ? false : dataSend.status;
     if (newUser.value.password == newUser.value.passwordRepeat) {
@@ -60,7 +75,8 @@ export class AdminFormComponent implements OnInit {
       this.CloseFormtUserAdmin.emit(data)
       newUser.resetForm(); // or form.reset();
       this.hrefImageUploaded = 'assets/images/noimage.png';
-
+      this.NotEqualsPassword = false;
+      
       this.modusNewUser = 'Inactivo'
     } else {
       this.NotEqualsPassword = true
@@ -86,8 +102,31 @@ export class AdminFormComponent implements OnInit {
     this.modusNewUser = 'Inactivo'
 
   }
-  ngOnInit() {
-    console.log(this.rolUser)
+
+  ValidatePasswordPower(event:any){
+
+    let statusPass=this._FunctionsService.ValidationSecurityPassword(event.target.value);
+     this.PowerPassword=statusPass;
+     switch (statusPass){
+       case 'Débil':
+       break;
+       case 'Aceptable':
+       break;
+       case 'Fuerte':
+       break;
+     }
+     this.passwordinput=event.target.value;
+    console.log('veamoslooooo'+event.target.value);
   }
+
+  validatePasswordRepeat(event:any,password){
+    if(event.target.value!=password.value){
+      this.NotEqualsPassword=true;
+    }else{
+      this.NotEqualsPassword=false;
+    }
+    console.log('veamos el pass escrito',password);
+  }
+  
 
 }
