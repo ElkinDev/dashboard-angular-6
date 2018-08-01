@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 
 import { RouterModule, Route, Routes } from '@angular/router';
+import { TextMaskModule } from 'angular2-text-mask';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -88,7 +89,8 @@ export const appRoutes:Routes = [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TextMaskModule
   ],
   providers: [WebSocketService,FunctionsService,adminsService],
   bootstrap: [AppComponent]

@@ -68,7 +68,7 @@
                     <div class="col-md-4 offset-md-1">
                       <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
                       <br>
-                      <input class="btn form-control mt-3 text-center" type="file" formControlName="imageProfile" accept="image/x-png,image/gif,image/jpeg"
+                      <input class="btn form-control mt-3 text-center" type="file" formControlName="imgProfile" accept="image/x-png,image/gif,image/jpeg"
                         (change)="readUrl($event)" />
                     </div>
                     <div class="col-md-6 ">
@@ -103,7 +103,7 @@
                           <div class="form-group">
                             <label class=" form-control-label">Dirección de domicilio</label>
 
-                            <input type="text" formControlName="direccion" placeholder="Calle 12 # 45-26 Bogotá" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.direccion.invalid }">
+                            <input type="text" formControlName="address" placeholder="Calle 12 # 45-26 Bogotá" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.address.invalid }">
 
                           </div>
                         </div>
@@ -113,9 +113,10 @@
                           <div class="form-group">
                             <label class=" form-control-label">N° de teléfonico de Contacto</label>
 
-                            <input type="text" formControlName="telefono" placeholder="+57 318 5624" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.telefono.invalid }"
+                            <input type="text" placeholder="316 866-9379" [textMask]="{mask: mask}" formControlName="phone" class="form-control"
+                              [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.phone.invalid }"
                               required>
-                            <div *ngIf="submittedFormPeople && newCustomerPeople.controls.telefono.invalid">
+                            <div *ngIf="submittedFormPeople && newCustomerPeople.controls.phone.invalid">
                               <small class="form-text text-danger">Número de teléfono Requerido</small>
                             </div>
                           </div>
@@ -128,21 +129,21 @@
                         </div>
                         <div class="col-md-4">
 
-                          <select class="custom-select" formControlName="TipoIdentificacion" required>
+                          <select class="custom-select" formControlName="typeIdentification" required>
                             <option *ngFor="let c of typeId;let i= index" [value]="i" [selected]="i==2">{{c.name}}</option>
                           </select>
-                          <div *ngIf="submittedFormPeople && newCustomerPeople.controls.TipoIdentificacion.invalid">
+                          <div *ngIf="submittedFormPeople && newCustomerPeople.controls.typeIdentification.invalid">
                             <small class="form-text text-danger">Tipo Requerido</small>
                           </div>
-                          <div *ngIf="!submittedFormPeople && newCustomerPeople.controls.TipoIdentificacion.valid">
+                          <div *ngIf="!submittedFormPeople && newCustomerPeople.controls.typeIdentification.valid">
                             <small class="form-text text-muted">Tipo</small>
                           </div>
                         </div>
                         <div class="col-md-8">
                           <div class="form-group">
-                            <input type="text" formControlName="numeroIdentificacion" placeholder="111155555" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.numeroIdentificacion.invalid }"
+                            <input type="text" formControlName="cedula" placeholder="111155555" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCustomerPeople.controls.cedula.invalid }"
                               required>
-                            <div *ngIf="submittedFormPeople && newCustomerPeople.controls.numeroIdentificacion.invalid">
+                            <div *ngIf="submittedFormPeople && newCustomerPeople.controls.cedula.invalid">
                               <small class="form-text text-danger">Número de identificación requerido</small>
                             </div>
                             <div *ngIf="!submittedFormPeople">
@@ -160,11 +161,11 @@
                       <div class="col-md-6 offset-md-3">
                         <div class=" form-group">
                           <label class=" form-control-label">Correo electrónico</label>
-                          <input type="email" id="mail" name="mailUser" formControlName="mailUser" id="mailUser" [ngClass]="{'is-invalid': ( submittedFormPeople && newCustomerPeople.controls.mailUser.invalid) }"
+                          <input type="email" id="mail" name="mail" formControlName="mail" id="mail" [ngClass]="{'is-invalid': ( submittedFormPeople && newCustomerPeople.controls.mail.invalid) }"
                             placeholder="...." class="form-control" required email>
-                          <div *ngIf="submittedFormPeople &&  newCustomerPeople.controls.mailUser.invalid">
-                            <small class="form-text text-danger" *ngIf="newCustomerPeople.controls.mailUser.errors.required">Correo electrónico requerido</small>
-                            <small class="form-text text-danger" *ngIf="newCustomerPeople.controls.mailUser.errors.email">Correo electrónico inválido</small>
+                          <div *ngIf="submittedFormPeople &&  newCustomerPeople.controls.mail.invalid">
+                            <small class="form-text text-danger" *ngIf="newCustomerPeople.controls.mail.errors.required">Correo electrónico requerido</small>
+                            <small class="form-text text-danger" *ngIf="newCustomerPeople.controls.mail.errors.email">Correo electrónico inválido</small>
                           </div>
                           <small *ngIf="ExistUser" class="form-text text-danger">
                             Ya está registrado un usuario con este correo electrónico
@@ -216,7 +217,7 @@
                     <div class="col-md-4 offset-md-1">
                       <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
                       <br>
-                      <input class="btn form-control mt-3 text-center" type="file" formControlName="imageProfile" accept="image/x-png,image/gif,image/jpeg"
+                      <input class="btn form-control mt-3 text-center" type="file" formControlName="imgProfile" accept="image/x-png,image/gif,image/jpeg"
                         (change)="readUrl($event)" />
                     </div>
                     <div class="col-md-6 ">
@@ -240,7 +241,7 @@
                           <div class="form-group">
                             <label class=" form-control-label">Dirección de domicilio</label>
 
-                            <input type="text" formControlName="direccion" placeholder="Calle 12 # 45-26 Bogotá" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.direccion.invalid }">
+                            <input type="text" formControlName="address" placeholder="Calle 12 # 45-26 Bogotá" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.address.invalid }">
 
                           </div>
                         </div>
@@ -250,9 +251,9 @@
                           <label class=" form-control-label" title="Número de Identificación Tributaria">NIT </label>
 
                           <div class="form-group">
-                            <input type="text" formControlName="numeroIdentificacion" placeholder="111155555" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.numeroIdentificacion.invalid }"
+                            <input type="text" formControlName="cedula" placeholder="111155555" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.cedula.invalid }"
                               required>
-                            <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.numeroIdentificacion.invalid">
+                            <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.cedula.invalid">
                               <small class="form-text text-danger">Número de identificación requerido</small>
                             </div>
                             <div *ngIf="!submittedFormPeople">
@@ -271,9 +272,9 @@
                     <div class="col-md-6 offset-md-3">
                       <div class="form-group">
                         <label class=" form-control-label">Nombre Completo</label>
-                        <input type="text" formControlName="nombreContacto" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.nombreContacto.invalid }"
+                        <input type="text" formControlName="contactPerson" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.contactPerson.invalid }"
                           required>
-                        <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.nombreContacto.invalid">
+                        <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.contactPerson.invalid">
                           <small class="form-text text-danger">Nombre Requerido</small>
                         </div>
 
@@ -283,11 +284,11 @@
                     <div class="col-md-6 offset-md-3">
                       <div class=" form-group">
                         <label class=" form-control-label">Correo electrónico</label>
-                        <input type="email" id="mail" name="mailContact" formControlName="mailUser" id="mail" [ngClass]="{'is-invalid': ( submittedFormPeople && newCompanyCustomer.controls.mailUser.invalid) }"
+                        <input type="email" id="mail" name="mailContact" formControlName="mail" id="mail" [ngClass]="{'is-invalid': ( submittedFormPeople && newCompanyCustomer.controls.mail.invalid) }"
                           placeholder="...." class="form-control" required email>
-                        <div *ngIf="submittedFormPeople &&  newCompanyCustomer.controls.mailUser.invalid">
-                          <small class="form-text text-danger" *ngIf="newCompanyCustomer.controls.mailUser.errors.required">Correo electrónico requerido</small>
-                          <small class="form-text text-danger" *ngIf="newCompanyCustomer.controls.mailUser.errors.email">Correo electrónico inválido</small>
+                        <div *ngIf="submittedFormPeople &&  newCompanyCustomer.controls.mail.invalid">
+                          <small class="form-text text-danger" *ngIf="newCompanyCustomer.controls.mail.errors.required">Correo electrónico requerido</small>
+                          <small class="form-text text-danger" *ngIf="newCompanyCustomer.controls.mail.errors.email">Correo electrónico inválido</small>
                         </div>
                         <small *ngIf="ExistUser" class="form-text text-danger">
                           Ya está registrado un usuario con este correo electrónico
@@ -298,10 +299,10 @@
                     <div class="col-md-6 offset-md-3">
                       <div class="form-group">
                         <label class=" form-control-label">N° de teléfono</label>
-                        <input type="text" formControlName="telefono" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.telefono.invalid }"
-                          required>
-                        <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.telefono.invalid">
-                          <small class="form-text text-danger">telefono Requerido</small>
+                        <input type="text" placeholder="316 866-9379" [textMask]="{mask: mask}" formControlName="phone" class="form-control"
+                          [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.phone.invalid }" required>
+                        <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.phone.invalid">
+                          <small class="form-text text-danger">Teléfono Requerido</small>
                         </div>
 
                       </div>

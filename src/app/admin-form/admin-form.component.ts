@@ -32,9 +32,9 @@ export class AdminFormComponent implements OnInit {
     this.modusNewUser = 'Activo';
     this.NotEqualsPassword = false;
     this.fileImage = null;
-    this.PowerPassword=null;
-    this.classPassword='fa-asterisk';
-    this.passwordinput='';
+    this.PowerPassword = null;
+    this.classPassword = 'fa-asterisk';
+    this.passwordinput = '';
   }
 
   ngOnInit() {
@@ -61,7 +61,7 @@ export class AdminFormComponent implements OnInit {
   }
   onSubmitNewUser(newUser: NgForm): void {
 
-    console.log('traemee el newuser',newUser)
+    console.log('traemee el newuser', newUser)
     var dataSend = newUser.value;
     dataSend.status = dataSend.status == null ? false : dataSend.status;
     if (newUser.value.password == newUser.value.passwordRepeat) {
@@ -76,7 +76,7 @@ export class AdminFormComponent implements OnInit {
       newUser.resetForm(); // or form.reset();
       this.hrefImageUploaded = 'assets/images/noimage.png';
       this.NotEqualsPassword = false;
-      
+
       this.modusNewUser = 'Inactivo'
     } else {
       this.NotEqualsPassword = true
@@ -103,30 +103,35 @@ export class AdminFormComponent implements OnInit {
 
   }
 
-  ValidatePasswordPower(event:any){
+  ValidatePasswordPower(event: any) {
+    if (event.target.value) {
+      let statusPass = this._FunctionsService.ValidationSecurityPassword(event.target.value);
+      this.PowerPassword = statusPass;
+      switch (statusPass) {
+        case 'Débil':
+          break;
+        case 'Aceptable':
+          break;
+        case 'Fuerte':
+          break;
+      }
+      this.passwordinput = event.target.value;
+    } else {
+      console.log('se meteee');
 
-    let statusPass=this._FunctionsService.ValidationSecurityPassword(event.target.value);
-     this.PowerPassword=statusPass;
-     switch (statusPass){
-       case 'Débil':
-       break;
-       case 'Aceptable':
-       break;
-       case 'Fuerte':
-       break;
-     }
-     this.passwordinput=event.target.value;
-    console.log('veamoslooooo'+event.target.value);
-  }
-
-  validatePasswordRepeat(event:any,password){
-    if(event.target.value!=password.value){
-      this.NotEqualsPassword=true;
-    }else{
-      this.NotEqualsPassword=false;
+      this.PowerPassword = null;
     }
-    console.log('veamos el pass escrito',password);
+
   }
-  
+
+  validatePasswordRepeat(event: any, password) {
+    if (event.target.value != password.value) {
+      this.NotEqualsPassword = true;
+    } else {
+      this.NotEqualsPassword = false;
+    }
+    console.log('veamos el pass escrito', password);
+  }
+
 
 }

@@ -5,8 +5,8 @@ import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
 import { CustomersService } from './customers-service.service';
 import { FunctionsService } from '../functions.service'
-declare let alertify: any;
 
+declare let alertify: any;
 declare var jQuery: any;
 declare var $: any;
 @Component({
@@ -28,23 +28,26 @@ export class CustomersPeopleComponent implements OnInit {
   editCustomer;
   typeId;
   indexNowEdit;
+  mask: any[] = ['+57', '',  '', ' ', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];  
+  urlMainServerPhotos;
   EditCustomer = new FormGroup({
     imgProfile: new FormControl(),
-    nombreContacto: new FormControl(null),
+    contactPerson: new FormControl(null),
     nombre: new FormControl(),
     apellido: new FormControl(),
-    mailUser: new FormControl(),
-    direccion: new FormControl(null),
-    telefono: new FormControl(null),
-    TipoIdentificacion: new FormControl(),
-    numeroIdentificacion: new FormControl(null),
+    mail: new FormControl(),
+    address: new FormControl(null),
+    phone: new FormControl(null),
+    typeIdentification: new FormControl(),
+    cedula: new FormControl(null),
     checModusEdit: new FormControl(),
     fecha: new FormControl,
 
   });
   constructor(private cdRef: ChangeDetectorRef, private _FunctionsService: FunctionsService, private _customersService: CustomersService) {
     this.loadingMore = true;
-    this.urlMainServer = environment.ws_url + '/public/dashboard/assets/images/'
+    this.urlMainServerPhotos = environment.ws_url + '/public/dashboard/assets/images/'
+    this.urlMainServer = environment.ws_url + '/public/imgs/';
     this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
     this.hrefImageUploaded = this.urlMainServer + 'noimage.png';
     this.ExistUser = false;
@@ -61,6 +64,7 @@ export class CustomersPeopleComponent implements OnInit {
   }
   ngOnInit() {
     this._customersService.getAllCustomers().then((res) => {
+      console.log(res,'quejestooo');
       if (!res) {
         this.ListCustomers = null
         this.messageErrorQuery = "No Hay resultados"
@@ -87,9 +91,9 @@ export class CustomersPeopleComponent implements OnInit {
   removeCustomer(data, index): void {
 
     alertify
-      .confirm("Clientes", "¿Eliminar al Cliente " + data.mailUser + "?",
+      .confirm("Clientes", "¿Eliminar al Cliente " + data.mail + "?",
         (() => {
-          this._FunctionsService.RemoveUser(data.mailUser,5,8).then(msg => {
+          this._FunctionsService.RemoveUser(data.mail,5,8).then(msg => {
             alertify.success(msg);
             this.ListCustomers.splice(index, 1);
             if (this.ListCustomers.length <= 0) {
@@ -118,12 +122,12 @@ export class CustomersPeopleComponent implements OnInit {
       imgProfile: data.value.imgProfile,
       nombre: data.value.nombre,
       apellido: data.value.apellido,
-      mailUser: data.value.mailUser,
-      direccion: data.value.direccion,
-      TipoIdentificacion: data.value.TipoIdentificacion,
-      numeroIdentificacion: data.value.numeroIdentificacion,
-      telefono: data.value.telefono,
-      nombreContacto: data.value.nombreContacto,
+      mail: data.value.mail,
+      address: data.value.address,
+      typeIdentification: data.value.typeIdentification,
+      cedula: data.value.cedula,
+      phone: data.value.phone,
+      contactPerson: data.value.contactPerson,
       status: data.value.checModusEdit,
       fecha: data.value.fecha
 
@@ -166,20 +170,20 @@ export class CustomersPeopleComponent implements OnInit {
   }
   editCustomerf(customer, i) {
     console.log(customer, 'Veaamos')
-    let tipo = (customer.TipoIdentificacion).trim();
+    let tipo = (customer.typeIdentification).trim();
     this.statusEditCustomer = customer.status ? 'Activo' : 'Inactivo';
     this.editCustomer = true;
     this.hrefImageUpload2 = customer.imgProfile ? customer.imgProfile : this.hrefImageUpload2;
     this.EditCustomer.patchValue({
       imgProfile: null,
-      nombreContacto: customer.nombreContacto,
+      contactPerson: customer.contactPerson,
       nombre: customer.nombre,
       apellido: customer.apellido,
-      mailUser: customer.mailUser,
-      direccion: customer.direccion,
-      telefono: customer.telefono,
-      TipoIdentificacion: tipo,
-      numeroIdentificacion: customer.numeroIdentificacion,
+      mail: customer.mail,
+      address: customer.address,
+      phone: customer.phone,
+      typeIdentification: tipo,
+      cedula: customer.cedula,
       checModusEdit: customer.status,
       fecha: customer.fecha
     });

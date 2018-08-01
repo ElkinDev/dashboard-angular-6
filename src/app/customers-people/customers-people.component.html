@@ -75,12 +75,12 @@
                         <div class="col-md-4 offset-md-1">
                           <img class="rounded-circle img-fluid" [src]="hrefImageUpload2" alt="" width="200">
                           <br>
-                          <input class="btn form-control mt-3 text-center" type="file" formControlName="imageProfile" accept="image/x-png,image/gif,image/jpeg"
+                          <input class="btn form-control mt-3 text-center" type="file" formControlName="imgProfile" accept="image/x-png,image/gif,image/jpeg"
                             (change)="readUrl($event)" />
                         </div>
                         <div class="col-md-6 ">
                           <div class="row">
-                            <div class="col-md-6" [ngClass]="{'col-md-12': EditCustomer.controls.TipoIdentificacion.value=='NIT','col-md-6':EditCustomer.controls.TipoIdentificacion.value!='NIT'}">
+                            <div class="col-md-6" [ngClass]="{'col-md-12': EditCustomer.controls.typeIdentification.value=='NIT','col-md-6':EditCustomer.controls.typeIdentification.value!='NIT'}">
                               <div class="form-group">
                                 <label class=" form-control-label">Nombres</label>
 
@@ -92,7 +92,7 @@
 
                               </div>
                             </div>
-                            <div class="col-md-6" *ngIf="EditCustomer.controls.TipoIdentificacion.value!='NIT'">
+                            <div class="col-md-6" *ngIf="EditCustomer.controls.typeIdentification.value!='NIT'">
                               <div class="form-group">
                                 <label class=" form-control-label">Apellidos</label>
 
@@ -110,19 +110,19 @@
                               <div class="form-group">
                                 <label class=" form-control-label">Dirección de domicilio</label>
 
-                                <input type="text" formControlName="direccion" placeholder="Calle 12 # 45-26 Bogotá" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.direccion.invalid }">
+                                <input type="text" formControlName="address" placeholder="Calle 12 # 45-26 Bogotá" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.address.invalid }">
 
                               </div>
                             </div>
                           </div>
-                          <div class="row" *ngIf="EditCustomer.controls.TipoIdentificacion.value!='NIT'">
+                          <div class="row" *ngIf="EditCustomer.controls.typeIdentification.value!='NIT'">
                             <div class="col-md-12">
                               <div class="form-group">
                                 <label class=" form-control-label">N° de teléfonico de Contacto</label>
 
-                                <input type="text" formControlName="telefono" placeholder="+57 318 5624" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.telefono.invalid }"
+                                <input type="text" placeholder="316 866-9379" [textMask]="{mask: mask}" formControlName="phone" placeholder="+57 318 5624" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.phone.invalid }"
                                   required>
-                                <div *ngIf="EditCustomer.controls.telefono.invalid">
+                                <div *ngIf="EditCustomer.controls.phone.invalid">
                                   <small class="form-text text-danger">Número de teléfono Requerido</small>
                                 </div>
                               </div>
@@ -130,26 +130,26 @@
                           </div>
                           <div class="row">
                             <div class="col-md-12">
-                              <label class=" form-control-label">{{EditCustomer.controls.TipoIdentificacion.value!='NIT'?'Identificación':'NIT'}}</label>
+                              <label class=" form-control-label">{{EditCustomer.controls.typeIdentification.value!='NIT'?'Identificación':'NIT'}}</label>
 
                             </div>
-                            <div class="col-md-4" *ngIf="EditCustomer.controls.TipoIdentificacion.value!='NIT'">
+                            <div class="col-md-4" *ngIf="EditCustomer.controls.typeIdentification.value!='NIT'">
 
-                              <select class="custom-select" formControlName="TipoIdentificacion" required>
-                                <option *ngFor="let c of typeId;let i= index" [value]="i" [selected]="c.name===EditCustomer.controls.TipoIdentificacion.value">{{c.name}}</option>
+                              <select class="custom-select" formControlName="typeIdentification" required>
+                                <option *ngFor="let c of typeId;let i= index" [value]="i" [selected]="c.name===EditCustomer.controls.typeIdentification.value">{{c.name}}</option>
                               </select>
-                              <div *ngIf="EditCustomer.controls.TipoIdentificacion.invalid">
+                              <div *ngIf="EditCustomer.controls.typeIdentification.invalid">
                                 <small class="form-text text-danger">Tipo Requerido</small>
                               </div>
-                              <div *ngIf="EditCustomer.controls.TipoIdentificacion.valid">
+                              <div *ngIf="EditCustomer.controls.typeIdentification.valid">
                                 <small class="form-text text-muted">Tipo</small>
                               </div>
                             </div>
-                            <div [ngClass]="{'col-md-12': EditCustomer.controls.TipoIdentificacion.value=='NIT','col-md-8':EditCustomer.controls.TipoIdentificacion.value!='NIT'}">
+                            <div [ngClass]="{'col-md-12': EditCustomer.controls.typeIdentification.value=='NIT','col-md-8':EditCustomer.controls.typeIdentification.value!='NIT'}">
                               <div class="form-group">
-                                <input type="text" formControlName="numeroIdentificacion" placeholder="111155555" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.numeroIdentificacion.invalid }"
+                                <input type="text" formControlName="cedula" placeholder="111155555" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.cedula.invalid }"
                                   required>
-                                <div *ngIf="EditCustomer.controls.numeroIdentificacion.invalid">
+                                <div *ngIf="EditCustomer.controls.cedula.invalid">
                                   <small class="form-text text-danger">Número de identificación requerido</small>
                                 </div>
                               </div>
@@ -160,15 +160,15 @@
                       </div>
                       <div class="row bg-light p-2">
                         <div class="col-md-12">
-                          <h5 class="mt-3">{{EditCustomer.controls.TipoIdentificacion.value!='NIT'?'Información de Sesión':'Información persona
+                          <h5 class="mt-3">{{EditCustomer.controls.typeIdentification.value!='NIT'?'Información de Sesión':'Información persona
                             de contacto'}}</h5>
 
-                          <div class="col-md-6 offset-md-3" *ngIf="EditCustomer.controls.TipoIdentificacion.value=='NIT'">
+                          <div class="col-md-6 offset-md-3" *ngIf="EditCustomer.controls.typeIdentification.value=='NIT'">
                             <div class="form-group">
                               <label class=" form-control-label">Nombre Completo</label>
-                              <input type="text" formControlName="nombreContacto" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.nombreContacto.invalid }"
+                              <input type="text" formControlName="contactPerson" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.contactPerson.invalid }"
                                 required>
-                              <div *ngIf="EditCustomer.controls.nombreContacto.invalid">
+                              <div *ngIf="EditCustomer.controls.contactPerson.invalid">
                                 <small class="form-text text-danger">Nombre completo Requerido</small>
                               </div>
 
@@ -177,11 +177,11 @@
                           <div class="col-md-6 offset-md-3">
                             <div class=" form-group">
                               <label class=" form-control-label">Correo electrónico</label>
-                              <input type="email" id="mail" name="mailUser" formControlName="mailUser" id="mailUser" [ngClass]="{'is-invalid': EditCustomer.controls.mailUser.invalid }"
+                              <input type="email" id="mail" name="mail" formControlName="mail" id="mail" [ngClass]="{'is-invalid': EditCustomer.controls.mail.invalid }"
                                 placeholder="...." class="form-control" required email>
-                              <div *ngIf="EditCustomer.controls.mailUser.invalid">
-                                <small class="form-text text-danger" *ngIf="EditCustomer.controls.mailUser.errors.required">Correo electrónico requerido</small>
-                                <small class="form-text text-danger" *ngIf="EditCustomer.controls.mailUser.errors.email">Correo electrónico inválido</small>
+                              <div *ngIf="EditCustomer.controls.mail.invalid">
+                                <small class="form-text text-danger" *ngIf="EditCustomer.controls.mail.errors.required">Correo electrónico requerido</small>
+                                <small class="form-text text-danger" *ngIf="EditCustomer.controls.mail.errors.email">Correo electrónico inválido</small>
                               </div>
                               <small *ngIf="ExistUser" class="form-text text-danger">
                                 Ya está registrado un usuario con este correo electrónico
@@ -202,13 +202,13 @@
                               </div>
                             </div>
                           </div>
-                          <div class="col-md-6 offset-md-3" *ngIf="EditCustomer.controls.TipoIdentificacion.value=='NIT'">
+                          <div class="col-md-6 offset-md-3" *ngIf="EditCustomer.controls.typeIdentification.value=='NIT'">
                             <div class="form-group">
                               <label class=" form-control-label">N° de teléfono</label>
-                              <input type="text" formControlName="telefono" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.telefono.invalid }"
+                              <input type="text"  placeholder="316 866-9379" [textMask]="{mask: mask}" formControlName="phone" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.phone.invalid }"
                                 required>
-                              <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.telefono.invalid">
-                                <small class="form-text text-danger">telefono Requerido</small>
+                              <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.phone.invalid">
+                                <small class="form-text text-danger">Teléfono Requerido</small>
                               </div>
 
                             </div>
@@ -238,27 +238,27 @@
           <div class="row" *ngIf="!editCustomer">
             <div class="col-lg-4 col-md-6" *ngFor="let customer of ListCustomers; let i = index" [hidden]="(loadingMore && ListCustomers)">
               <div class="feed-box ">
-                <section class="card" [ngClass]="{'bg-dark text-light':customer.TipoIdentificacion!='NIT'}">
+                <section class="card" [ngClass]="{'bg-dark text-light':customer.typeIdentification!='NIT'}">
                   <div class="media media-custom media-customer">
                     <a href="#">
-                      <img class="align-self-center rounded-circle mr-3" style="width:75px; height:75px;" alt="Elkin Mendoza" [alt]="customer.TipoIdentificacion!='NIT'? customer.nombre + customer.apellido : customer.nombre"
-                        [src]="customer.imageProfile ? customer.imageProfile : hrefImageUploaded">
+                      <img class="align-self-center rounded-circle mr-3" style="width:75px; height:75px;" alt="Elkin Mendoza" [alt]="customer.typeIdentification!='NIT'? customer.nombre + customer.apellido : customer.nombre"
+                        [src]="customer.imgProfile ? customer.imgProfile : hrefImageUploaded">
 
                     </a>
                     <div class="media-body card-body-custom pb-4 pr-1">
-                      <h6 class="display-6 m-0">{{customer.TipoIdentificacion!='NIT'? customer.nombre + customer.apellido : customer.nombre}} </h6>
+                      <h6 class="display-6 m-0">{{customer.typeIdentification!='NIT'? customer.nombre + customer.apellido : customer.nombre}} </h6>
                       <p class="m-0 p-0" title="Identificación">
                         <small>
-                          <i class="fa" [ngClass]="{' fa-id-card':customer.TipoIdentificacion!='NIT','fa-building':customer.TipoIdentificacion=='NIT'}"
-                            aria-hidden="true"></i> {{customer.TipoIdentificacion}} {{customer.numeroIdentificacion}}</small>
+                          <i class="fa" [ngClass]="{' fa-id-card':customer.typeIdentification!='NIT','fa-building':customer.typeIdentification=='NIT'}"
+                            aria-hidden="true"></i> {{customer.typeIdentification}} {{customer.cedula}}</small>
                       </p>
                       <p class="m-0 p-0" title="Dirección Fiscal">
                         <small>
-                          <i class="fa fa-map-marker" aria-hidden="true"></i> {{customer.direccion}}</small>
+                          <i class="fa fa-map-marker" aria-hidden="true"></i> {{customer.address}}</small>
                       </p>
                       <p class="m-0 p-0">
                         <small>
-                          <i class="fa fa-phone" aria-hidden="true"></i> {{customer.telefono}}</small>
+                          <i class="fa fa-phone" aria-hidden="true"></i> +57 {{customer.phone}}</small>
                       </p>
                       <p class="m-0 p-0">
                         <small>
@@ -271,26 +271,26 @@
                   </div>
                   <div class="card-footer card-footer-custom border-0 rounded-0">
                     <div class="row text-center m-0 p-0 ">
-                      <div class=" p-1 bg-warning pointer text-dark" *ngIf="customer.TipoIdentificacion=='NIT'" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                      <div class=" p-1 bg-warning pointer text-dark" *ngIf="customer.typeIdentification=='NIT'" [ngClass]="{'col-sm-4': customer.typeIdentification!='NIT','col-sm-3':customer.typeIdentification=='NIT'}"
                         title="Usuarios">
                         <i class="fa fa-users " aria-hidden="true"></i>
                         <br>
                         <small>Usuarios</small>
                       </div>
-                      <div class="p-1 pointer text-dark" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                      <div class="p-1 pointer text-dark" [ngClass]="{'col-sm-4': customer.typeIdentification!='NIT','col-sm-3':customer.typeIdentification=='NIT'}"
                         title="Saldos">
                         <i class="ti-layout-list-thumb-alt" aria-hidden="true"></i>
                         <br>
                         <small>Saldos</small>
 
                       </div>
-                      <div class="p-1 text-light bg-dark pointer" (click)="editCustomerf(customer,i)" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                      <div class="p-1 text-light bg-dark pointer" (click)="editCustomerf(customer,i)" [ngClass]="{'col-sm-4': customer.typeIdentification!='NIT','col-sm-3':customer.typeIdentification=='NIT'}"
                         title="Editar">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                         <br>
                         <small>Editar</small>
                       </div>
-                      <div class="p-1 text-light bg-danger pointer" (click)="removeCustomer(customer,i)" [ngClass]="{'col-sm-4': customer.TipoIdentificacion!='NIT','col-sm-3':customer.TipoIdentificacion=='NIT'}"
+                      <div class="p-1 text-light bg-danger pointer" (click)="removeCustomer(customer,i)" [ngClass]="{'col-sm-4': customer.typeIdentification!='NIT','col-sm-3':customer.typeIdentification=='NIT'}"
                         title="Eliminar Cliente">
                         <i class="ti-trash" aria-hidden="true"></i>
                         <br>

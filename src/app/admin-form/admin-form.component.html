@@ -1,5 +1,5 @@
 <div class="container bg-light container-form">
-  <form class="form-horizontal" #newUser="ngForm" (ngSubmit)=" newUser.form.valid && onSubmitNewUser(newUser)">
+  <form class="form-horizontal" #newUser="ngForm" (ngSubmit)=" (newUser.form.valid && PowerPassword!='' && PowerPassword!='Débil' ) && onSubmitNewUser(newUser)  ">
     <div class="row">
       <div class="col-md-12 text-center">
         <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
@@ -64,9 +64,9 @@
 
             <div class=" form-group">
               <div class="input-group">
-                <input type="password" id="password" name="password" #password="ngModel" id="password" ngModel (keyup)="ValidatePasswordPower($event)" [ngClass]="{'is-invalid': (newUser.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte' }" (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
+                <input type="password" id="password" name="password" #password="ngModel" id="password" ngModel (keyup)="ValidatePasswordPower($event)" [ngClass]="{'is-invalid': (newUser.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte','border-none':password.value=='' && !PowerPassword }" (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
                 <div class="input-group-addon" [ngClass]="{'is-invalid': (newUser.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','border border-success': PowerPassword=='Fuerte'}">
-                  <i class="fa" [ngClass]="{'fa-times': (newUser.submitted && password.invalid),'fa-times': PowerPassword=='Débil','fa-exclamation': PowerPassword=='Aceptable','fa-check': PowerPassword=='Fuerte', 'fa-asterisk':password.value=='' }"></i>
+                  <i class="fa" [ngClass]="{'fa-times': (newUser.submitted && password.invalid),'fa-times': PowerPassword=='Débil','fa-check': PowerPassword=='Fuerte' || PowerPassword=='Aceptable', 'fa-asterisk':password.value=='' }"></i>
                 </div>
               </div>
               <small class="form-text font-weight-bold" *ngIf="password.valid" [ngClass]="{'text-danger': PowerPassword=='Débil','text-warning': PowerPassword=='Aceptable','text-success': PowerPassword=='Fuerte'}">{{PowerPassword}}</small>

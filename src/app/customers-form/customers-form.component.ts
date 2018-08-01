@@ -26,30 +26,34 @@ export class CustomersFormComponent implements OnInit {
   typeId;
   ExistUser: boolean;
   RoleUser: string;
+  urlMainServerPhotos;
   newCustomerPeople = new FormGroup({
-    imageProfile: new FormControl(null),
+    imgProfile: new FormControl(null),
     nombre: new FormControl(null),
     apellido: new FormControl(null),
-    mailUser: new FormControl(null),
-    direccion: new FormControl(null),
-    telefono: new FormControl(null),
-    TipoIdentificacion: new FormControl(null),
-    numeroIdentificacion: new FormControl(null),
+    mail: new FormControl(null),
+    address: new FormControl(null),
+    phone: new FormControl(null),
+    typeIdentification: new FormControl(null),
+    cedula: new FormControl(null),
     checkmodusNew: new FormControl(null),
   });
   newCompanyCustomer = new FormGroup({
-    imageProfile: new FormControl(null),
+    imgProfile: new FormControl(null),
     nombre: new FormControl(null),
-    nombreContacto: new FormControl(null),
-    mailUser: new FormControl(null),
-    direccion: new FormControl(null),
-    telefono: new FormControl(null),
-    TipoIdentificacion: new FormControl('NIT'),
-    numeroIdentificacion: new FormControl(null),
+    contactPerson: new FormControl(null),
+    mail: new FormControl(null),
+    address: new FormControl(null),
+    phone: new FormControl(null),
+    typeIdentification: new FormControl('NIT'),
+    cedula: new FormControl(null),
     checkmodusNew: new FormControl(null),
   });
+  mask: any[] = ['+57', '', '', ' ', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
+
   constructor(private _location: Location, private cdRef: ChangeDetectorRef, private _CustomersService: CustomersService, private router: Router, private _FunctionsService: FunctionsService) {
-    this.urlMainServer = environment.ws_url + '/public/dashboard/assets/images/'
+    this.urlMainServerPhotos = environment.ws_url + '/public/dashboard/assets/images/'
+    this.urlMainServer = environment.ws_url + '/public/imgs/';
     this.modusNewCustomer = 'Persona'
     this.statusNewCustomer = 'Activo'
     this.hrefImageUploaded = this.urlMainServer + 'noimage.png';
@@ -58,11 +62,11 @@ export class CustomersFormComponent implements OnInit {
     this.submittedFormPeople = false;
     this._FunctionsService.getAllDocumentsType().then(res => {
       this.typeId = res;
-    });this._FunctionsService.getAllDocumentsType().then(res => {
+    }); this._FunctionsService.getAllDocumentsType().then(res => {
       this.typeId = res;
     });
-    this.newCustomerPeople.controls['TipoIdentificacion'].setValue("C.C");
-    this.newCompanyCustomer.controls['TipoIdentificacion'].setValue("C.C");
+    this.newCustomerPeople.controls['typeIdentification'].setValue("C.C");
+    this.newCompanyCustomer.controls['typeIdentification'].setValue("C.C");
     this.newCompanyCustomer.controls['checkmodusNew'].setValue(true);
     this.newCustomerPeople.controls['checkmodusNew'].setValue(true);
     this.ExistUser = false;
@@ -86,21 +90,21 @@ export class CustomersFormComponent implements OnInit {
       this.newCustomerPeople.controls['checkmodusNew'].setValue(true);
       this.newCustomerPeople.controls['nombre'].setValue(null);
       this.newCustomerPeople.controls['apellido'].setValue(null);
-      this.newCustomerPeople.controls['mailUser'].setValue(null);
-      this.newCustomerPeople.controls['direccion'].setValue(null);
-      this.newCustomerPeople.controls['telefono'].setValue(null);
-      this.newCustomerPeople.controls['numeroIdentificacion'].setValue(null);
-      this.newCustomerPeople.controls['imageProfile'].setValue(null);
+      this.newCustomerPeople.controls['mail'].setValue(null);
+      this.newCustomerPeople.controls['address'].setValue(null);
+      this.newCustomerPeople.controls['phone'].setValue(null);
+      this.newCustomerPeople.controls['cedula'].setValue(null);
+      this.newCustomerPeople.controls['imgProfile'].setValue(null);
     } else {
-      this.newCompanyCustomer.controls['TipoIdentificacion'].setValue("CC");
+      this.newCompanyCustomer.controls['typeIdentification'].setValue("CC");
       this.newCompanyCustomer.controls['checkmodusNew'].setValue(true);
       this.newCompanyCustomer.controls['nombre'].setValue(null);
-      this.newCompanyCustomer.controls['nombreContacto'].setValue(null);
-      this.newCompanyCustomer.controls['mailUser'].setValue(null);
-      this.newCompanyCustomer.controls['direccion'].setValue(null);
-      this.newCompanyCustomer.controls['telefono'].setValue(null);
-      this.newCompanyCustomer.controls['numeroIdentificacion'].setValue(null);
-      this.newCompanyCustomer.controls['imageProfile'].setValue(null);
+      this.newCompanyCustomer.controls['contactPerson'].setValue(null);
+      this.newCompanyCustomer.controls['mail'].setValue(null);
+      this.newCompanyCustomer.controls['address'].setValue(null);
+      this.newCompanyCustomer.controls['phone'].setValue(null);
+      this.newCompanyCustomer.controls['cedula'].setValue(null);
+      this.newCompanyCustomer.controls['imgProfile'].setValue(null);
       this.hrefImageUploaded = this.urlMainServer + 'noimage.png';
       this.submittedFormPeople = false;
       this.statusNewCustomer = 'Activo';
@@ -116,8 +120,8 @@ export class CustomersFormComponent implements OnInit {
     if (data.valid) {
       let senData = data.value;
       senData.RoleUser = this.RoleUser;
-      if (data.value.imageProfile) {
-        senData.imageProfile = this.urlMainServer + this.nameUserPhoto
+      if (data.value.imgProfile) {
+        senData.imgProfile = this.urlMainServer + this.nameUserPhoto
       }
       this._CustomersService.createCustomer(senData).then(res => {
 

@@ -8,16 +8,17 @@ export class CustomersService {
 
   constructor(private _wsSocket: WebSocketService) { }
   session = {
-    mail: 'elkinmendoza00@gmail.com',
-    token: 'asdasdasdasdasdasd'
+    mail: 'sonickfaber7@yahoo.es',
+    token: 'edbee4f4050c98ad293df52d'
   }
   getAllCustomers() {
     let promise = new Promise((resolve, reject) => {
       let data = {
-        mail: 'elkinmendoza00@gmail.com',
-        token: 'ansdjasbdhabsdyuasd'
+        mail: this.session.mail,
+        token: this.session.token,
+        opt: 15
       }
-      this._wsSocket.emit('getAllCustomers', data).subscribe(res => {
+      this._wsSocket.emit('userRolesEvents', data).subscribe(res => {
         if (!res.err) {
           if (res.data.length) {
             resolve(res.data)
