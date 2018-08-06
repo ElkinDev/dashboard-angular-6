@@ -120,8 +120,8 @@
                               <div class="form-group">
                                 <label class=" form-control-label">N° de teléfonico de Contacto</label>
 
-                                <input type="text" placeholder="316 866-9379" [textMask]="{mask: mask}" formControlName="phone" placeholder="+57 318 5624" class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.phone.invalid }"
-                                  required>
+                                <input type="text" placeholder="316 866-9379" [textMask]="{mask: mask}" formControlName="phone" placeholder="+57 318 5624"
+                                  class="form-control" [ngClass]="{'is-invalid':EditCustomer.controls.phone.invalid }" required>
                                 <div *ngIf="EditCustomer.controls.phone.invalid">
                                   <small class="form-text text-danger">Número de teléfono Requerido</small>
                                 </div>
@@ -205,7 +205,7 @@
                           <div class="col-md-6 offset-md-3" *ngIf="EditCustomer.controls.typeIdentification.value=='NIT'">
                             <div class="form-group">
                               <label class=" form-control-label">N° de teléfono</label>
-                              <input type="text"  placeholder="316 866-9379" [textMask]="{mask: mask}" formControlName="phone" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.phone.invalid }"
+                              <input type="text" placeholder="316 866-9379" [textMask]="{mask: mask}" formControlName="phone" class="form-control" [ngClass]="{'is-invalid':submittedFormPeople && newCompanyCustomer.controls.phone.invalid }"
                                 required>
                               <div *ngIf="submittedFormPeople && newCompanyCustomer.controls.phone.invalid">
                                 <small class="form-text text-danger">Teléfono Requerido</small>
@@ -219,7 +219,10 @@
                       </div>
                       <div class="row">
                         <div class="col-md-12 text-center">
-                          <button class="btn btn-success" type="submit">Guardar
+                          <button class="btn btn-danger" (click)="this.editCustomer = false;" type="button">cancelar
+                            <i></i>
+                          </button>
+                          <button class="btn btn-success ml-3" type="submit">Guardar
                             <i></i>
                           </button>
                         </div>
