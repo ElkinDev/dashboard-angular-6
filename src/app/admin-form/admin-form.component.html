@@ -61,7 +61,6 @@
         <div class="row ">
           <div class="col-md-10 offset-md-1">
             <label class=" form-control-label">Contraseña</label>
-
             <div class=" form-group">
               <div class="input-group">
                 <input type="password" id="password" name="password" #password="ngModel" id="password" ngModel (keyup)="ValidatePasswordPower($event)" [ngClass]="{'is-invalid': (newUser.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte','border-none':password.value=='' && !PowerPassword }" (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>

@@ -28,7 +28,9 @@ export class CustomersPeopleComponent implements OnInit {
   editCustomer;
   typeId;
   indexNowEdit;
-  mask: any[] = ['+57', '',  '', ' ', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];  
+  idNowEdit;
+  sendData;
+  mask: any[] = ['+57', '', '', ' ', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
   urlMainServerPhotos;
   EditCustomer = new FormGroup({
     imgProfile: new FormControl(),
@@ -55,8 +57,7 @@ export class CustomersPeopleComponent implements OnInit {
     this._FunctionsService.getAllDocumentsType().then(res => {
       this.typeId = res;
     });
-    this.indexNowEdit = null;
-    this.nameUserPhoto = null;
+    this.indexNowEdit, this.idNowEdit, this.nameUserPhoto, this.sendData = null;
 
   }
   ngAfterViewChecked() {
@@ -64,7 +65,7 @@ export class CustomersPeopleComponent implements OnInit {
   }
   ngOnInit() {
     this._customersService.getAllCustomers().then((res) => {
-      console.log(res,'quejestooo');
+      console.log(res, 'quejestooo');
       if (!res) {
         this.ListCustomers = null
         this.messageErrorQuery = "No Hay resultados"
@@ -93,7 +94,7 @@ export class CustomersPeopleComponent implements OnInit {
     alertify
       .confirm("Clientes", "¿Eliminar al Cliente " + data.mail + "?",
         (() => {
-          this._FunctionsService.RemoveUser(data.mail,5,8).then(msg => {
+          this._FunctionsService.RemoveUser(data.mail, 5, 8).then(msg => {
             alertify.success(msg);
             this.ListCustomers.splice(index, 1);
             if (this.ListCustomers.length <= 0) {
@@ -118,32 +119,51 @@ export class CustomersPeopleComponent implements OnInit {
   }
   onSubmitEdtitCustomer(data: NgForm) {
     console.log(data.value, 'VEAAMOS');
-    let sendData = {
-      imgProfile: data.value.imgProfile,
-      nombre: data.value.nombre,
-      apellido: data.value.apellido,
-      mail: data.value.mail,
-      address: data.value.address,
-      typeIdentification: data.value.typeIdentification,
-      cedula: data.value.cedula,
-      phone: data.value.phone,
-      contactPerson: data.value.contactPerson,
-      status: data.value.checModusEdit,
-      fecha: data.value.fecha
-
-    }
-    if (this.nameUserPhoto) {
-      sendData.imgProfile = this.nameUserPhoto;
-    }
-    this._FunctionsService.editUser(sendData,6).then(msg => {
-      alertify.success(msg);
-      this.ListCustomers[this.indexNowEdit] = sendData;
-      if (this.nameUserPhoto) {
-        this.ListCustomers[this.indexNowEdit].imgProfile = this.urlMainServer + this.nameUserPhoto;
-      } else {
-        this.ListCustomers[this.indexNowEdit].imgProfile = this.hrefImageUpload2;
+    if (data.value.typeIdentification) {
+      this.sendData = {
+        opt: 18,
+        userEdit: {
+          nombre: data.value.nombre,
+          apellido: data.value.apellido,
+          typeIdentification: data.value.typeIdentification,
+          mail: data.value,
+          id: this.idNowEdit,
+          address: data.value.address,
+          nit: data.value.cedula,
+          status: data.value.checModusEdit,
+          phone: data.value.celular
+        }
       }
-      this.editCustomer ? this.editCustomer = false : this.editCustomer = true
+    } else {
+      this.sendData = {
+        opt: 14,
+        userEdit: {
+          nombre: data.value.nombre,
+          mail: data.value.mail,
+          id: this.idNowEdit,
+          address: data.value.address,
+          nit: data.value.cedula,
+          contactPerson: data.value.contactPerson,
+          status:data.value.checModusEdit,
+          phone: data.value.phone,
+          typeIdentification:data.value.typeIdentification
+        }
+
+      }
+    }
+
+
+    this._FunctionsService.editUser(this.sendData).then(msg => {
+
+      console.log('vengaaaaa',this.sendData);
+      // alertify.success(msg);
+      // this.ListCustomers[this.indexNowEdit] = sendData;
+      // if (this.nameUserPhoto) {
+      //   this.ListCustomers[this.indexNowEdit].imgProfile = this.urlMainServer + this.nameUserPhoto;
+      // } else {
+      //   this.ListCustomers[this.indexNowEdit].imgProfile = this.hrefImageUpload2;
+      // }
+      // this.editCustomer ? this.editCustomer = false : this.editCustomer = true
 
     }, err => {
       alertify.error(err);
@@ -181,14 +201,14 @@ export class CustomersPeopleComponent implements OnInit {
       apellido: customer.apellido,
       mail: customer.mail,
       address: customer.address,
-      phone: customer.phone,
+      phone: customer.celular,
       typeIdentification: tipo,
       cedula: customer.cedula,
       checModusEdit: customer.status,
       fecha: customer.fecha
     });
     this.indexNowEdit = i;
-
+    this.idNowEdit = customer.id
 
   }
 

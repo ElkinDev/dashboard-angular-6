@@ -43,14 +43,14 @@ export class CustomersService {
       senData.mail = this.session.mail
       senData.token = this.session.token
       console.log(senData)
-      this._wsSocket.emit('addUserPanel', senData).subscribe((res) => {
+      this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
         if (!res.err) {
-          resolve(res.msg)
+          resolve({type:res.type,link:res.link});
         } else {
-          reject(res.msg)
+          reject({ err: true, msg: res.msg });
         }
       }, (error) => {
-        reject({ err: true, msg: error.msg })
+        reject({ err: true, msg: error.msg });
 
       })
     });

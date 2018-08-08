@@ -249,7 +249,7 @@
 
                     </a>
                     <div class="media-body card-body-custom pb-4 pr-1">
-                      <h6 class="display-6 m-0">{{customer.typeIdentification!='NIT'? customer.nombre + customer.apellido : customer.nombre}} </h6>
+                      <h6 class="display-6 m-0">{{customer.typeIdentification!='NIT'? customer.nombre +' '+ customer.apellido : customer.nombre}} </h6>
                       <p class="m-0 p-0" title="Identificación">
                         <small>
                           <i class="fa" [ngClass]="{' fa-id-card':customer.typeIdentification!='NIT','fa-building':customer.typeIdentification=='NIT'}"
@@ -261,7 +261,7 @@
                       </p>
                       <p class="m-0 p-0">
                         <small>
-                          <i class="fa fa-phone" aria-hidden="true"></i> +57 {{customer.phone}}</small>
+                          <i class="fa fa-phone" aria-hidden="true"></i>{{customer.celular}}</small>
                       </p>
                       <p class="m-0 p-0">
                         <small>

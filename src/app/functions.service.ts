@@ -46,21 +46,18 @@ export class FunctionsService {
     });
 
   }
-  editUser(data,opt) {
+  editUser(data) {
     return new Promise((resolve, reject) => {
-      let senData = {
-        opt:opt,
-        mail:this.session.mail,
-        token:this.session.token,
-        userEdit:data
-      }
-
+      let senData = data;
+      senData.mail=this.session.mail;
+      senData.token=this.session.token;
+      console.log('Veaamos que trae la senData',senData);
       this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
         console.log('traeme toda esta shit',res);
         if (!res.err) {
           resolve({type:res.type,msg:res.msg})
         } else {
-          resolve({type:res.type,msg:res.msg})
+          resolve({err:true,type:res.type,msg:res.msg})
           
         }
       }, (error) => {

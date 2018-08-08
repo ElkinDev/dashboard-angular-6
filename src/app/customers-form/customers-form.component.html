@@ -62,7 +62,7 @@
                 <strong class="card-title">{{modusNewCustomer}}</strong>
               </div>
               <div class="card-body">
-                <form  #newCustomerPeople="ngForm" (ngSubmit)="onSubmitNewCustomerPeople(newCustomerPeople)">
+                <form  #newCustomerPeople="ngForm" (ngSubmit)="( !NotEqualsPassword && (PowerPassword!='Débil' && PowerPassword!='' && PowerPassword!=null) ) &&  onSubmitNewCustomerPeople(newCustomerPeople)">
                   <div class="row">
 
                     <div class="col-md-4 offset-md-1">
@@ -78,9 +78,9 @@
                           <div class="form-group">
                             <label class=" form-control-label">Nombres</label>
 
-                            <input type="text" #nombre="ngModel" name="nombre" id="nombre" ngModel class="form-control" [ngClass]="{'is-invalid':(newCustomerPeople.submitted && nombre.invalid) }"
+                            <input type="text" #nombreP="ngModel" name="nombre" id="nombreP" ngModel class="form-control" [ngClass]="{'is-invalid':newCustomerPeople.submitted && nombreP.invalid }"
                               required>
-                            <div *ngIf="(newCustomerPeople.submitted && nombre.invalid)">
+                            <div *ngIf="newCustomerPeople.submitted && nombreP.invalid">
                               <small class="form-text text-danger">Nombres Requerido</small>
                             </div>
 
@@ -114,10 +114,10 @@
                           <div class="form-group">
                             <label class=" form-control-label">N° de teléfonico de Contacto</label>
 
-                            <input type="text" placeholder="316 866-9379" [textMask]="{mask: mask}" #phone="ngModel" id="phone" name="phone" ngModel class="form-control"
-                              [ngClass]="{'is-invalid':newCustomerPeople.submitted && phone.invalid }"
+                            <input type="text" placeholder="316 866-9379" [textMask]="{mask: mask}" #phoneP="ngModel" i name="phone" ngModel class="form-control"
+                              [ngClass]="{'is-invalid':newCustomerPeople.submitted && phoneP.invalid }"
                               required>
-                            <div *ngIf="newCustomerPeople.submitted && phone.invalid">
+                            <div *ngIf="newCustomerPeople.submitted && phoneP.invalid">
                               <small class="form-text text-danger">Número de teléfono Requerido</small>
                             </div>
                           </div>
@@ -131,7 +131,7 @@
                         <div class="col-md-4">
 
                           <select class="custom-select" #typeIdentification="ngModel" id="typeIdentification" name="typeIdentification" ngModel [ngClass]="{'is-invalid':newCustomerPeople.submitted && typeIdentification.invalid }" required>
-                            <option *ngFor="let c of typeId;let i= index" [value]="i" [selected]="i==2">{{c.name}}</option>
+                            <option *ngFor="let c of typeId;let i= index" [value]="c.name" [selected]="i==2">{{c.name}}</option>
                           </select>
                           <div *ngIf="newCustomerPeople.submitted && typeIdentification.invalid">
                             <small class="form-text text-danger">Tipo Requerido</small>
@@ -142,9 +142,9 @@
                         </div>
                         <div class="col-md-8">
                           <div class="form-group">
-                            <input type="text" #cedula="ngModel" ngModel name="cedula" id="cedula" placeholder="111155555" class="form-control" [ngClass]="{'is-invalid':newCustomerPeople.submitted && cedula.invalid }"
+                            <input type="text" #cedulaP="ngModel" ngModel name="cedula" id="cedula" placeholder="111155555" class="form-control" [ngClass]="{'is-invalid':newCustomerPeople.submitted && cedulaP.invalid }"
                               required>
-                            <div *ngIf="newCustomerPeople.submitted && cedula.invalid">
+                            <div *ngIf="newCustomerPeople.submitted && cedulaP.invalid">
                               <small class="form-text text-danger">Número de identificación requerido</small>
                             </div>
                             <div *ngIf="!newCustomerPeople.submitted">
@@ -162,11 +162,11 @@
                       <div class="col-md-6 offset-md-3">
                         <div class=" form-group">
                           <label class=" form-control-label">Correo electrónico</label>
-                          <input type="email" id="mail" name="mail" #mail="ngModel" ngModel id="mail" [ngClass]="{'is-invalid': ( newCustomerPeople.submitted && mail.invalid) }"
+                          <input type="email" id="mail" name="mail" #mailP="ngModel" ngModel id="mail" [ngClass]="{'is-invalid': ( newCustomerPeople.submitted && mailP.invalid) }"
                             placeholder="...." class="form-control" required email>
-                          <div *ngIf="newCustomerPeople.submitted && mail.invalid">
-                            <small class="form-text text-danger" *ngIf="mail.errors.required">Correo electrónico requerido</small>
-                            <small class="form-text text-danger" *ngIf="mail.errors.email">Correo electrónico inválido</small>
+                          <div *ngIf="newCustomerPeople.submitted && mailP.invalid">
+                            <small class="form-text text-danger" *ngIf="mailP.errors.required">Correo electrónico requerido</small>
+                            <small class="form-text text-danger" *ngIf="mailP.errors.email">Correo electrónico inválido</small>
                           </div>
                           <small *ngIf="ExistUser" class="form-text text-danger">
                             Ya está registrado un usuario con este correo electrónico
@@ -180,7 +180,7 @@
             
                         <div class=" form-group">
                           <div class="input-group">
-                            <input type="password" id="password" name="password" #password="ngModel" id="password" ngModel (keyup)="ValidatePasswordPower($event)" [ngClass]="{'is-invalid': (newCustomerPeople.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte','border-none':password.value=='' && !PowerPassword }" (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
+                            <input type="password" id="password" name="password" #password="ngModel" id="password" ngModel (keyup)="ValidatePasswordPower($event);validatePasswordRepeat($event,passwordRepeat)" [ngClass]="{'is-invalid': (newCustomerPeople.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte','border-none':password.value=='' && !PowerPassword }" (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
                             <div class="input-group-addon" [ngClass]="{'is-invalid': (newCustomerPeople.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','border border-success': PowerPassword=='Fuerte'}">
                               <i class="fa" [ngClass]="{'fa-times': (newCustomerPeople.submitted && password.invalid),'fa-times': PowerPassword=='Débil','fa-check': PowerPassword=='Fuerte' || PowerPassword=='Aceptable', 'fa-asterisk':password.value=='' }"></i>
                             </div>
@@ -249,7 +249,7 @@
                 <strong class="card-title">{{modusNewCustomer}}</strong>
               </div>
               <div class="card-body">
-                <form #newCompanyCustomer="ngForm" (ngSubmit)="onSubmitNewCustomerPeople(newCompanyCustomer)">
+                <form #newCompanyCustomer="ngForm" (ngSubmit)="( !NotEqualsPassword && (PowerPassword!='Débil' && PowerPassword!='' && PowerPassword!=null) ) && onSubmitNewCustomerCompany(newCompanyCustomer)">
                   <div class="row">
 
                     <div class="col-md-4 offset-md-1">
@@ -338,7 +338,7 @@
                       <label class=" form-control-label">Contraseña</label>
                       <div class=" form-group">
                         <div class="input-group">
-                          <input type="password"  name="password1" #password1="ngModel" ngModel (keyup)="ValidatePasswordPower($event)" [ngClass]="{'is-invalid': (newCompanyCustomer.submitted && password1.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte','border-none':password1.value=='' && !PowerPassword }" (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
+                          <input type="password"  name="password1" #password1="ngModel" ngModel (keyup)="ValidatePasswordPower($event);validatePasswordRepeat($event,passwordRepeat1)" [ngClass]="{'is-invalid': (newCompanyCustomer.submitted && password1.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte','border-none':password1.value=='' && !PowerPassword }" (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
                           <div class="input-group-addon" [ngClass]="{'is-invalid': (newCompanyCustomer.submitted && password1.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','border border-success': PowerPassword=='Fuerte'}">
                             <i class="fa" [ngClass]="{'fa-times': (newCompanyCustomer.submitted && password1.invalid),'fa-times': PowerPassword=='Débil','fa-check': PowerPassword=='Fuerte' || PowerPassword=='Aceptable', 'fa-asterisk':password1.value=='' }"></i>
                           </div>

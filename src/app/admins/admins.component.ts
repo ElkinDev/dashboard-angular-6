@@ -38,7 +38,7 @@ export class AdminsComponent implements OnInit {
   sendImage;
   fileImageEdit;
   idUserEditNow;
-  
+
   EditUser = new FormGroup({
 
     imgProfile: new FormControl(),
@@ -304,7 +304,7 @@ export class AdminsComponent implements OnInit {
 
     }, err => {
 
-      alertify.error(err.sjsj);
+      alertify.error(err);
 
 
     })

@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@ang
 import { Router } from "@angular/router";
 import { Location } from '@angular/common';
 import { NgForm, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { WebSocketService } from '../websocket.service';
 import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
 import { CustomersService } from '../customers-people/customers-service.service';
@@ -24,16 +25,19 @@ export class CustomersFormComponent implements OnInit {
   urlMainServer;
   typeId;
   ExistUser: boolean;
-  RoleUser: string;
   urlMainServerPhotos;
-  fileImageEdit;
   PowerPassword;
   passwordinput;
   newCustomerPeople: NgForm;
   newCompanyCustomer: NgForm;
   mask: any[] = ['+57', '', '', ' ', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
-
-  constructor(private _location: Location, private cdRef: ChangeDetectorRef, private _CustomersService: CustomersService, private router: Router, private _FunctionsService: FunctionsService) {
+  senData;
+  sendImage;
+  session = {
+    mail: 'sonickfaber7@yahoo.es',
+    token: 'edbee4f4050c98ad293df52d'
+  }
+  constructor(private _location: Location, private cdRef: ChangeDetectorRef, private _CustomersService: CustomersService, private router: Router, private _FunctionsService: FunctionsService, private _wsSocket: WebSocketService) {
     this.urlMainServerPhotos = environment.ws_url + '/public/dashboard/assets/images/'
     this.urlMainServer = environment.ws_url + '/public/imgs/'
     this.modusNewCustomer = 'Persona'
@@ -47,9 +51,7 @@ export class CustomersFormComponent implements OnInit {
       this.typeId = res;
     });
     this.ExistUser = false;
-    this.RoleUser = 'NaturalCustomer'
-    this.fileImageEdit = null;
-    this.PowerPassword = null;
+    this.senData, this.PowerPassword = null, this.sendImage = null;
     this.passwordinput = '';
 
   }
@@ -57,6 +59,39 @@ export class CustomersFormComponent implements OnInit {
     this.cdRef.detectChanges();
   }
   ngOnInit() {
+    this._wsSocket.on('createUser').subscribe((res) => {
+      if (res.mail === this.senData.emailUser) {
+
+        var formdata = new FormData();
+        if (formdata && this.sendImage != null) {
+          formdata.append('imgProfile', this.sendImage)
+          formdata.append('id', res.id)
+          if (this.senData.typeIdentification) {
+            formdata.append('opt', '4')
+          } else {
+            formdata.append('opt', '3');
+          }
+          formdata.append('mail', this.session.mail)
+          formdata.append('token', this.session.token)
+          this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
+            let resp1 = JSON.parse(resp);
+            this.router.navigate(['/Dashboard/customers'])
+
+
+
+
+          });
+        } else {
+          this.router.navigate(['/Dashboard/customers'])
+
+
+
+        }
+      }
+
+    }, (error) => {
+
+    })
   }
   backClicked() {
     this._location.back();
@@ -68,6 +103,7 @@ export class CustomersFormComponent implements OnInit {
     this.statusNewCustomer = 'Activo'
     this.hrefImageUploaded = this.urlMainServer + 'noimage.png';
     this.modusNewCustomer === 'Persona' ? this.modusNewCustomer = 'Empresa' : this.modusNewCustomer = 'Persona'
+    this.sendImage = null;
     if (this.modusNewCustomer != 'Persona') {
       newCustomerPeople.setValue({
         nombre: null,
@@ -85,6 +121,19 @@ export class CustomersFormComponent implements OnInit {
       }); // or form.reset();
 
     } else {
+      newCompanyCustomer.setValue({
+        nombre: null,
+        imgProfile: null,
+        address: null,
+        phone: null,
+        cedula: null,
+        mail: null,
+        password1: '',
+        passwordRepeat1: '',
+        checkmodusNew: true,
+        contactPerson: null,
+
+      }); // or form.reset();
       console.log(newCompanyCustomer.value)
 
 
@@ -94,31 +143,155 @@ export class CustomersFormComponent implements OnInit {
     this.statusNewCustomer === 'Activo' ? this.statusNewCustomer = 'Inactivo' : this.statusNewCustomer = 'Activo'
   }
   onSubmitNewCustomerPeople(data: NgForm) {
+    let resd: any = null;
+
+    console.log(data.value);
     if (data.valid) {
-      let senData = data.value;
-      senData.RoleUser = this.RoleUser;
-      if (data.value.imgProfile) {
-        senData.imgProfile = this.urlMainServer + this.nameUserPhoto
+      if (data.value.password1 != data.value.passwordRepeat1) {
+        this.NotEqualsPassword = true;
+      } else {
+        let senData = {
+          nit: data.value.cedula,
+          nombre: data.value.nombre,
+          apellido: data.value.apellido,
+          emailUser: data.value.mail,
+          address: data.value.address,
+          password: data.value.password,
+          passwordRepeat: data.value.passwordRepeat,
+          typeIdentification: data.value.typeIdentification,
+          status: data.value.checkmodusNew,
+          opt: 16,
+          phone: data.value.phone
+        }
+        this.senData = senData;
+        this._CustomersService.createCustomer(this.senData).then(res => {
+          resd = res;
+          if (resd.type == 'createdUserNew') {
+            alertify.alert("Confirma el registro de usuario", function () {
+              window.open(resd.link, "_blank")
+
+            });
+          }
+        }, err => {
+          alertify.error(err.msg)
+        })
+
+        this._wsSocket.on('createUser').subscribe((res) => {
+          if (res.mail === this.senData.emailUser) {
+
+            var formdata = new FormData();
+            if (formdata && this.sendImage != null) {
+              formdata.append('imgProfile', this.sendImage)
+              formdata.append('id', res.id)
+              formdata.append('opt', '4')
+              formdata.append('mail', this.session.mail)
+              formdata.append('token', this.session.token)
+              this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
+                let resp1 = JSON.parse(resp);
+                console.log('vieneee que es resp', resp1)
+                this.router.navigate(['/Dashboard/customers'])
+
+
+
+
+              });
+            } else {
+              this.router.navigate(['/Dashboard/customers'])
+
+
+
+            }
+          }
+
+        }, (error) => {
+
+        })
+
+
       }
-      this._CustomersService.createCustomer(senData).then(res => {
-
-        alertify.success(res);
-        setTimeout(() => {
-          this.router.navigate(['/Dashboard/customers'])
-
-        }, 3000)
-      }, err => {
-        alertify.error(err);
-      })
     } else {
 
     }
   }
 
+  onSubmitNewCustomerCompany(data: NgForm) {
+    let resd: any = null;
+
+    console.log(data.value);
+    if (data.valid) {
+      if (data.value.password1 != data.value.passwordRepeat1) {
+        this.NotEqualsPassword = true;
+      } else {
+        let senData = {
+          nit: data.value.cedula,
+          nombre: data.value.nombre,
+          emailUser: data.value.mail,
+          address: data.value.address,
+          password: data.value.password1,
+          passwordRepeat: data.value.passwordRepeat1,
+          status: data.value.checkmodusNew,
+          contactPerson: data.value.contactPerson,
+          opt: 12,
+          phone: data.value.phone
+        }
+        this.senData = senData;
+        console.log('traeme toda la data del submit', data);
+        this._CustomersService.createCustomer(this.senData).then(res => {
+          resd = res;
+          if (resd.type == 'createdUserNew') {
+            alertify.alert("Confirma el registro de usuario", function () {
+              window.open(resd.link, "_blank")
+
+            });
+          }
+        }, err => {
+          alertify.error(err.msg)
+        })
+
+        this._wsSocket.on('createUser').subscribe((res) => {
+          if (res.mail === this.senData.emailUser) {
+
+            var formdata = new FormData();
+            if (formdata && this.sendImage != null) {
+              console.log(this.sendImage, 'VEAAMOS QUE LO QUE');
+              formdata.append('imgProfile', this.sendImage)
+              formdata.append('id', res.id)
+              formdata.append('opt', '3')
+              formdata.append('mail', this.session.mail)
+              formdata.append('token', this.session.token)
+              this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
+                let resp1 = JSON.parse(resp);
+                this.router.navigate(['/Dashboard/customers'])
+
+
+
+
+              });
+            } else {
+              this.router.navigate(['/Dashboard/customers'])
+
+
+
+            }
+          }
+
+        }, (error) => {
+
+        })
+
+
+      }
+    } else {
+
+    }
+  }
+  progressImage(ev) {
+    // console.log('veaa veaa veaa',ev)
+  }
   readUrl(event: any) {
     if (event.target.files && event.target.files[0]) {
       let file = event.target.files[0];
-      this.fileImageEdit = event.target.files[0];
+      this.sendImage = event.target.files[0];
       this.nameUserPhoto = file.name;
       var reader = new FileReader();
       reader.onload = (event: any) => {
@@ -131,7 +304,6 @@ export class CustomersFormComponent implements OnInit {
   ValidatePasswordPower(event: any) {
     if (event.target.value) {
       let statusPass = this._FunctionsService.ValidationSecurityPassword(event.target.value);
-      console.log('que es veamoslooo?', statusPass)
       this.PowerPassword = statusPass;
       switch (statusPass) {
         case 'Débil':
@@ -143,7 +315,6 @@ export class CustomersFormComponent implements OnInit {
       }
       this.passwordinput = event.target.value;
     } else {
-      console.log('se meteee');
 
       this.PowerPassword = null;
     }
@@ -152,11 +323,12 @@ export class CustomersFormComponent implements OnInit {
 
   validatePasswordRepeat(event: any, password) {
     if (event.target.value != password.value) {
-      this.NotEqualsPassword = true;
+      if (password.value.length != 0 && event.target.value.length != 0) {
+        this.NotEqualsPassword = true;
+      }
     } else {
       this.NotEqualsPassword = false;
     }
-    console.log('veamos el pass escrito', password);
   }
 
   disabledPassErr(): void {
