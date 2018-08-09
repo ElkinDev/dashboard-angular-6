@@ -107,6 +107,65 @@ export class AdminsComponent implements OnInit {
 
     })
 
+    this._wsSocket.on('createUser').subscribe((res) => {
+      if (res.mail === this.senData.emailUser) {
+        var formdata = new FormData();
+        if (formdata && this.sendImage != null) {
+          formdata.append('imgProfile', this.sendImage)
+          formdata.append('id', res.id)
+          formdata.append('opt', '0')
+          formdata.append('mail', this.session.mail)
+          formdata.append('token', this.session.token)
+          this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
+            let resp1 = JSON.parse(resp);
+            this.senData.imgProfile = resp1.imageProfile;
+            this.ListAdminsnull = false;
+            this.senData.fecha = this.today;
+            this.senData.id = res.id;
+            this.ListAdmins = this.ListAdmins || [];
+            let resultAdmin = this.ListAdmins.find(obj => {
+              return obj.emailUser === this.senData.emailUser
+            });
+            if (!resultAdmin) {
+              this.senData.mail=this.senData.emailUser;
+              
+              this.ListAdmins.push(this.senData)
+              this.addAdmin = false;
+              this.ListAllInfo = false;
+
+              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+              alertify.success('Usuario Creado Exitosamente');
+            };
+
+
+
+          });
+        } else {
+          console.log('see metee veaaa')
+          this.ListAdminsnull = false;
+          alertify.success('Usuario Creado Exitosamente');
+          this.senData.fecha = this.today;
+          this.senData.id = res.id;
+          this.ListAdmins = this.ListAdmins || [];
+          let resultAdmin = this.ListAdmins.find(obj => {
+            return obj.emailUser === this.senData.emailUser
+          });
+          if (!resultAdmin) {
+            this.ListAdmins.push(this.senData)
+            this.addAdmin = false;
+            this.ListAllInfo = false;
+
+            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+            alertify.success('Usuario Creado Exitosamente');
+          };
+
+        }
+      }
+
+    }, (error) => {
+
+    })
+
   }
   openFormAdmins() {
     this.EditAdmin = false
@@ -166,62 +225,7 @@ export class AdminsComponent implements OnInit {
     })
 
 
-    this._wsSocket.on('createUser').subscribe((res) => {
-      if (res.mail === this.senData.emailUser) {
-        var formdata = new FormData();
-        if (formdata && this.sendImage != null) {
-          formdata.append('imgProfile', this.sendImage)
-          formdata.append('id', res.id)
-          formdata.append('opt', '0')
-          formdata.append('mail', this.session.mail)
-          formdata.append('token', this.session.token)
-          this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
-            let resp1 = JSON.parse(resp);
-            this.senData.imgProfile = resp1.imageProfile;
-            this.ListAdminsnull = false;
-            this.senData.fecha = this.today;
-            this.senData.id = res.id;
-            this.ListAdmins = this.ListAdmins || [];
-            let resultAdmin = this.ListAdmins.find(obj => {
-              return obj.emailUser === this.senData.emailUser
-            });
-            if (!resultAdmin) {
-              this.ListAdmins.push(this.senData)
-              this.addAdmin = false;
-              this.ListAllInfo = false;
 
-              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
-              alertify.success('Usuario Creado Exitosamente');
-            };
-
-
-
-          });
-        } else {
-          console.log('see metee veaaa')
-          this.ListAdminsnull = false;
-          alertify.success('Usuario Creado Exitosamente');
-          this.senData.fecha = this.today;
-          this.senData.id = res.id;
-          this.ListAdmins = this.ListAdmins || [];
-          let resultAdmin = this.ListAdmins.find(obj => {
-            return obj.emailUser === this.senData.emailUser
-          });
-          if (!resultAdmin) {
-            this.ListAdmins.push(this.senData)
-            this.addAdmin = false;
-            this.ListAllInfo = false;
-
-            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
-            alertify.success('Usuario Creado Exitosamente');
-          };
-
-        }
-      }
-
-    }, (error) => {
-
-    })
 
   }
   progressImage(ev) {

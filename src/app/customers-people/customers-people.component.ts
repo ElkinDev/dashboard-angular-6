@@ -32,6 +32,12 @@ export class CustomersPeopleComponent implements OnInit {
   sendData;
   mask: any[] = ['+57', '', '', ' ', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
   urlMainServerPhotos;
+  sendImage;
+  session = {
+    mail: 'sonickfaber7@yahoo.es',
+    token: 'edbee4f4050c98ad293df52d'
+  };
+  imgProfileActually;
   EditCustomer = new FormGroup({
     imgProfile: new FormControl(),
     contactPerson: new FormControl(null),
@@ -57,7 +63,7 @@ export class CustomersPeopleComponent implements OnInit {
     this._FunctionsService.getAllDocumentsType().then(res => {
       this.typeId = res;
     });
-    this.indexNowEdit, this.idNowEdit, this.nameUserPhoto, this.sendData = null;
+    this.indexNowEdit, this.idNowEdit, this.nameUserPhoto, this.sendData, this.sendImage, this.imgProfileActually = null;
 
   }
   ngAfterViewChecked() {
@@ -65,7 +71,6 @@ export class CustomersPeopleComponent implements OnInit {
   }
   ngOnInit() {
     this._customersService.getAllCustomers().then((res) => {
-      console.log(res, 'quejestooo');
       if (!res) {
         this.ListCustomers = null
         this.messageErrorQuery = "No Hay resultados"
@@ -85,16 +90,16 @@ export class CustomersPeopleComponent implements OnInit {
         this.loadingMore = false;
       }, 1000)
 
-      console.log(err, 'cuaaal es')
 
     })
   }
   removeCustomer(data, index): void {
-
+    let opt;
+    data.typeIdentification=='NIT'? opt=13:opt=17;
     alertify
       .confirm("Clientes", "¿Eliminar al Cliente " + data.mail + "?",
         (() => {
-          this._FunctionsService.RemoveUser(data.mail, 5, 8).then(msg => {
+          this._FunctionsService.RemoveUser(data.mail, data.id, opt).then(msg => {
             alertify.success(msg);
             this.ListCustomers.splice(index, 1);
             if (this.ListCustomers.length <= 0) {
@@ -118,52 +123,112 @@ export class CustomersPeopleComponent implements OnInit {
       }).autoCancel(15);
   }
   onSubmitEdtitCustomer(data: NgForm) {
-    console.log(data.value, 'VEAAMOS');
-    if (data.value.typeIdentification) {
+    var DataImport;
+    let dataFi: any;
+    if (data.value.typeIdentification != 'NIT') {
+      console.log('vengaaaa entraa')
       this.sendData = {
         opt: 18,
         userEdit: {
           nombre: data.value.nombre,
           apellido: data.value.apellido,
           typeIdentification: data.value.typeIdentification,
-          mail: data.value,
+          mail: data.value.mail,
           id: this.idNowEdit,
           address: data.value.address,
           nit: data.value.cedula,
           status: data.value.checModusEdit,
-          phone: data.value.celular
+          phone: data.value.phone,
         }
+      }
+      DataImport = {
+        nombre: data.value.nombre,
+        apellido: data.value.apellido,
+        typeIdentification: data.value.typeIdentification,
+        mail: data.value.mail,
+        id: this.idNowEdit,
+        address: data.value.address,
+        cedula: data.value.cedula,
+        status: data.value.checModusEdit,
+        celular: data.value.phone,
+        imgProfile: this.imgProfileActually,
+        fecha: data.value.fecha
+
       }
     } else {
       this.sendData = {
         opt: 14,
         userEdit: {
           nombre: data.value.nombre,
+          apellido: '',
           mail: data.value.mail,
           id: this.idNowEdit,
           address: data.value.address,
           nit: data.value.cedula,
           contactPerson: data.value.contactPerson,
-          status:data.value.checModusEdit,
+          status: data.value.checModusEdit,
           phone: data.value.phone,
-          typeIdentification:data.value.typeIdentification
+          typeIdentification: data.value.typeIdentification,
         }
+
+      }
+      DataImport = {
+        nombre: data.value.nombre,
+        mail: data.value.mail,
+        id: this.idNowEdit,
+        address: data.value.address,
+        cedula: data.value.cedula,
+        contactPerson: data.value.contactPerson,
+        status: data.value.checModusEdit,
+        celular: data.value.phone,
+        typeIdentification: data.value.typeIdentification,
+        imgProfile: this.imgProfileActually,
+        fecha: data.value.fecha
+
 
       }
     }
 
+    this._FunctionsService.editUser(this.sendData).then(data => {
+      dataFi = data;
+      var formdata = new FormData();
+      if (formdata && this.sendImage != null) {
+        if (this.sendData.typeIdentification != 'NIT') {
+          formdata.append('opt', '3')
+        } else {
+          formdata.append('opt', '4')
+        }
+        formdata.append('imgProfile', this.sendImage)
+        formdata.append('id', this.idNowEdit)
 
-    this._FunctionsService.editUser(this.sendData).then(msg => {
+        formdata.append('mail', this.session.mail)
+        formdata.append('token', this.session.token)
+        this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
+          let resp1 = JSON.parse(resp);
+          console.log('vieneee que es resp', resp1)
+          if (!resp1.err) {
+            DataImport.imgProfile = resp1.imageProfile
 
-      console.log('vengaaaaa',this.sendData);
-      // alertify.success(msg);
-      // this.ListCustomers[this.indexNowEdit] = sendData;
-      // if (this.nameUserPhoto) {
-      //   this.ListCustomers[this.indexNowEdit].imgProfile = this.urlMainServer + this.nameUserPhoto;
-      // } else {
-      //   this.ListCustomers[this.indexNowEdit].imgProfile = this.hrefImageUpload2;
-      // }
-      // this.editCustomer ? this.editCustomer = false : this.editCustomer = true
+          }
+          alertify.success('El usuario se actualizo corretamente');
+          this.ListCustomers[this.indexNowEdit] = DataImport;
+
+
+        });
+      } else {
+        if (dataFi.err) {
+          alertify.error(dataFi.msg);
+
+        } else {
+          alertify.success(dataFi.msg);
+          this.ListCustomers[this.indexNowEdit] = DataImport;
+        }
+        // alertify.success(msg);
+
+
+
+      }
+
 
     }, err => {
       alertify.error(err);
@@ -172,9 +237,13 @@ export class CustomersPeopleComponent implements OnInit {
     })
 
   }
+  progressImage(ev) {
+    // console.log('veaa veaa veaa',ev)
+  }
   readUrl(event: any) {
     if (event.target.files && event.target.files[0]) {
       let file = event.target.files[0];
+      this.sendImage = event.target.files[0];
       this.nameUserPhoto = file.name;
       var reader = new FileReader();
       reader.onload = (event: any) => {
@@ -184,16 +253,16 @@ export class CustomersPeopleComponent implements OnInit {
 
     }
   }
-
   changeStatusCustomer() {
     this.statusEditCustomer === 'Activo' ? this.statusEditCustomer = 'Inactivo' : this.statusEditCustomer = 'Activo'
   }
   editCustomerf(customer, i) {
-    console.log(customer, 'Veaamos')
+    console.log(customer,'quejestooo????')
     let tipo = (customer.typeIdentification).trim();
     this.statusEditCustomer = customer.status ? 'Activo' : 'Inactivo';
     this.editCustomer = true;
     this.hrefImageUpload2 = customer.imgProfile ? customer.imgProfile : this.hrefImageUpload2;
+    customer.imgProfile ? this.imgProfileActually = customer.imgProfile : this.imgProfileActually = null;
     this.EditCustomer.patchValue({
       imgProfile: null,
       contactPerson: customer.contactPerson,

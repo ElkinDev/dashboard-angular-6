@@ -51,7 +51,7 @@ export class AuditorComponent implements OnInit {
 
   });
 
-  constructor(private _auditorService: AuditorService, private cdRef: ChangeDetectorRef,private _FunctionsService: FunctionsService, private _wsSocket: WebSocketService) {
+  constructor(private _auditorService: AuditorService, private cdRef: ChangeDetectorRef, private _FunctionsService: FunctionsService, private _wsSocket: WebSocketService) {
     this.EditAuditor = false
     this.ExistUser = false
     this.NotEqualsPassword = false
@@ -100,6 +100,60 @@ export class AuditorComponent implements OnInit {
         this.loadingMore = false;
       }, 1000)
     })
+    this._wsSocket.on('createUser').subscribe((res) => {
+      if (res.mail === this.senData.emailUser) {
+        var formdata = new FormData();
+        if (formdata && this.sendImage != null) {
+          formdata.append('imgProfile', this.sendImage)
+          formdata.append('id', res.id)
+          formdata.append('opt', '2')
+          formdata.append('mail', this.session.mail)
+          formdata.append('token', this.session.token)
+          this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
+            let resp1 = JSON.parse(resp);
+            this.senData.imgProfile = resp1.imageProfile;
+            this.ListEditorsNull = false;
+            this.senData.fecha = this.today;
+            this.senData.id = res.id;
+            this.ListEditors = this.ListEditors || [];
+            let resultAdmin = this.ListEditors.find(obj => {
+              return obj.emailUser === this.senData.emailUser
+            });
+            if (!resultAdmin) {
+              this.senData.mail = this.senData.emailUser;
+
+              this.ListEditors.push(this.senData)
+              this.addAuditor = false;
+              this.ListAllInfo = false;
+
+              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+              alertify.success('Usuario Creado Exitosamente');
+            };
+
+          });
+        } else {
+          this.ListEditorsNull = false;
+          alertify.success('Usuario Creado Exitosamente');
+          this.senData.fecha = this.today;
+          this.senData.id = res.id;
+          this.ListEditors = this.ListEditors || [];
+          let resultAdmin = this.ListEditors.find(obj => {
+            return obj.emailUser === this.senData.emailUser
+          });
+          if (!resultAdmin) {
+            this.ListEditors.push(this.senData)
+            this.addAuditor = false;
+            this.ListAllInfo = false;
+            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+            alertify.success('Usuario Creado Exitosamente');
+          };
+
+        }
+      }
+
+    }, (error) => {
+
+    })
   }
   openFormAuditors() {
     this.EditAuditor = false
@@ -140,7 +194,7 @@ export class AuditorComponent implements OnInit {
   submitNewUserAdmin(data): void {
     let resd: any = null;
     this.senData = data;
-    
+
     if (data.imgProfile) {
       this.sendImage = this.senData.imageProfileFile;
     }
@@ -158,58 +212,7 @@ export class AuditorComponent implements OnInit {
 
 
     })
-    this._wsSocket.on('createUser').subscribe((res) => {
-      if (res.mail === this.senData.emailUser) {
-        var formdata = new FormData();
-        if (formdata && this.sendImage != null) {
-          formdata.append('imgProfile', this.sendImage)
-          formdata.append('id', res.id)
-          formdata.append('opt', '2')
-          formdata.append('mail', this.session.mail)
-          formdata.append('token', this.session.token)
-          this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
-            let resp1 = JSON.parse(resp);
-            this.senData.imgProfile = resp1.imageProfile;
-            this.ListEditorsNull = false;
-            this.senData.fecha = this.today;
-            this.senData.id = res.id;
-            this.ListEditors = this.ListEditors || [];
-            let resultAdmin = this.ListEditors.find(obj => {
-              return obj.emailUser === this.senData.emailUser
-            });
-            if (!resultAdmin) {
-              this.ListEditors.push(this.senData)
-              this.addAuditor = false;
-              this.ListAllInfo = false;
 
-              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
-              alertify.success('Usuario Creado Exitosamente');
-            };
-
-          });
-        } else {
-          this.ListEditorsNull = false;
-          alertify.success('Usuario Creado Exitosamente');
-          this.senData.fecha = this.today;
-          this.senData.id = res.id;
-          this.ListEditors = this.ListEditors || [];
-          let resultAdmin = this.ListEditors.find(obj => {
-            return obj.emailUser === this.senData.emailUser
-          });
-          if (!resultAdmin) {
-            this.ListEditors.push(this.senData)
-            this.addAuditor = false;
-            this.ListAllInfo = false;
-            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
-            alertify.success('Usuario Creado Exitosamente');
-          };
-
-        }
-      }
-
-    }, (error) => {
-
-    })
 
   }
 
@@ -238,13 +241,16 @@ export class AuditorComponent implements OnInit {
   }
   onSubmitEditUser(data: NgForm) {
     var dataSend = {
-      nombre: data.value.nombre,
-      apellido: data.value.apellido,
-      mail: data.value.mail,
-      status: data.value.checModusEdit,
-      id: this.idUserEditNow
+      userEdit: {
+        nombre: data.value.nombre,
+        apellido: data.value.apellido,
+        mail: data.value.mail,
+        status: data.value.checModusEdit,
+        id: this.idUserEditNow
+      },
+      opt: 10
     }
-    this._FunctionsService.editUser(dataSend, 10).then(msg => {
+    this._FunctionsService.editUser(dataSend).then(msg => {
       let respF: any = msg;
       if (respF.type === 'updateData' && !this.fileImageEdit) {
         alertify.error('No haz realizado ningún cambio');
@@ -257,7 +263,7 @@ export class AuditorComponent implements OnInit {
           if (formdata) {
 
             formdata.append('imgProfile', this.fileImageEdit)
-            formdata.append('id', dataSend.id)
+            formdata.append('id', dataSend.userEdit.id)
             formdata.append('opt', '2')
             formdata.append('mail', this.session.mail)
             formdata.append('token', this.session.token)
@@ -271,7 +277,7 @@ export class AuditorComponent implements OnInit {
               this.ListEditors[this.indexNowEdit].mail = data.value.mail
 
               this.ListEditors[this.indexNowEdit].imgProfile = respF.imageProfile;
-              alertify.success('Usuario ' + dataSend.mail + ' editado exitosamente');
+              alertify.success('Usuario ' + dataSend.userEdit.mail + ' editado exitosamente');
               this.EditAuditor = false;
               this.ListAllInfo = false;
 
@@ -284,7 +290,7 @@ export class AuditorComponent implements OnInit {
           this.ListEditors[this.indexNowEdit].mail = data.value.mail
           this.EditAuditor = false;
           this.ListAllInfo = false;
-          alertify.success('Usuario ' + dataSend.mail + ' editado exitosamente');
+          alertify.success('Usuario ' + dataSend.userEdit.mail + ' editado exitosamente');
         }
 
       }
@@ -320,30 +326,30 @@ export class AuditorComponent implements OnInit {
   removeAuditor(data, index): void {
 
     alertify
-    .confirm("Auditores", "¿Eliminar al Auditor " + data.mail + "?",
-      (() => {
-        this._FunctionsService.RemoveUser(data.mail,data.id,11).then(msg => {
-          alertify.success(msg);
-          this.ListEditors.splice(index, 1);
-          if (this.ListEditors.length <= 0) {
-            this.ListEditorsNull = true;
-            this.messageErrorQuery = "- Sin usuarios Comerciales -"
+      .confirm("Auditores", "¿Eliminar al Auditor " + data.mail + "?",
+        (() => {
+          this._FunctionsService.RemoveUser(data.mail, data.id, 11).then(msg => {
+            alertify.success(msg);
+            this.ListEditors.splice(index, 1);
+            if (this.ListEditors.length <= 0) {
+              this.ListEditorsNull = true;
+              this.messageErrorQuery = "- Sin usuarios Comerciales -"
 
-          }
-        }, err => {
-          alertify.error(err)
+            }
+          }, err => {
+            alertify.error(err)
+          })
         })
-      })
-      , () => {
-      }
-    )
-    .set({
+        , () => {
+        }
+      )
+      .set({
 
-      'labels': {
-        'ok': 'Eliminar',
-        'cancel': 'Cancelar'
-      }
-    }).autoCancel(15);
+        'labels': {
+          'ok': 'Eliminar',
+          'cancel': 'Cancelar'
+        }
+      }).autoCancel(15);
   }
 
 
@@ -363,7 +369,7 @@ export class AuditorComponent implements OnInit {
   readUrl(event: any) {
     if (event.target.files && event.target.files[0]) {
       let file = event.target.files[0];
-      this.fileImageEdit = event.target.files[0];      
+      this.fileImageEdit = event.target.files[0];
       this.nameUserPhoto = file.name;
       var reader = new FileReader();
       reader.onload = (event: any) => {

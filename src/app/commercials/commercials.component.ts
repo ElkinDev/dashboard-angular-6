@@ -99,6 +99,61 @@ export class CommercialsComponent implements OnInit {
 
       console.log(err, 'cuaaal es')
     })
+    this._wsSocket.on('createUser').subscribe((res) => {
+      if (res.mail === this.senData.emailUser) {
+        var formdata = new FormData();
+        if (formdata && this.sendImage != null) {
+          formdata.append('imgProfile', this.sendImage)
+          formdata.append('id', res.id)
+          formdata.append('opt', '1')
+          formdata.append('mail', this.session.mail)
+          formdata.append('token', this.session.token)
+          this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
+            let resp1 = JSON.parse(resp);
+            console.log('aquiii entraaaa????', resp1);
+            this.senData.imgProfile = resp1.imageProfile;
+            this.ListSellerNull = false;
+            this.senData.fecha = this.today;
+            this.senData.id = res.id;
+            this.listCommercials = this.listCommercials || [];
+            let resultAdmin = this.listCommercials.find(obj => {
+              return obj.emailUser === this.senData.emailUser
+            });
+            if (!resultAdmin) {
+              this.senData.mail=this.senData.emailUser;
+              this.listCommercials.push(this.senData)
+              this.addSeller = false;
+              this.ListAllInfo = false;
+
+              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+              alertify.success('Usuario Creado Exitosamente');
+            };
+
+          });
+        } else {
+          console.log('see metee veaaa')
+          this.ListSellerNull = false;
+          this.senData.fecha = this.today;
+          this.senData.id = res.id;
+          this.listCommercials = this.listCommercials || [];
+          let resultAdmin = this.listCommercials.find(obj => {
+            return obj.emailUser === this.senData.emailUser
+          });
+          if (!resultAdmin) {
+            this.listCommercials.push(this.senData)
+            this.addSeller = false;
+            this.ListAllInfo = false;
+
+            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+            alertify.success('Usuario Creado Exitosamente');
+          };
+
+        }
+      }
+
+    }, (error) => {
+
+    })
   }
 
   openFormSellers() {
@@ -138,12 +193,12 @@ export class CommercialsComponent implements OnInit {
   progressImage(ev) {
 
   }
-  submitNewUserAdmin(data): void {
+  submitNewUserAdmin(data1) {
     let resd: any = null;
-    this.senData = data;
-    this.senData.RoleUser = this.RoleUser;
+    this.senData = data1;
+    console.log('quee recibeeee????',data1);
 
-    if (data.imgProfile) {
+    if (data1.imgProfile) {
       this.sendImage = this.senData.imageProfileFile;
     }
     this._FunctionsService.CreateUser(this.senData, 7).then(res => {
@@ -160,61 +215,7 @@ export class CommercialsComponent implements OnInit {
 
 
     })
-    this._wsSocket.on('createUser').subscribe((res) => {
-      if (res.mail === this.senData.emailUser) {
-        var formdata = new FormData();
-        if (formdata && this.sendImage != null) {
-          formdata.append('imgProfile', this.sendImage)
-          formdata.append('id', res.id)
-          formdata.append('opt', '1')
-          formdata.append('mail', this.session.mail)
-          formdata.append('token', this.session.token)
-          this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
-            let resp1 = JSON.parse(resp);
-            console.log('aquiii entraaaa????', resp1);
-            this.senData.imgProfile = resp1.imageProfile;
-            this.ListSellerNull = false;
-            this.senData.fecha = this.today;
-            this.senData.id = res.id;
-            this.listCommercials = this.listCommercials || [];
-            let resultAdmin = this.listCommercials.find(obj => {
-              return obj.emailUser === this.senData.emailUser
-            });
-            if (!resultAdmin) {
-              this.listCommercials.push(this.senData)
-              this.addSeller = false;
-              this.ListAllInfo = false;
-
-              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
-              alertify.success('Usuario Creado Exitosamente');
-            };
-
-          });
-        } else {
-          console.log('see metee veaaa')
-          this.ListSellerNull = false;
-          alertify.success('Usuario Creado Exitosamente');
-          this.senData.fecha = this.today;
-          this.senData.id = res.id;
-          this.listCommercials = this.listCommercials || [];
-          let resultAdmin = this.listCommercials.find(obj => {
-            return obj.emailUser === this.senData.emailUser
-          });
-          if (!resultAdmin) {
-            this.listCommercials.push(this.senData)
-            this.addSeller = false;
-            this.ListAllInfo = false;
-
-            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
-            alertify.success('Usuario Creado Exitosamente');
-          };
-
-        }
-      }
-
-    }, (error) => {
-
-    })
+   
 
   }
   editSellerUser(data, index): void {
@@ -243,13 +244,16 @@ export class CommercialsComponent implements OnInit {
   }
   onSubmitEditUser(data: NgForm) {
     var dataSend = {
-      nombre: data.value.nombre,
-      apellido: data.value.apellido,
-      mail: data.value.mail,
-      status: data.value.checModusEdit,
-      id: this.idUserEditNow
+      userEdit:{
+        nombre: data.value.nombre,
+        apellido: data.value.apellido,
+        mail: data.value.mail,
+        status: data.value.checModusEdit,
+        id: this.idUserEditNow
+      },
+      opt:5
     }
-    this._FunctionsService.editUser(dataSend, 5).then(msg => {
+    this._FunctionsService.editUser(dataSend).then(msg => {
       let respF: any = msg;
       if (respF.type === 'updateData' && !this.fileImageEdit) {
         alertify.error('No haz realizado ningún cambio');
@@ -262,7 +266,7 @@ export class CommercialsComponent implements OnInit {
           if (formdata) {
 
             formdata.append('imgProfile', this.fileImageEdit)
-            formdata.append('id', dataSend.id)
+            formdata.append('id', dataSend.userEdit.id)
             formdata.append('opt', '1')
             formdata.append('mail', this.session.mail)
             formdata.append('token', this.session.token)
@@ -276,7 +280,7 @@ export class CommercialsComponent implements OnInit {
               this.listCommercials[this.indexNowEdit].mail = data.value.mail
 
               this.listCommercials[this.indexNowEdit].imgProfile = respF.imageProfile;
-              alertify.success('Usuario ' + dataSend.mail + ' editado exitosamente');
+              alertify.success('Usuario ' + dataSend.userEdit.mail + ' editado exitosamente');
               this.editSeller = false;
               this.ListAllInfo = false;
 
@@ -289,7 +293,7 @@ export class CommercialsComponent implements OnInit {
           this.listCommercials[this.indexNowEdit].mail = data.value.mail
           this.editSeller = false;
           this.ListAllInfo = false;
-          alertify.success('Usuario ' + dataSend.mail + ' editado exitosamente');
+          alertify.success('Usuario ' + dataSend.userEdit.mail + ' editado exitosamente');
         }
 
       }

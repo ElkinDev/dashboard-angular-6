@@ -61,31 +61,34 @@ export class AdminFormComponent implements OnInit {
   }
   onSubmitNewUser(newUser: NgForm): void {
 
-    console.log('traemee el newuser', newUser)
-    var dataSend = newUser.value;
+    let dataSend = newUser.value;
     dataSend.status = dataSend.status == null ? false : dataSend.status;
     if (newUser.value.password == newUser.value.passwordRepeat) {
       this.nameUserPhoto ? dataSend.imgProfile = this.nameUserPhoto : null;
       dataSend.imageProfileFile = this.fileImage
-      let data = {
+      var datasendF = {
         type: 'function',
         event: 'SubmitNewUser',
         data: dataSend
       }
-      this.CloseFormtUserAdmin.emit(data)
-      newUser.resetForm(); // or form.reset();
+      this.CloseFormtUserAdmin.emit(datasendF)
+      newUser.setValue({
+        nombre: null,
+        apellido: null,
+        status:true,
+        password:'',
+        passwordRepeat:'',
+      });
+      this.checkedActivoUser=true;
       this.hrefImageUploaded = 'assets/images/noimage.png';
       this.NotEqualsPassword = false;
-
-      this.modusNewUser = 'Inactivo'
+      datasendF=null;
+      this.nameUserPhoto,this.fileImage=null;
+      
+      this.modusNewUser = 'Activo'
     } else {
       this.NotEqualsPassword = true
     }
-
-  }
-
-  disabledPassErr(): void {
-    this.NotEqualsPassword = false
 
   }
 
@@ -117,7 +120,6 @@ export class AdminFormComponent implements OnInit {
       }
       this.passwordinput = event.target.value;
     } else {
-      console.log('se meteee');
 
       this.PowerPassword = null;
     }
@@ -126,12 +128,16 @@ export class AdminFormComponent implements OnInit {
 
   validatePasswordRepeat(event: any, password) {
     if (event.target.value != password.value) {
-      this.NotEqualsPassword = true;
+      if (password.value.length != 0 && event.target.value.length != 0) {
+        this.NotEqualsPassword = true;
+      }
     } else {
       this.NotEqualsPassword = false;
     }
-    console.log('veamos el pass escrito', password);
   }
+
+  disabledPassErr(): void {
+    this.NotEqualsPassword = false;
 
 
 }

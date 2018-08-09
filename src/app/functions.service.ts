@@ -51,9 +51,7 @@ export class FunctionsService {
       let senData = data;
       senData.mail=this.session.mail;
       senData.token=this.session.token;
-      console.log('Veaamos que trae la senData',senData);
       this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
-        console.log('traeme toda esta shit',res);
         if (!res.err) {
           resolve({type:res.type,msg:res.msg})
         } else {
@@ -79,7 +77,7 @@ export class FunctionsService {
       } 
 
       this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
-        console.log(res)
+        console.log(res,'<---Response --  Send DAta--->',senData)
         if (!res.err) {
           resolve(res.msg)
         } else {
