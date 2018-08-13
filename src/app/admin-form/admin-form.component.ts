@@ -44,7 +44,6 @@ export class AdminFormComponent implements OnInit {
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
 
-    console.log('file uploaded', files)
   }
 
   readUrl(event: any) {
@@ -71,10 +70,13 @@ export class AdminFormComponent implements OnInit {
         event: 'SubmitNewUser',
         data: dataSend
       }
+      console.log(dataSend,'quejestoo?')
       this.CloseFormtUserAdmin.emit(datasendF)
       newUser.setValue({
+        imgProfile:null,
         nombre: null,
         apellido: null,
+        emailUser:null,
         status:true,
         password:'',
         passwordRepeat:'',
@@ -83,7 +85,8 @@ export class AdminFormComponent implements OnInit {
       this.hrefImageUploaded = 'assets/images/noimage.png';
       this.NotEqualsPassword = false;
       datasendF=null;
-      this.nameUserPhoto,this.fileImage=null;
+      this.nameUserPhoto=null;
+      this.fileImage=null;
       
       this.modusNewUser = 'Activo'
     } else {
@@ -127,7 +130,7 @@ export class AdminFormComponent implements OnInit {
   }
 
   validatePasswordRepeat(event: any, password) {
-    if (event.target.value != password.value) {
+    if (event.target.value != password.value && password.value.length && event.target.value.length) {
       if (password.value.length != 0 && event.target.value.length != 0) {
         this.NotEqualsPassword = true;
       }
@@ -140,4 +143,5 @@ export class AdminFormComponent implements OnInit {
     this.NotEqualsPassword = false;
 
 
+}
 }

@@ -56,7 +56,7 @@ export class CommercialsComponent implements OnInit {
     this.checkedActivoUser = true;
     this.modusEditUser = 'Activo';
     this.ListAllInfo = false;
-    this.RoleUser = "Comercial";
+    this.RoleUser = "comercial";
     this.loadingMore = true;
     this.urlMainServerPhotos = environment.ws_url + '/public/dashboard/assets/images/'
     this.urlMainServer = environment.ws_url + '/public/imgs/'
@@ -99,55 +99,84 @@ export class CommercialsComponent implements OnInit {
 
       console.log(err, 'cuaaal es')
     })
-    this._wsSocket.on('createUser').subscribe((res) => {
+    this._wsSocket.on('createUser:' + this.RoleUser).subscribe((res) => {
+      console.log('llegaaaaa',res);
       if (res.mail === this.senData.emailUser) {
         var formdata = new FormData();
         if (formdata && this.sendImage != null) {
+          console.log('aqui see meteee');
           formdata.append('imgProfile', this.sendImage)
           formdata.append('id', res.id)
           formdata.append('opt', '1')
           formdata.append('mail', this.session.mail)
           formdata.append('token', this.session.token)
+          this.ListSellerNull = false;
+          this.senData.fecha = res.dateCreate;
+          this.senData.id = res.id;
+          this.listCommercials = this.listCommercials || [];
           this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
             let resp1 = JSON.parse(resp);
-            console.log('aquiii entraaaa????', resp1);
             this.senData.imgProfile = resp1.imageProfile;
-            this.ListSellerNull = false;
-            this.senData.fecha = this.today;
-            this.senData.id = res.id;
-            this.listCommercials = this.listCommercials || [];
+            console.log(resp1,'quee nos traeeeee');
+            if (this.listCommercials != []) {
+              let resultAdmin = this.listCommercials.find(obj => {
+                return obj.emailUser === this.senData.emailUser
+              });
+              if (!resultAdmin) {
+
+                this.senData.mail = this.senData.emailUser;
+                this.sendImage = null;
+                console.log(this.senData)
+                this.listCommercials.push(this.senData)
+                this.addSeller = false;
+                this.ListAllInfo = false;
+                this.senData = null;
+                this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+                alertify.success('Usuario Creado Exitosamente');
+              };
+            } else {
+
+              this.senData.mail = this.senData.emailUser;
+              this.sendImage = null;
+              this.listCommercials.push(this.senData)
+              this.addSeller = false;
+              this.ListAllInfo = false;
+              this.senData = null;
+              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+              alertify.success('Usuario Creado Exitosamente');
+            }
+
+
+
+
+
+          });
+        } else {
+          this.senData.fecha = res.dateCreate;
+          this.senData.id = res.id;
+          if (this.listCommercials != []) {
+
             let resultAdmin = this.listCommercials.find(obj => {
               return obj.emailUser === this.senData.emailUser
             });
             if (!resultAdmin) {
-              this.senData.mail=this.senData.emailUser;
-              this.listCommercials.push(this.senData)
+              this.sendImage = null;              
+              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+              this.listCommercials.push(this.senData);
               this.addSeller = false;
               this.ListAllInfo = false;
-
-              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+              this.senData = null;
               alertify.success('Usuario Creado Exitosamente');
             };
-
-          });
-        } else {
-          console.log('see metee veaaa')
-          this.ListSellerNull = false;
-          this.senData.fecha = this.today;
-          this.senData.id = res.id;
-          this.listCommercials = this.listCommercials || [];
-          let resultAdmin = this.listCommercials.find(obj => {
-            return obj.emailUser === this.senData.emailUser
-          });
-          if (!resultAdmin) {
+          } else {
+            this.sendImage = null;            
+            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
             this.listCommercials.push(this.senData)
             this.addSeller = false;
             this.ListAllInfo = false;
-
-            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+            this.senData = null;
             alertify.success('Usuario Creado Exitosamente');
-          };
-
+          }
         }
       }
 
@@ -193,12 +222,14 @@ export class CommercialsComponent implements OnInit {
   progressImage(ev) {
 
   }
-  submitNewUserAdmin(data1) {
+  submitNewUserAdmin(data) {
     let resd: any = null;
-    this.senData = data1;
-    console.log('quee recibeeee????',data1);
-
-    if (data1.imgProfile) {
+    this.senData = data;
+    this.senData.RoleUser = this.RoleUser;
+    if (this.senData.imageProfileFile != null) {
+      this.sendImage = this.senData.imageProfileFile;
+    }
+    if (data.imgProfile) {
       this.sendImage = this.senData.imageProfileFile;
     }
     this._FunctionsService.CreateUser(this.senData, 7).then(res => {

@@ -71,6 +71,7 @@ export class CustomersPeopleComponent implements OnInit {
   }
   ngOnInit() {
     this._customersService.getAllCustomers().then((res) => {
+      console.log(res,'y vengaaaaa???')
       if (!res) {
         this.ListCustomers = null
         this.messageErrorQuery = "No Hay resultados"

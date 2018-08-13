@@ -58,7 +58,7 @@
     <div class="container " [hidden]="loadingMore">
       <div class="row p-3">
         <div class="formAdmin" [hidden]='!addAdmin' [ngClass]="{'col-md-4':addAdmin }">
-          <app-users-form [rolUser]="RoleUser" (CloseFormtUserAdmin)="receiveMessage($event)"></app-users-form>
+          <app-users-form [rolUser]="Role" (CloseFormtUserAdmin)="receiveMessage($event)"></app-users-form>
 
         </div>
         <div class="formAdmin" [hidden]='!EditAdmin' [ngClass]="{'col-md-4':EditAdmin }">
@@ -174,13 +174,13 @@
                     </a>
                     <div class="media-body">
                       <h6 class="display-6 m-0">{{admin.nombre +' '+ admin.apellido}}</h6>
-                      <p class="m-0 p-0">{{RoleUser}}</p>
+                      <p class="m-0 p-0">{{Role}}</p>
                       <span class="badge " [ngClass]="{'badge-success':admin.status,'badge-danger':!admin.status}">{{admin.status ? 'Activo':'Inactivo'}}</span>
                     </div>
                   </div>
                   <div class="card-body">
 
-                    <div class="corner-ribon black-ribon pointer" (click)="editAdminUser(admin,i)" title="Editar {{RoleUser}}">
+                    <div class="corner-ribon black-ribon pointer" (click)="editAdminUser(admin,i)" title="Editar {{Role}}">
                       <i class="fa fa-edit" aria-hidden="true"></i>
                     </div>
                     <hr>
@@ -188,7 +188,7 @@
                       <p class="m-0 float-right color-danger">
                         <small> Creado: {{admin.fecha}} </small>
                       </p>
-                      <a (click)="removeAdmin(admin,i)" title="Eliminar {{RoleUser}}" class="float-left pointer">
+                      <a (click)="removeAdmin(admin,i)" title="Eliminar {{Role}}" class="float-left pointer">
                         <i class="ti-trash text-danger" aria-hidden="true"></i>
                       </a>
 

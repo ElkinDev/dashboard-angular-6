@@ -24,7 +24,7 @@ import { AdminFormComponent } from './admin-form/admin-form.component';
 import { CustomersFormComponent } from './customers-form/customers-form.component';
 
 export const appRoutes:Routes = [
-  { path: '', redirectTo: '/Dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   {
     path:'login',
     component:LoginComponent,

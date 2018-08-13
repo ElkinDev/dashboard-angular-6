@@ -23,7 +23,6 @@ export class FunctionsService {
   }
   createSessionStorage(data) {
     localStorage.setItem('user', JSON.stringify(data))
-    console.log(localStorage.user)
 
   }
   CreateUser(data,opt) {
@@ -77,7 +76,6 @@ export class FunctionsService {
       } 
 
       this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
-        console.log(res,'<---Response --  Send DAta--->',senData)
         if (!res.err) {
           resolve(res.msg)
         } else {
@@ -126,5 +124,15 @@ export class FunctionsService {
           
         }
 
+  }
+
+  initLogin(data){
+    return new Promise((resolve, reject) => {
+      this._wsSocket.emit('logInLogOutDashboar', data).subscribe((res) => {
+      }, (error) => {
+        reject({ err: true, msg: error.msg })
+
+      })
+    });
   }
 }

@@ -38,7 +38,7 @@ export class AdminsComponent implements OnInit {
   sendImage;
   fileImageEdit;
   idUserEditNow;
-
+  Role;
   EditUser = new FormGroup({
 
     imgProfile: new FormControl(),
@@ -61,7 +61,8 @@ export class AdminsComponent implements OnInit {
     this.checkedActivoUser = true
     this.modusEditUser = 'Activo'
     this.ListAllInfo = false
-    this.RoleUser = "Administrador";
+    this.RoleUser = "admin";
+    this.Role = "Administrador";
     this.loadingMore = true;
     this.urlMainServerPhotos = environment.ws_url + '/public/dashboard/assets/images/'
     this.urlMainServer = environment.ws_url + '/public/imgs/'
@@ -103,62 +104,85 @@ export class AdminsComponent implements OnInit {
         this.loadingMore = false;
       }, 1000)
 
-      console.log(err, 'cuaaal es')
 
     })
-
-    this._wsSocket.on('createUser').subscribe((res) => {
+    this._wsSocket.on('createUser:' + this.RoleUser).subscribe((res) => {
       if (res.mail === this.senData.emailUser) {
         var formdata = new FormData();
         if (formdata && this.sendImage != null) {
+          console.log('aqui see meteee');
           formdata.append('imgProfile', this.sendImage)
           formdata.append('id', res.id)
           formdata.append('opt', '0')
           formdata.append('mail', this.session.mail)
           formdata.append('token', this.session.token)
+          this.ListAdminsnull = false;
+          this.senData.fecha = res.dateCreate;
+          this.senData.id = res.id;
+          this.ListAdmins = this.ListAdmins || [];
           this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
             let resp1 = JSON.parse(resp);
             this.senData.imgProfile = resp1.imageProfile;
-            this.ListAdminsnull = false;
-            this.senData.fecha = this.today;
-            this.senData.id = res.id;
-            this.ListAdmins = this.ListAdmins || [];
-            let resultAdmin = this.ListAdmins.find(obj => {
-              return obj.emailUser === this.senData.emailUser
-            });
-            if (!resultAdmin) {
-              this.senData.mail=this.senData.emailUser;
-              
+            console.log(resp1,'quee nos traeeeee');
+            if (this.ListAdmins != []) {
+              let resultAdmin = this.ListAdmins.find(obj => {
+                return obj.emailUser === this.senData.emailUser
+              });
+              if (!resultAdmin) {
+
+                this.senData.mail = this.senData.emailUser;
+                this.sendImage = null;
+                console.log(this.senData)
+                this.ListAdmins.push(this.senData)
+                this.addAdmin = false;
+                this.ListAllInfo = false;
+                this.senData = null;
+                this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+                alertify.success('Usuario Creado Exitosamente');
+              };
+            } else {
+
+              this.senData.mail = this.senData.emailUser;
+              this.sendImage = null;
               this.ListAdmins.push(this.senData)
               this.addAdmin = false;
               this.ListAllInfo = false;
-
+              this.senData = null;
               this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
               alertify.success('Usuario Creado Exitosamente');
-            };
+            }
+
+
 
 
 
           });
         } else {
-          console.log('see metee veaaa')
-          this.ListAdminsnull = false;
-          alertify.success('Usuario Creado Exitosamente');
-          this.senData.fecha = this.today;
+          this.senData.fecha = res.dateCreate;
           this.senData.id = res.id;
-          this.ListAdmins = this.ListAdmins || [];
-          let resultAdmin = this.ListAdmins.find(obj => {
-            return obj.emailUser === this.senData.emailUser
-          });
-          if (!resultAdmin) {
+          if (this.ListAdmins != []) {
+
+            let resultAdmin = this.ListAdmins.find(obj => {
+              return obj.emailUser === this.senData.emailUser
+            });
+            if (!resultAdmin) {
+              this.sendImage = null;              
+              this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+              this.ListAdmins.push(this.senData);
+              this.addAdmin = false;
+              this.ListAllInfo = false;
+              this.senData = null;
+              alertify.success('Usuario Creado Exitosamente');
+            };
+          } else {
+            this.sendImage = null;            
+            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
             this.ListAdmins.push(this.senData)
             this.addAdmin = false;
             this.ListAllInfo = false;
-
-            this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
+            this.senData = null;
             alertify.success('Usuario Creado Exitosamente');
-          };
-
+          }
         }
       }
 
@@ -205,8 +229,7 @@ export class AdminsComponent implements OnInit {
     let resd: any = null;
     this.senData = data;
     this.senData.RoleUser = this.RoleUser;
-    console.log('traeme toda la data del submit', data);
-    if (data.imgProfile) {
+    if (this.senData.imageProfileFile != null) {
       this.sendImage = this.senData.imageProfileFile;
     }
     this._FunctionsService.CreateUser(this.senData, 3).then(res => {
@@ -217,6 +240,7 @@ export class AdminsComponent implements OnInit {
 
         });
       }
+
 
     }, err => {
       alertify.error(err);
@@ -229,10 +253,8 @@ export class AdminsComponent implements OnInit {
 
   }
   progressImage(ev) {
-    // console.log('veaa veaa veaa',ev)
   }
   editAdminUser(data, index): void {
-    console.log(data, 'veas6erg6rea');
     this.indexNowEdit = index;
     this.EditUser.patchValue({
       nombre: data.nombre,
@@ -255,7 +277,6 @@ export class AdminsComponent implements OnInit {
 
   }
   onSubmitEditUser(data: NgForm) {
-    console.log('quiero verte esotoo', data.value)
     var dataSend = {
       nombre: data.value.nombre,
       apellido: data.value.apellido,
@@ -357,7 +378,6 @@ export class AdminsComponent implements OnInit {
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
 
-    console.log('file uploaded', files)
   }
 
   readUrl(event: any) {
