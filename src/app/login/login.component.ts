@@ -12,10 +12,14 @@ import { Router } from "@angular/router";
 export class LoginComponent implements OnInit {
   dontExist: boolean = false
   passwordincorrect: boolean = false
+  msgError;
   constructor(
-    private FunctionsService: FunctionsService,
+    private _FunctionsService: FunctionsService,
     private router: Router
-  ) { }
+  ) {
+    this.msgError=null;
+    
+   }
   errorUsername: string
   model: any = {};
 
@@ -23,27 +27,47 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
   onSubmit(login: NgForm) {
-
+    this.msgError=null;
+    let sendData={
+      opt:0,
+      mail:login.value.email,
+      psw:login.value.password
+    };
     if (login.valid) {
-      let userRes = userList.find(x => x.email === login.value.email)
-      let token
-      if (userRes) {
-        if (login.value.password === userRes.pass) {
-          token = 'masmda65282374a'
-          document.cookie = 'comprobamos=---' + token + '--' + userRes.numdni + '---;expires=' + this.FunctionsService.generateTime()
-          userRes.token = token
-          this.FunctionsService.createSessionStorage(userRes)
-          setTimeout(() => {
-            this.router.navigate(['/Dashboard']);
-
-          }, 1000)
-        } else {
-          this.passwordincorrect = true
-        }
-
-      } else {
+    console.log('entraaaaaaaaaaa');
+      
+    this._FunctionsService.logInLogOutDashboar(sendData).then(data => {
+      let dataResponse:any=data;
+      if(dataResponse.err){
         this.dontExist = true
+        this.msgError=dataResponse.msg
+        
+      }else{
+        if (dataResponse.res){
+          this._FunctionsService.createSessionStorage({token:dataResponse.token,name:dataResponse.name,role:dataResponse.role}).then(resp => {
+            let resp1:any=resp
+            if(!resp1.err){
+              setTimeout(() => {
+                this.router.navigate(['/Dashboard']);
+    
+              }, 1000)
+            }
+          })
+        }else{
+          this.dontExist = true
+        this.msgError= 'Error inesperado - intente nuevamente.';
+        }
       }
+
+    },err=>{
+
+    })
+        
+       
+          // this.passwordincorrect = true
+        
+
+      
     }
   }
 
