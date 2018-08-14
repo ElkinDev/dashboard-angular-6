@@ -25,9 +25,12 @@ export class LoginComponent implements OnInit {
 
 
   ngOnInit() {
+    
   }
   onSubmit(login: NgForm) {
     this.msgError=null;
+    this.passwordincorrect,this.dontExist = false;
+    
     let sendData={
       opt:0,
       mail:login.value.email,
@@ -39,12 +42,17 @@ export class LoginComponent implements OnInit {
     this._FunctionsService.logInLogOutDashboar(sendData).then(data => {
       let dataResponse:any=data;
       if(dataResponse.err){
-        this.dontExist = true
-        this.msgError=dataResponse.msg
+        if(dataResponse.type=='noUserPass'){
+          this.passwordincorrect = true
+        }else{
+          this.dontExist = true
+          this.msgError=dataResponse.msg
+        }
+       
         
       }else{
         if (dataResponse.res){
-          this._FunctionsService.createSessionStorage({token:dataResponse.token,name:dataResponse.name,role:dataResponse.role}).then(resp => {
+          this._FunctionsService.createSessionStorage({token:dataResponse.token,name:dataResponse.name,role:dataResponse.role,mail:login.value.email}).then(resp => {
             let resp1:any=resp
             if(!resp1.err){
               setTimeout(() => {
@@ -54,6 +62,7 @@ export class LoginComponent implements OnInit {
             }
           })
         }else{
+        
           this.dontExist = true
         this.msgError= 'Error inesperado - intente nuevamente.';
         }
@@ -64,7 +73,6 @@ export class LoginComponent implements OnInit {
     })
         
        
-          // this.passwordincorrect = true
         
 
       

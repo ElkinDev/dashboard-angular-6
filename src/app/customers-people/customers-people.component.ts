@@ -33,10 +33,7 @@ export class CustomersPeopleComponent implements OnInit {
   mask: any[] = ['+57', '', '', ' ', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
   urlMainServerPhotos;
   sendImage;
-  session = {
-    mail: 'sonickfaber7@yahoo.es',
-    token: 'edbee4f4050c98ad293df52d'
-  };
+  session;
   imgProfileActually;
   EditCustomer = new FormGroup({
     imgProfile: new FormControl(),
@@ -64,6 +61,7 @@ export class CustomersPeopleComponent implements OnInit {
       this.typeId = res;
     });
     this.indexNowEdit, this.idNowEdit, this.nameUserPhoto, this.sendData, this.sendImage, this.imgProfileActually = null;
+    this.session=this._FunctionsService.returnCurrentSession();
 
   }
   ngAfterViewChecked() {

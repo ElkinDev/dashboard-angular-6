@@ -33,10 +33,7 @@ export class CustomersFormComponent implements OnInit {
   mask: any[] = ['+57', '', '', ' ', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
   senData;
   sendImage;
-  session = {
-    mail: 'sonickfaber7@yahoo.es',
-    token: 'edbee4f4050c98ad293df52d'
-  }
+  session;
   roleUser;
   constructor(private _location: Location, private cdRef: ChangeDetectorRef, private _CustomersService: CustomersService, private router: Router, private _FunctionsService: FunctionsService, private _wsSocket: WebSocketService) {
     this.urlMainServerPhotos = environment.ws_url + '/public/dashboard/assets/images/'
@@ -55,14 +52,16 @@ export class CustomersFormComponent implements OnInit {
     this.senData, this.PowerPassword = null, this.sendImage = null;
     this.passwordinput = '';
     this.roleUser='customer';
+    this.session=this._FunctionsService.returnCurrentSession()
+
   }
   ngAfterViewChecked() {
     this.cdRef.detectChanges();
   }
   ngOnInit() {
-    this._wsSocket.on('createUser:'+this.roleUser).subscribe((res) => {
-      if (res.mail === this.senData.emailUser) {
 
+    this._wsSocket.on('createUser:' + this.roleUser).subscribe((res) => {
+      if (res.mail.match(new RegExp(this.senData.emailUser, 'gi'))) {      
         var formdata = new FormData();
         if (formdata && this.sendImage != null) {
           formdata.append('imgProfile', this.sendImage)

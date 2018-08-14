@@ -1,67 +1,19 @@
 import { Injectable } from '@angular/core';
 import { WebSocketService } from '../websocket.service';
+import { FunctionsService } from '../functions.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommercialsService {
 
-  //guias de uso faber para uso de API en comerciales
+  constructor(private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService) { }
+  session = this._FunctionsService.returnCurrentSession()
 
-  
-
-  // // edit users comercials
-  // socket.emit('userRolesEvents', {
-  //  opt: 5,
-  //  mail: 'sonickfaber7@yahoo.es',
-  //  token: '96f0279ac90a57fd8df19e7a',
-  //  userEdit:{
-  //    nombre: 'Sonia María',
-  //    apellido: 'Mendoza Urrea',
-  //    mail: 'sonickfaber6@gmail.com',
-  //    id: '224b52a1-6bb3-4534-af0a-bc6ec2f95ac6'
-  //  }
-  // }, resp=>{
-  //  console.log(resp)
-  // })
-
-  // //delete users comercial
-  // socket.emit('userRolesEvents', {
-  //  opt:6,
-  //  mail: 'sonickfaber7@yahoo.es',
-  //  token: '96f0279ac90a57fd8df19e7a',
-  //  userDel:{
-  //    mail: 'sonickfaber6@gmail.com',
-  //    id: '224b52a1-6bb3-4534-af0a-bc6ec2f95ac6'
-  //  }
-  // }, resp=>{
-  //  console.log(resp)
-  // })
-
-  // //add new user comercial
-  // socket.emit('userRolesEvents', {
-  //  nombre: 'Faber Torres',
-  //  apellido: 'Urrego',
-  //  emailUser: 'sonickfaber6@gmail.com',
-  //  password: 'SSl123456',
-  //  passwordRepeat: 'SSl123456',
-  //  status: true,
-  //  opt:7,
-  //  mail: 'sonickfaber7@yahoo.es',
-  //  token: '96f0279ac90a57fd8df19e7a'
-  // }, resp=>{
-  //  console.log(resp)
-  // })
-
-  constructor(private _wsSocket: WebSocketService) { }
-  session = {
-    mail: 'elkinmendoza00@gmail.com',
-    token: 'asdasdasdasdasdasd'
-  }
   getAllCommercials() {
     let promise = new Promise((resolve, reject) => {
-      
-      this._wsSocket.emit('userRolesEvents', {opt:4,mail:'sonickfaber7@yahoo.es',token:'edbee4f4050c98ad293df52d'}).subscribe(res => {
+
+      this._wsSocket.emit('userRolesEvents', { opt: 4, mail: this.session.mail, token: this.session.token }).subscribe(res => {
         if (!res.err) {
           if (res.data.length) {
             resolve(res.data)
@@ -82,7 +34,10 @@ export class CommercialsService {
 
   }
   CreateSellerUser(data) {
+
     return new Promise((resolve, reject) => {
+      this.session = this._FunctionsService.returnCurrentSession()
+
       let senData = data;
       senData.mail = this.session.mail
       senData.token = this.session.token
@@ -102,6 +57,7 @@ export class CommercialsService {
   }
   editUser(data) {
     return new Promise((resolve, reject) => {
+      this.session = this._FunctionsService.returnCurrentSession()      
       let senData = data;
       senData.mail = this.session.mail
       senData.token = this.session.token
@@ -119,11 +75,13 @@ export class CommercialsService {
   }
   RemoveUserAdmin(email) {
     return new Promise((resolve, reject) => {
+      this.session = this._FunctionsService.returnCurrentSession()
+      
       let senData = {
-        emailUser:email,
-        mail:this.session.mail,
-        token:this.session.token
-      } 
+        emailUser: email,
+        mail: this.session.mail,
+        token: this.session.token
+      }
       this._wsSocket.emit('RemoveUserPanel', senData).subscribe((res) => {
         if (!res.err) {
           resolve(res.msg)

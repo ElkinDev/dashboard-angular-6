@@ -37,10 +37,7 @@ export class AuditorComponent implements OnInit {
   sendImage;
   fileImageEdit;
   idUserEditNow;
-  session = {
-    mail: 'sonickfaber7@yahoo.es',
-    token: 'edbee4f4050c98ad293df52d'
-  }
+  session;
   EditUser = new FormGroup({
 
     imgProfile: new FormControl(),
@@ -72,6 +69,7 @@ export class AuditorComponent implements OnInit {
     this.sendImage = null;
     this.fileImageEdit = null;
     this.idUserEditNow = null;
+    this.session=this._FunctionsService.returnCurrentSession()
 
 
   }
@@ -100,9 +98,9 @@ export class AuditorComponent implements OnInit {
         this.loadingMore = false;
       }, 1000)
     })
+
     this._wsSocket.on('createUser:' + this.RoleUser).subscribe((res) => {
-      console.log('llegaaaaa',res);
-      if (res.mail === this.senData.emailUser) {
+      if (res.mail.match(new RegExp(this.senData.emailUser, 'gi'))) {      
         var formdata = new FormData();
         if (formdata && this.sendImage != null) {
           console.log('aqui see meteee');
@@ -118,7 +116,7 @@ export class AuditorComponent implements OnInit {
           this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
             let resp1 = JSON.parse(resp);
             this.senData.imgProfile = resp1.imageProfile;
-            console.log(resp1,'quee nos traeeeee');
+            console.log(resp1, 'quee nos traeeeee');
             if (this.ListEditors != []) {
               let resultAdmin = this.ListEditors.find(obj => {
                 return obj.emailUser === this.senData.emailUser
@@ -161,7 +159,9 @@ export class AuditorComponent implements OnInit {
               return obj.emailUser === this.senData.emailUser
             });
             if (!resultAdmin) {
-              this.sendImage = null;              
+              this.senData.mail = this.senData.emailUser;
+              
+              this.sendImage = null;
               this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
               this.ListEditors.push(this.senData);
               this.addAuditor = false;
@@ -170,7 +170,9 @@ export class AuditorComponent implements OnInit {
               alertify.success('Usuario Creado Exitosamente');
             };
           } else {
-            this.sendImage = null;            
+            this.senData.mail = this.senData.emailUser;
+            
+            this.sendImage = null;
             this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
             this.ListEditors.push(this.senData)
             this.addAuditor = false;
@@ -222,7 +224,7 @@ export class AuditorComponent implements OnInit {
 
   }
 
-  
+
   submitNewUserAdmin(data): void {
     let resd: any = null;
     this.senData = data;

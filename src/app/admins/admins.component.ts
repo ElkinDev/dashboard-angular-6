@@ -48,10 +48,7 @@ export class AdminsComponent implements OnInit {
     checModusEdit: new FormControl(),
 
   });
-  session = {
-    mail: 'sonickfaber7@yahoo.es',
-    token: 'edbee4f4050c98ad293df52d'
-  }
+  session;
   @Output() CloseFormtUserAdmin = new EventEmitter<object>();
 
   constructor(private _adminService: adminsService, private cdRef: ChangeDetectorRef, private _FunctionsService: FunctionsService, private _wsSocket: WebSocketService) {
@@ -76,6 +73,7 @@ export class AdminsComponent implements OnInit {
     this.sendImage = null;
     this.fileImageEdit = null;
     this.idUserEditNow = null;
+    this.session=this._FunctionsService.returnCurrentSession()
   }
 
   ngAfterViewChecked() {
@@ -83,6 +81,7 @@ export class AdminsComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('escuchando')
     this._adminService.getAllAdmins().then((res) => {
 
       if (!res) {
@@ -107,10 +106,10 @@ export class AdminsComponent implements OnInit {
 
     })
     this._wsSocket.on('createUser:' + this.RoleUser).subscribe((res) => {
-      if (res.mail === this.senData.emailUser) {
+      if (res.mail.match(new RegExp(this.senData.emailUser, 'gi'))) {
         var formdata = new FormData();
         if (formdata && this.sendImage != null) {
-          console.log('aqui see meteee');
+          
           formdata.append('imgProfile', this.sendImage)
           formdata.append('id', res.id)
           formdata.append('opt', '0')
@@ -123,7 +122,6 @@ export class AdminsComponent implements OnInit {
           this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
             let resp1 = JSON.parse(resp);
             this.senData.imgProfile = resp1.imageProfile;
-            console.log(resp1,'quee nos traeeeee');
             if (this.ListAdmins != []) {
               let resultAdmin = this.ListAdmins.find(obj => {
                 return obj.emailUser === this.senData.emailUser
@@ -132,7 +130,6 @@ export class AdminsComponent implements OnInit {
 
                 this.senData.mail = this.senData.emailUser;
                 this.sendImage = null;
-                console.log(this.senData)
                 this.ListAdmins.push(this.senData)
                 this.addAdmin = false;
                 this.ListAllInfo = false;
@@ -166,6 +163,8 @@ export class AdminsComponent implements OnInit {
               return obj.emailUser === this.senData.emailUser
             });
             if (!resultAdmin) {
+              this.senData.mail = this.senData.emailUser;
+              
               this.sendImage = null;              
               this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
               this.ListAdmins.push(this.senData);
@@ -175,6 +174,8 @@ export class AdminsComponent implements OnInit {
               alertify.success('Usuario Creado Exitosamente');
             };
           } else {
+            this.senData.mail = this.senData.emailUser;
+            
             this.sendImage = null;            
             this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
             this.ListAdmins.push(this.senData)

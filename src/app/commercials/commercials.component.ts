@@ -35,10 +35,7 @@ export class CommercialsComponent implements OnInit {
   fileImageEdit;
   idUserEditNow;
   urlMainServerPhotos;
-  session = {
-    mail: 'sonickfaber7@yahoo.es',
-    token: 'edbee4f4050c98ad293df52d'
-  }
+  session;
   EditUser = new FormGroup({
 
     imgProfile: new FormControl(),
@@ -70,6 +67,7 @@ export class CommercialsComponent implements OnInit {
     this.sendImage = null;
     this.fileImageEdit = null;
     this.idUserEditNow = null;
+    this.session=this._FunctionsService.returnCurrentSession()
 
   }
   ngAfterViewChecked() {
@@ -99,9 +97,9 @@ export class CommercialsComponent implements OnInit {
 
       console.log(err, 'cuaaal es')
     })
+    
     this._wsSocket.on('createUser:' + this.RoleUser).subscribe((res) => {
-      console.log('llegaaaaa',res);
-      if (res.mail === this.senData.emailUser) {
+      if (res.mail.match(new RegExp(this.senData.emailUser, 'gi'))) {
         var formdata = new FormData();
         if (formdata && this.sendImage != null) {
           console.log('aqui see meteee');
@@ -160,6 +158,7 @@ export class CommercialsComponent implements OnInit {
               return obj.emailUser === this.senData.emailUser
             });
             if (!resultAdmin) {
+              this.senData.mail = this.senData.emailUser;
               this.sendImage = null;              
               this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
               this.listCommercials.push(this.senData);
@@ -169,6 +168,7 @@ export class CommercialsComponent implements OnInit {
               alertify.success('Usuario Creado Exitosamente');
             };
           } else {
+            this.senData.mail = this.senData.emailUser;            
             this.sendImage = null;            
             this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
             this.listCommercials.push(this.senData)

@@ -1,29 +1,20 @@
 import { Injectable } from '@angular/core';
 import { WebSocketService } from '../websocket.service';
+import { FunctionsService } from '../functions.service';
 
 @Injectable()
 
 export class adminsService {
-  constructor(private _wsSocket: WebSocketService) {
+  session;
+  
+  constructor(private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService) {
+    this.session = this._FunctionsService.returnCurrentSession()
 
-  }
-  session = {
-    mail: 'sonickfaber7@yahoo.es',
-    token: 'edbee4f4050c98ad293df52d'
   }
   getAllAdmins() {
     let promise = new Promise((resolve, reject) => {
-
-      // socket.emit('userRolesEvents', {
-      //   opt:0,
-      //   mail: 'sonickfaber7@yahoo.es',
-      //   token: '96f0279ac90a57fd8df19e7a'
-      // }, resp=>{
-      //   console.log(resp)
-      // })
-
-      this._wsSocket.emit('userRolesEvents', {opt:0,mail:'sonickfaber7@yahoo.es',token:'edbee4f4050c98ad293df52d'}).subscribe((res) => {
-        console.log(res, 'FT iopuhsergsergh')
+      this.session = this._FunctionsService.returnCurrentSession()
+      this._wsSocket.emit('userRolesEvents', {opt:0,mail:this.session.mail,token:this.session.token}).subscribe((res) => {
         if (!res.err) {
           if (res.data.length) {
             resolve(res.data)
@@ -45,7 +36,7 @@ export class adminsService {
 
   CreateUserAdmin(data) {
     return new Promise((resolve, reject) => {
-
+      this.session = this._FunctionsService.returnCurrentSession()
       let senData = data;
       senData.mail = this.session.mail
       senData.token = this.session.token
@@ -66,7 +57,7 @@ export class adminsService {
   }
   editUser(data) {
     return new Promise((resolve, reject) => {
-   
+      this.session = this._FunctionsService.returnCurrentSession()   
       let senData = {
         opt:1,
         mail:this.session.mail,
@@ -75,7 +66,6 @@ export class adminsService {
       }
 
       this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
-        console.log('traeme toda esta shit',res);
         if (!res.err) {
           resolve({type:res.type,msg:res.msg})
         } else {
@@ -89,6 +79,7 @@ export class adminsService {
     });
   }
   RemoveUserAdmin(email,id) {
+    this.session = this._FunctionsService.returnCurrentSession()    
     return new Promise((resolve, reject) => {
       let senData = {
         opt:2,
@@ -101,7 +92,6 @@ export class adminsService {
       } 
 
       this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
-        console.log(res)
         if (!res.err) {
           resolve(res.msg)
         } else {

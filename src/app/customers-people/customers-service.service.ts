@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { WebSocketService } from '../websocket.service';
+import { FunctionsService } from '../functions.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomersService {
 
-  constructor(private _wsSocket: WebSocketService) { }
-  session = {
-    mail: 'sonickfaber7@yahoo.es',
-    token: 'edbee4f4050c98ad293df52d'
-  }
+  constructor(private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService) { }
+  session=this._FunctionsService.returnCurrentSession()
+
   getAllCustomers() {
     let promise = new Promise((resolve, reject) => {
+      this.session=this._FunctionsService.returnCurrentSession();
       let data = {
         mail: this.session.mail,
         token: this.session.token,
@@ -39,6 +39,8 @@ export class CustomersService {
   }
   createCustomer(data) {
     return new Promise((resolve, reject) => {
+      this.session=this._FunctionsService.returnCurrentSession();
+      
       let senData = data;
       senData.mail = this.session.mail
       senData.token = this.session.token

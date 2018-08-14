@@ -1,22 +1,21 @@
 import { Injectable } from '@angular/core';
 import { WebSocketService } from '../websocket.service';
+import { FunctionsService } from '../functions.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuditorService {
 
-  constructor(private _wsSocket: WebSocketService) {
+  constructor(private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService) {
 
   }
-  session = {
-    mail: 'elkinmendoza00@gmail.com',
-    token: 'asdasdasdasdasdasd'
-  }
+  session = this._FunctionsService.returnCurrentSession()
+
   getAllEditors() {
     let promise = new Promise((resolve, reject) => {
-      
-      this._wsSocket.emit('userRolesEvents', {opt:8,mail:'sonickfaber7@yahoo.es',token:'edbee4f4050c98ad293df52d'}).subscribe(res => {
+      this.session = this._FunctionsService.returnCurrentSession()
+      this._wsSocket.emit('userRolesEvents', { opt: 8, mail: this.session.mail, token:this.session.token }).subscribe(res => {
         if (!res.err) {
           if (res.data.length) {
             resolve(res.data)
@@ -38,6 +37,8 @@ export class AuditorService {
   }
   CreateAuditorUser(data) {
     return new Promise((resolve, reject) => {
+      this.session = this._FunctionsService.returnCurrentSession()
+      
       let senData = data;
       senData.mail = this.session.mail
       senData.token = this.session.token
@@ -57,6 +58,8 @@ export class AuditorService {
   }
   editUser(data) {
     return new Promise((resolve, reject) => {
+      this.session = this._FunctionsService.returnCurrentSession()
+      
       let senData = data;
       senData.mail = this.session.mail
       senData.token = this.session.token
@@ -74,11 +77,13 @@ export class AuditorService {
   }
   RemoveUserAdmin(email) {
     return new Promise((resolve, reject) => {
+      this.session = this._FunctionsService.returnCurrentSession()
+      
       let senData = {
-        emailUser:email,
-        mail:this.session.mail,
-        token:this.session.token
-      } 
+        emailUser: email,
+        mail: this.session.mail,
+        token: this.session.token
+      }
       this._wsSocket.emit('RemoveUserPanel', senData).subscribe((res) => {
         if (!res.err) {
           resolve(res.msg)

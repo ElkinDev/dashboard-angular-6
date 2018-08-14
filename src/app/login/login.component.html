@@ -3,10 +3,9 @@
         <div class="panel-login col-lg-4 offset-lg-4">
             <form class="form-horizontal" #login="ngForm" (ngSubmit)=" login.form.valid && onSubmit(login)">
                 <div class="row">
-                    <div class="col-md-3"></div>
-                    <div class="col-md-6">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
                         <img src="logo" alt="logo.comprobamos" src="assets/images/logo/comprobamos_color2x.png">
-                        <h2>Login</h2>
                         <hr>
                     </div>
                 </div>
@@ -26,7 +25,7 @@
                                     <div *ngIf="email.errors.email">Correo electrónico inválido</div>
                                 </div>
                                 <div *ngIf="dontExist" class="invalid-feedback">
-                                    Usuario no existe
+                                    {{msgError}}
                                 </div>
                             
                         </div>

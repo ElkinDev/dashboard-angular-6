@@ -6,13 +6,11 @@ import { environmentProd } from '../environments/environment.prod';
 @Injectable()
 
 export class FunctionsService {
-  session = {
-    mail: 'sonickfaber7@yahoo.es',
-    token: 'edbee4f4050c98ad293df52d'
-  }
+  session;
   constructor(private _wsSocket: WebSocketService) {
-   }
-  
+    this.session = this.returnCurrentSession()
+  }
+
 
   generateTime() {
     var now = new Date(), time = now.getTime(),
@@ -21,22 +19,16 @@ export class FunctionsService {
     return now.toUTCString()
 
   }
-  createSessionStorage(data) {
-    return new Promise((resolve, reject) => {
-      localStorage.setItem('currentUser', JSON.stringify(data))
-      resolve({ err:false })
-      
-      
-    });
 
-  }
   CreateUser(data, opt) {
     return new Promise((resolve, reject) => {
+      this.session = this.returnCurrentSession()
 
       let senData = data;
       senData.mail = this.session.mail
       senData.token = this.session.token
       senData.opt = opt
+
       this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
         if (!res.err) {
           resolve({ msg: res.msg, link: res.link, type: res.type })
@@ -50,7 +42,17 @@ export class FunctionsService {
     });
 
   }
+  checkSession(data) {
+    return new Promise((resolve, reject) => {
+
+      this._wsSocket.emit('logInLogOutDashboar', data).subscribe((res) => {
+      }, (error) => {
+
+      })
+    });
+  }
   editUser(data) {
+    this.session = this.returnCurrentSession()
     return new Promise((resolve, reject) => {
       let senData = data;
       senData.mail = this.session.mail;
@@ -69,6 +71,7 @@ export class FunctionsService {
     });
   }
   RemoveUser(email, id, opt) {
+    this.session = this.returnCurrentSession()
     return new Promise((resolve, reject) => {
       let senData = {
         opt: opt,
@@ -134,13 +137,85 @@ export class FunctionsService {
   logInLogOutDashboar(data) {
     return new Promise((resolve, reject) => {
       this._wsSocket.emit('logInLogOutDashboar', data).subscribe((res) => {
-        console.log('veamosloo el res que es??', res);
         if (res.err) {
-          resolve({ err: true, msg: res.msg });
-        }else{
-          resolve({ res:true, msg: res.msg,name:res.name,token:res.token,role:res.role });
-          
+          resolve({ err: true, msg: res.msg, type: res.type });
+        } else {
+          resolve({ res: true, msg: res.msg, name: res.name, token: res.token, role: res.role });
+
         }
+      }, (error) => {
+        reject({ err: true, msg: 'Error Inesperado' })
+
+      })
+    });
+  }
+
+  createSessionStorage(data) {
+    return new Promise((resolve, reject) => {
+      localStorage.setItem('currentUser', JSON.stringify(data))
+      resolve({ err: false })
+
+
+    });
+
+  }
+  getSessionStorage() {
+    return new Promise((resolve, reject) => {
+
+      resolve(localStorage.getItem('currentUser'))
+
+
+    });
+  }
+  returnCurrentSession() {
+    if (localStorage.getItem('currentUser') != "") {
+      let session = JSON.parse(localStorage.getItem('currentUser'));
+      return { mail: session.mail, token: session.token }
+    } else {
+      return {}
+
+    }
+
+  }
+  clearSessionStorage() {
+    return new Promise((resolve, reject) => {
+      localStorage.setItem('currentUser', '')
+      resolve({ err: false })
+
+
+    });
+  }
+
+  closeSessionUser(data) {
+    return new Promise((resolve, reject) => {
+      this._wsSocket.emit('logInLogOutDashboar', data).subscribe((res) => {
+        if (!res.err) {
+          this.clearSessionStorage().then(res1 => {
+            resolve({ err: false, msg: res.msg })
+
+          })
+        } else {
+          resolve({ err: true, msg: 'No se puede cerrar la sesión. inténtelo más tarde.' })
+
+        }
+      }, (error) => {
+        reject({ err: true, msg: 'Error Inesperado' })
+
+      })
+    });
+  }
+
+  //Get All item Menu Left Bar
+
+  ListItemsMenuLeft(){
+    return new Promise((resolve, reject) => {
+      let data={
+        mail:this.session.mail,
+        token:this.session.token
+      }
+      console.log('uhhiuhui',data);
+      this._wsSocket.emit('userRoles', data).subscribe((res) => {
+        console.log('quejestooo EMC:',res)
       }, (error) => {
         reject({ err: true, msg: 'Error Inesperado' })
 
