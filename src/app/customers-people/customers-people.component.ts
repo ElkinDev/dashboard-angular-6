@@ -5,10 +5,9 @@ import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
 import { CustomersService } from './customers-service.service';
 import { FunctionsService } from '../functions.service'
-
+import * as $ from 'jquery';
 declare let alertify: any;
-declare var jQuery: any;
-declare var $: any;
+
 @Component({
   selector: 'app-customers-people',
   templateUrl: './customers-people.component.html',

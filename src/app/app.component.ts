@@ -4,8 +4,8 @@ import { WebSocketService } from './websocket.service';
 import { FunctionsService } from './functions.service'
 import { environment } from './../environments/environment';
 import { environmentProd } from './../environments/environment.prod';
-declare var jQuery: any;
-declare var $: any;
+import * as $ from 'jquery'; 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

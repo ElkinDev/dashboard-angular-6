@@ -2,6 +2,7 @@ import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { WebSocketService } from '../websocket.service';
 import { FunctionsService } from '../functions.service';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-users-form',

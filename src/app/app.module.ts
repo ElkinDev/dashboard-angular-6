@@ -1,5 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import * as $ from 'jquery';
+import { DataTablesModule } from 'angular-datatables';
+
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 
 import { RouterModule, Route, Routes } from '@angular/router';
@@ -22,7 +25,9 @@ import { FilterRolesComponent } from './filter-roles/filter-roles.component';
 import { LoadingTableComponent } from './loading-table/loading-table.component';
 import { AdminFormComponent } from './admin-form/admin-form.component';
 import { CustomersFormComponent } from './customers-form/customers-form.component';
+import { InvocesCustomerComponent } from './invoces-customer/invoces-customer.component';
 
+declare let alertify: any;
 export const appRoutes:Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   {
@@ -55,6 +60,11 @@ export const appRoutes:Routes = [
     component:CustomersFormComponent,
   },
   {
+    path:'Dashboard/customers/invoices/:dninumber',
+    component:InvocesCustomerComponent,
+    data: [{isProd: true}]
+  },
+  {
     path:'Dashboard/filters/plans',
     component:FilterPlansComponent,
   },
@@ -84,8 +94,10 @@ export const appRoutes:Routes = [
           LoadingTableComponent,
           AdminFormComponent,
           CustomersFormComponent,
+          InvocesCustomerComponent,
   ],
   imports: [
+    DataTablesModule,
     BrowserModule,
     RouterModule.forRoot(appRoutes),
     FormsModule,

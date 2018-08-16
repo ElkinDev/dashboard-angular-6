@@ -6,6 +6,7 @@ import { NgForm, ReactiveFormsModule, FormGroup, FormControl } from '@angular/fo
 import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
 declare let alertify: any;
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-admins',

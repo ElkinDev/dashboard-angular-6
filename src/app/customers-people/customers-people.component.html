@@ -280,11 +280,11 @@
                         <br>
                         <small>Usuarios</small>
                       </div>
-                      <div class="p-1 pointer text-dark" [ngClass]="{'col-sm-4': customer.typeIdentification!='NIT','col-sm-3':customer.typeIdentification=='NIT'}"
-                        title="Saldos">
+                      <div class="p-1 pointer text-dark" routerLink="/Dashboard/customers/invoices/{{customer.cedula}}" [ngClass]="{'col-sm-4': customer.typeIdentification!='NIT','col-sm-3':customer.typeIdentification=='NIT'}"
+                        title="Facturas y/o transacciones">
                         <i class="ti-layout-list-thumb-alt" aria-hidden="true"></i>
                         <br>
-                        <small>Saldos</small>
+                        <small>Facturas</small>
 
                       </div>
                       <div class="p-1 text-light bg-dark pointer" (click)="editCustomerf(customer,i)" [ngClass]="{'col-sm-4': customer.typeIdentification!='NIT','col-sm-3':customer.typeIdentification=='NIT'}"

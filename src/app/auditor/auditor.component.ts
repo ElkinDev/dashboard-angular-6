@@ -5,6 +5,7 @@ import { environmentProd } from '../../environments/environment.prod';
 import { WebSocketService } from '../websocket.service';
 import { AuditorService } from './auditor.service';
 import { FunctionsService } from '../functions.service';
+import * as $ from 'jquery';
 
 declare let alertify: any;
 

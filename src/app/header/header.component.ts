@@ -3,10 +3,10 @@ import { FunctionsService } from '../functions.service'
 import { environment } from '../../environments/environment';
 import { environmentProd } from '../../environments/environment.prod';
 import { Router } from "@angular/router";
+import * as $ from 'jquery';
 
 declare let alertify: any;
-declare var jQuery: any;
-declare var $: any;
+
 @Component({
   selector: 'header-dashboard',
   templateUrl: './header.component.html',
