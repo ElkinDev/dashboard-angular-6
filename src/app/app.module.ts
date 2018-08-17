@@ -26,6 +26,7 @@ import { LoadingTableComponent } from './loading-table/loading-table.component';
 import { AdminFormComponent } from './admin-form/admin-form.component';
 import { CustomersFormComponent } from './customers-form/customers-form.component';
 import { InvocesCustomerComponent } from './invoces-customer/invoces-customer.component';
+import { NewInvoceComponent } from './new-invoce/new-invoce.component';
 
 declare let alertify: any;
 export const appRoutes:Routes = [
@@ -65,6 +66,10 @@ export const appRoutes:Routes = [
     data: [{isProd: true}]
   },
   {
+    path:'Dashboard/customers/newInvoce/:dninumber',
+    component:NewInvoceComponent
+  },
+  {
     path:'Dashboard/filters/plans',
     component:FilterPlansComponent,
   },
@@ -95,6 +100,7 @@ export const appRoutes:Routes = [
           AdminFormComponent,
           CustomersFormComponent,
           InvocesCustomerComponent,
+          NewInvoceComponent,
   ],
   imports: [
     DataTablesModule,

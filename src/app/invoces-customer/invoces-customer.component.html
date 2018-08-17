@@ -12,13 +12,19 @@
     <div class="col-sm-4">
       <div class="page-header float-left">
         <div class="page-title">
-          <h1>Facturas y/o Transacciones de <b>{{nameUSer}}</b>
-
+          <h1>Facturas y/o Transacciones de
+            <b>{{nameUSer}}</b>
           </h1>
+
         </div>
       </div>
     </div>
-    <div class="col-sm-8">
+    <div class="col-sm-2">
+      
+      <button class='btn btn-primary'>Nuevo Saldo</button>
+
+    </div>
+    <div class="col-sm-6">
       <div class="page-header float-right">
         <div class="page-title">
           <ol class="breadcrumb text-right">
@@ -26,11 +32,11 @@
               <a routerLink="/Dashboard">Dashboard</a>
             </li>
             <li>
-              <a >Usuarios</a>
+              <a>Usuarios</a>
             </li>
-            <li  class="active">
+            <li class="active">
               <a routerLink="/Dashboard/customers">Clientes</a>
-              
+
             </li>
           </ol>
         </div>
@@ -60,22 +66,39 @@
       <div class="row p-3">
 
         <div class="ListAdminsAll col-md-12" [hidden]="loadingMore">
-          <table datatable [dtOptions]="dtOptions" class="row-border hover">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>First name</th>
-                <th>Last name</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let person of persons">
-                <td>{{ person.id }}</td>
-                <td>{{ person.firstName }}</td>
-                <td (click)='prueba(person)' >{{ person.lastName }}</td>
-              </tr>
-            </tbody>
+          <div [hidden]="invocesPayment==null">
+            <table datatable [dtOptions]="dtOptions" class="row-border hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Concepto</th>
+                  <th>Valor</th>
+                  <th>Fecha</th>
+                  <th>Ver detalle</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let invoce of invocesPayment">
+                  <td>{{ invoce.id }}</td>
+                  <td>{{ invoce.concepto }}</td>
+                  <td>{{ invoce.valor }}</td>
+                  <td>{{ invoce.fecha }}</td>
+                  <td (click)='viewDetail(invoce)'>
+                    <button class='btn btn-secondary'>Ver detallado</button>
+                  </td>
+                </tr>
+              </tbody>
             </table>
+          </div>
+
+          <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="invocesPayment==null">
+            <div class="display-middle">
+              <i class="display-fa-error fa fa-exclamation-triangle "></i>
+              <h4 class="upper mt-2">{{messageErrorQuery}}</h4>
+              <button class='btn btn-primary' routerLink="/Dashboard/customers/newInvoce/dninumber">Nueva Factura</button>
+            </div>
+          </div>
+
         </div>
       </div>
 

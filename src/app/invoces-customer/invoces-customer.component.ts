@@ -20,38 +20,61 @@ export class InvocesCustomerComponent implements OnInit {
   loadingMore;
   nameUSer;
   dtOptions: DataTables.Settings = {};
-  persons= [];
+  invocesPayment;
   dtTrigger= new Subject();
   spanishLanguage;
+  messageErrorQuery
   constructor(private renderer: Renderer,routeActived: ActivatedRoute,private router: Router, private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService) { 
     this.dninumber = routeActived.snapshot.params['dninumber'];
     this.isProdEnvironment = routeActived.snapshot.data[0]['isProd'];
-    this.loadingMore=false;
+    this.loadingMore=true;
     this.nameUSer="Elkin Andres Mendoza";
-    this._FunctionsService.SpanishLanguageDatatable().then(res=>{
-      this.spanishLanguage=res;
-      console.log(this.spanishLanguage,'queeee?')
-        
-      })
-    
+    this._FunctionsService.SpanishLanguageDatatable().then(res=>{this.spanishLanguage=res;});
+    this.messageErrorQuery='No tienes Factura'
+      this.invocesPayment = [
+        {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'850.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 1 plan corporativo',valor:'50.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 2 planes de 100 consultas',valor:'1.050.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'1.850.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'850.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 1 plan corporativo',valor:'50.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 2 planes de 100 consultas',valor:'1.050.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'1.850.000,00',fecha:'17 de agosto de 2018',detalle:{}}, {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'850.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 1 plan corporativo',valor:'50.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 2 planes de 100 consultas',valor:'1.050.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'1.850.000,00',fecha:'17 de agosto de 2018',detalle:{}}, {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'850.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 1 plan corporativo',valor:'50.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 2 planes de 100 consultas',valor:'1.050.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'1.850.000,00',fecha:'17 de agosto de 2018',detalle:{}}, {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'850.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 1 plan corporativo',valor:'50.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 2 planes de 100 consultas',valor:'1.050.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'1.850.000,00',fecha:'17 de agosto de 2018',detalle:{}}, {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'850.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 1 plan corporativo',valor:'50.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 2 planes de 100 consultas',valor:'1.050.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'1.850.000,00',fecha:'17 de agosto de 2018',detalle:{}}, {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'850.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 1 plan corporativo',valor:'50.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 2 planes de 100 consultas',valor:'1.050.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'1.850.000,00',fecha:'17 de agosto de 2018',detalle:{}}, {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'850.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 1 plan corporativo',valor:'50.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 2 planes de 100 consultas',valor:'1.050.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+        {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'1.850.000,00',fecha:'17 de agosto de 2018',detalle:{}},
+      ];
+      // this.invocesPayment=null;
   }
 
   ngOnInit() {
     console.log('este es el dniNumber ',this.dninumber);
     
     this.dtOptions = {
-      pagingType: 'full_numbers',
       language:this.spanishLanguage
 
       // pageLength: 2
     };
-    this.persons = [
-      {id:23,firstName:'Jose',lastName:'Mendoza'},
-      {id:23,firstName:'Faldres',lastName:'Mendoza'},
-      {id:23,firstName:'Juo',lastName:'Mendoza'},
-      {id:23,firstName:'Elkin',lastName:'Mendoza'},
-      {id:23,firstName:'Elkin',lastName:'Mendoza'}
-    ];
+    setTimeout(()=>{
+      this.loadingMore=false;
+      
+    },3000)
+    
     // Calling the DT trigger to manually render the table
     this.dtTrigger.next();
   }
@@ -62,7 +85,7 @@ export class InvocesCustomerComponent implements OnInit {
       }
     });
   }
-  prueba(data){
+  viewDetail(data){
     console.log(data,'est esto')
   }
   
