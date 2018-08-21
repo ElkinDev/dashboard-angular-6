@@ -1,3 +1,161 @@
-<p>
-  new-invoce works!
-</p>
+<aside id="left-panel" class="left-panel">
+  <navbar-aside></navbar-aside>
+
+</aside>
+<!-- /#left-panel -->
+
+
+<div id="right-panel" class="right-panel">
+  <header-dashboard></header-dashboard>
+
+  <div class="breadcrumbs">
+    <div class="col-sm-4">
+      <div class="page-header float-left">
+        <div class="page-title">
+          <h1>Nuevo Saldo de
+            <b>{{nameUSer}}</b>
+          </h1>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-8">
+      <div class="page-header float-right">
+        <div class="page-title">
+          <ol class="breadcrumb text-right">
+            <li>
+              <a routerLink="/Dashboard">Dashboard</a>
+            </li>
+            <li>
+              <a>Usuarios</a>
+            </li>
+            <li class="active">
+              <a routerLink="/Dashboard/customers">Clientes</a>
+
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content mt-3" style="min-height:81vh;">
+
+    <div class=" text-center loading-panel" [hidden]="!loadingMore">
+      <div class="dot dot-1"></div>
+      <div class="dot dot-2"></div>
+      <div class="dot dot-3"></div>
+
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+          <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -7" />
+          </filter>
+        </defs>
+      </svg>
+
+    </div>
+
+    <div class="container" [hidden]="loadingMore">
+      <div class="row p-3">
+
+        <div class="ListAdminsAll col-md-12" [hidden]="loadingMore">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  Planes
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-4 text-center">
+                      <h5>Plan</h5>
+                    </div>
+                    <div class="col-md-3 text-center">
+                      <h5>N° de consultas</h5>
+                    </div>
+                    <div class="col-md-5 text-center">
+                      <h5>Subtotal</h5>
+                    </div>
+                  </div>
+                  <div class="row mt-4 mb-4" *ngFor="let plan of plans">
+                    <div class="col-md-4 ">
+                      <img class="img-fluid" [src]="plan.logo" [alt]='plan.title' [width]='120' [title]='plan.title'>
+                    </div>
+                    <div class="col-md-3 pt-5 text-center">
+                      <input type="number" class="form-control" placeholder="">
+                    </div>
+                    <div class="col-md-5 pt-5 text-center">
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">$</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)">
+                      </div>
+                    </div>
+                    <hr>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  Datos de la compra
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 mb-2">
+                      <h5>Elkin Andres Mendoza</h5>
+                      <h5>C.C. 1129529251</h5>
+                      <h5> Calle 112 # 45 - 35 Bogotá</h5>
+                    </div>
+                    <div class="col-md-6">
+                      <label class=" form-control-label">Departamento</label>
+
+                      <select class="custom-select" (change)='changeDepartament(currentDepartament)' [(ngModel)]="currentDepartament">
+                        <option selected disabled>Selecciona un Departamento</option>
+                        <option *ngFor="let departament of allDepartaments;let i= index"   [value]="departament" >{{departament}}</option>
+
+                      </select>
+
+                    </div>
+                    <div class="col-md-6">
+                      <label class=" form-control-label">Ciudad</label>
+
+                      <select class="custom-select">
+                          <option selected disabled>Selecciona un Municipio</option>
+                        
+                          <option *ngFor="let municipalitie of allmunicipalities;let i= index" [value]="municipalitie" >{{municipalitie}}</option>
+                        
+                      </select>
+                    </div>
+
+                  </div>
+                  <div class="row mt-5">
+                    <div class="col-md-6 text-center">
+                      <button class='btn btn-danger'>Cancelar</button>
+                    </div>
+                    <div class="col-md-6 ">
+                      <button class='btn btn-success'>Registrar Saldo</button>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+</div>
+
+<!-- /#right-panel -->

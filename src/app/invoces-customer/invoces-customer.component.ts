@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit, Renderer} from '@angular/core';
+import {Location} from '@angular/common';
 import { Router, ActivatedRoute } from "@angular/router";
 import { WebSocketService } from '../websocket.service';
 import { FunctionsService } from '../functions.service'
@@ -24,7 +25,7 @@ export class InvocesCustomerComponent implements OnInit {
   dtTrigger= new Subject();
   spanishLanguage;
   messageErrorQuery
-  constructor(private renderer: Renderer,routeActived: ActivatedRoute,private router: Router, private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService) { 
+  constructor(private renderer: Renderer,routeActived: ActivatedRoute,private router: Router, private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService, private _location: Location) { 
     this.dninumber = routeActived.snapshot.params['dninumber'];
     this.isProdEnvironment = routeActived.snapshot.data[0]['isProd'];
     this.loadingMore=true;
@@ -60,6 +61,7 @@ export class InvocesCustomerComponent implements OnInit {
         {id:'abasd-23asdr23434',concepto:'Compra de 3 planes con un descuento ....',valor:'1.850.000,00',fecha:'17 de agosto de 2018',detalle:{}},
       ];
       // this.invocesPayment=null;
+      
   }
 
   ngOnInit() {
@@ -74,6 +76,11 @@ export class InvocesCustomerComponent implements OnInit {
       this.loadingMore=false;
       
     },3000)
+    if(!this.dninumber){
+      this.router.navigate(["/Dashboard/customers/"]);
+      
+
+    }
     
     // Calling the DT trigger to manually render the table
     this.dtTrigger.next();

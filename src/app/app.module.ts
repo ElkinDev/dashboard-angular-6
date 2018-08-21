@@ -57,6 +57,14 @@ export const appRoutes:Routes = [
     component:CustomersPeopleComponent,
   },
   {
+    path:'Dashboard/customers/invoices',
+    component:CustomersPeopleComponent,
+  },
+  {
+    path:'Dashboard/customers/newInvoce',
+    component:CustomersPeopleComponent,
+  },
+  {
     path:'Dashboard/customers/create',
     component:CustomersFormComponent,
   },

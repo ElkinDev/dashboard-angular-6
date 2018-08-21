@@ -20,34 +20,34 @@ export class FunctionsService {
 
   }
 
-  SpanishLanguageDatatable(){
+  SpanishLanguageDatatable() {
     return new Promise((resolve, reject) => {
       resolve({
-        emptyTable:'No hay Datos',
-        info:'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
-        infoEmpty:'Mostrando registros del 0 al 0 de un total de 0 registros',
-        infoFiltered:'(filtrado de un total de _MAX_ registros)',
-        infoPostFix:    '',
-        thousands:',',
-        lengthMenu:'Mostrar _MENU_ registros',
-        loadingRecords:'Cargando...',
-        processing:'Procesando...',
-        search:'Buscar:',
-        zeroRecords:'No se encontraron resultados',
-        paginate:{
-          first:'Primero',
-          last:'Último',
-          next:'Siguiente',
-          previous:'Anterior'
+        emptyTable: 'No hay Datos',
+        info: 'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
+        infoEmpty: 'Mostrando registros del 0 al 0 de un total de 0 registros',
+        infoFiltered: '(filtrado de un total de _MAX_ registros)',
+        infoPostFix: '',
+        thousands: ',',
+        lengthMenu: 'Mostrar _MENU_ registros',
+        loadingRecords: 'Cargando...',
+        processing: 'Procesando...',
+        search: 'Buscar:',
+        zeroRecords: 'No se encontraron resultados',
+        paginate: {
+          first: 'Primero',
+          last: 'Último',
+          next: 'Siguiente',
+          previous: 'Anterior'
         },
-        aria:{
-          sortAscending:'Activar para ordenar la columna de manera ascendente',
-          sortDescending:'Activar para ordenar la columna de manera descendente'
+        aria: {
+          sortAscending: 'Activar para ordenar la columna de manera ascendente',
+          sortDescending: 'Activar para ordenar la columna de manera descendente'
         }
-  
+
       })
-    })    
-    
+    })
+
   }
 
   CreateUser(data, opt) {
@@ -237,15 +237,95 @@ export class FunctionsService {
 
   //Get All item Menu Left Bar
 
-  ListItemsMenuLeft(){
+  ListItemsMenuLeft() {
     return new Promise((resolve, reject) => {
-      let data={
-        mail:this.session.mail,
-        token:this.session.token
+      let data = {
+        mail: this.session.mail,
+        token: this.session.token
       }
-      console.log('uhhiuhui',data);
+      console.log('uhhiuhui', data);
       this._wsSocket.emit('userRoles', data).subscribe((res) => {
-        resolve({roles:res.roles,customers:res.customers})
+        resolve({ roles: res.roles, customers: res.customers })
+      }, (error) => {
+        reject({ err: true, msg: 'Error Inesperado' })
+
+      })
+    });
+  }
+
+  getPlans() {
+    return new Promise((resolve, reject) => {
+      let data = [{
+        colors: ['#689a2e', '#83b834', '#91bf53', '#b1cf77'],
+        class: 'plan-mi-personal',
+        icon: '../assets/images/icon-personal.png',
+        logo: '../assets/images/mi-personal.png',
+        title: 'Mi personal de confianza',
+        description: [
+          '¿Qué tan seguro estas del personal que apoya a tu familia en casa todos los días?',
+          'Este plan comprueba la información de las personas que te ayudan en las actividades diarias, como personal de servicio, conductor, cuidado de los niños y en general toda persona a la que le depositas tu confianza.',
+          '¡Una manera simple y rápida de conocer a quienes están a tu lado!'
+
+        ]
+      }, {
+        colors: ['#e09231', '#ef9c34', '#f4b04e', '#fbcf53'],
+        class: 'plan-mi-negocio',
+
+        icon: '../assets/images/icon-negocio.png',
+        logo: '../assets/images/mi-negocio.png',
+        title: 'Mi negocio de confianza',
+        description: [
+          '¿Sabes con quien vas a realizar tu próximo proyecto, quien es tu proveedor, quien será tu socio?',
+          'Comprueba la identidad de tu contacto, si tiene requerimientos ante la policía, si tiene antecedentes judiciales, demandas por estafa o de cualquier tipo o si se encuentra vinculado a alguna lista restrictiva nacional o internacional.',
+          '¡Evita estafas y negocia tranquilo, en solo unos minutos desde cualquier dispositivo al alcance de tus manos !'
+        ],
+
+      }, {
+        colors: ['#1a5ca5', '#226aaf', '#226aaf', '#226aaf'],
+        class: 'plan-corporativo',
+        icon: '../assets/images/icon-corporativo.png',
+        logo: '../assets/images/mi-personal-corporativo.png',
+        title: 'Contratación de personal',
+        description: [
+          ' El éxito de tu compañía depende de la fiabilidad de tus colaboradores',
+          'COMPROBAMOS.COM te brinda información de manera inmediata que te permitirá tomar la decisión acertada al momento de contratar nuevo personal para tu organización. De igual forma acá encontraras planes a la medida de tus necesidades.',
+          '¡Comprueba antes de tomar tu decisión!'
+        ]
+      }]
+      resolve(data);
+    })
+  }
+
+  getAllDepartaments() {
+    return new Promise((resolve, reject) => {
+      let data = {
+        opt: 3,
+        text: 'dasjo'
+      }
+      this._wsSocket.emit('locations', data).subscribe((res) => {
+        if (!res.err) {
+          resolve({ states: res.states })
+        } else {
+          resolve({ err: true })
+        }
+      }, (error) => {
+        reject({ err: true, msg: 'Error Inesperado' })
+
+      })
+    });
+  }
+  getSpecificRegions(departament) {
+    return new Promise((resolve, reject) => {
+      let data = {
+        opt: 4,
+        text: departament.trim()
+      }
+      this._wsSocket.emit('locations', data).subscribe((res) => {
+        if (!res.err) {
+          resolve({ cities: res.cities })
+        } else {
+          resolve({ err: true })
+        }
       }, (error) => {
         reject({ err: true, msg: 'Error Inesperado' })
 
