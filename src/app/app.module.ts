@@ -27,6 +27,7 @@ import { AdminFormComponent } from './admin-form/admin-form.component';
 import { CustomersFormComponent } from './customers-form/customers-form.component';
 import { InvocesCustomerComponent } from './invoces-customer/invoces-customer.component';
 import { NewInvoceComponent } from './new-invoce/new-invoce.component';
+import { OrderModule } from 'ngx-order-pipe';
 
 declare let alertify: any;
 export const appRoutes:Routes = [
@@ -111,6 +112,7 @@ export const appRoutes:Routes = [
           NewInvoceComponent,
   ],
   imports: [
+    OrderModule,
     DataTablesModule,
     BrowserModule,
     RouterModule.forRoot(appRoutes),

@@ -63,89 +63,114 @@
 
         <div class="ListAdminsAll col-md-12" [hidden]="loadingMore">
           <div class="row">
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header">
-                  Planes
-                </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-4 text-center">
-                      <h5>Plan</h5>
-                    </div>
-                    <div class="col-md-3 text-center">
-                      <h5>N° de consultas</h5>
-                    </div>
-                    <div class="col-md-5 text-center">
-                      <h5>Subtotal</h5>
-                    </div>
+            <form class="form-horizontal" #newPay="ngForm" (ngSubmit)=" (newPay.form.valid ) && onSubmitNewPay(newPay)  ">
+
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    Planes
                   </div>
-                  <div class="row mt-4 mb-4" *ngFor="let plan of plans">
-                    <div class="col-md-4 ">
-                      <img class="img-fluid" [src]="plan.logo" [alt]='plan.title' [width]='120' [title]='plan.title'>
-                    </div>
-                    <div class="col-md-3 pt-5 text-center">
-                      <input type="number" class="form-control" placeholder="">
-                    </div>
-                    <div class="col-md-5 pt-5 text-center">
-                      <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">$</span>
-                        </div>
-                        <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-4 text-center">
+                        <h5>Plan</h5>
+                      </div>
+                      <div class="col-md-3 text-center">
+                        <h5>N° de consultas</h5>
+                      </div>
+                      <div class="col-md-5 text-center">
+                        <h5>Subtotal</h5>
                       </div>
                     </div>
-                    <hr>
+                    <div class="row mt-4 mb-4" *ngFor="let plan of plans">
+                      <div class="col-md-4 ">
+                        <img class="img-fluid" [src]="plan.logo" [alt]='plan.title' [width]='120' [title]='plan.title'>
+                      </div>
+                      <div class="col-md-3 pt-5 text-center">
+                        <input type="number" class="form-control" #numConsultas{{plan.id}}='ngModel' ngModel name='numConsultas{{plan.id}}' >
+                      </div>
+                      <div class="col-md-5 pt-5 text-center">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                          </div>
+                          <input type="number" class="form-control" #valorConsultas{{plan.id}}='ngModel' ngModel name='valorConsultas{{plan.id}}' aria-label="Amount (to the nearest dollar)">
+                        </div>
+                      </div>
+                      <hr>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header">
-                  Datos de la compra
-                </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-12 mb-2">
-                      <h5>Elkin Andres Mendoza</h5>
-                      <h5>C.C. 1129529251</h5>
-                      <h5> Calle 112 # 45 - 35 Bogotá</h5>
-                    </div>
-                    <div class="col-md-6">
-                      <label class=" form-control-label">Departamento</label>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    Datos de la compra
+                  </div>
+                  <div class="card-body">
 
-                      <select class="custom-select" (change)='changeDepartament(currentDepartament)' [(ngModel)]="currentDepartament">
-                        <option selected disabled>Selecciona un Departamento</option>
-                        <option *ngFor="let departament of allDepartaments;let i= index"   [value]="departament" >{{departament}}</option>
+                    <div class="row">
 
-                      </select>
+                      <div class="col-md-12 mb-2">
+                        <h5>Elkin Andres Mendoza</h5>
+                        <h5>C.C. 1129529251</h5>
+                        <h5> Calle 112 # 45 - 35 Bogotá</h5>
+                      </div>
+                      <div class="col-md-6">
+                        <label class=" form-control-label">Departamento</label>
 
-                    </div>
-                    <div class="col-md-6">
-                      <label class=" form-control-label">Ciudad</label>
+                        <select class="custom-select" name="departament" #departament='ngModel' ngModel (change)='changeDepartament(departament.value)'
+                          [ngClass]="{'is-invalid':newPay.submitted && departament.invalid }" required>
+                          <option selected disabled>Selecciona un Departamento</option>
+                          <option *ngFor="let departamentA of allDepartaments | orderBy : departamentA;" [value]="departamentA">{{departamentA}}</option>
 
-                      <select class="custom-select">
+                        </select>
+                        <div *ngIf="newPay.submitted && departament.invalid">
+                          <small class="form-text text-danger">*Campo Requerido</small>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label class=" form-control-label">Ciudad</label>
+
+                        <select class="custom-select" name='municipalitie' #municipalitie='ngModel' ngModel [ngClass]="{'is-invalid':newPay.submitted && municipalitie.invalid }"
+                          required>
                           <option selected disabled>Selecciona un Municipio</option>
-                        
-                          <option *ngFor="let municipalitie of allmunicipalities;let i= index" [value]="municipalitie" >{{municipalitie}}</option>
-                        
-                      </select>
-                    </div>
 
-                  </div>
-                  <div class="row mt-5">
-                    <div class="col-md-6 text-center">
-                      <button class='btn btn-danger'>Cancelar</button>
-                    </div>
-                    <div class="col-md-6 ">
-                      <button class='btn btn-success'>Registrar Saldo</button>
+                          <option *ngFor="let municipalitieA of allmunicipalities| orderBy : municipalitieA;let i= index" [value]="municipalitieA">{{municipalitieA}}</option>
 
+                        </select>
+
+                        <div *ngIf="newPay.submitted && municipalitie.invalid">
+                          <small class="form-text text-danger">*Campo Requerido</small>
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <div class="row mt-5">
+                      <div class="col-md-6 text-center">
+                        <button class='btn btn-danger'>Cancelar</button>
+                      </div>
+                      <div class="col-md-6 ">
+                        <button class='btn btn-success'>Registrar Saldo</button>
+
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+              <!-- <div class="col-md-6">
+
+              </div>
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h3>Toltal $ {{Total}}</h3>
+                  </div>
+                </div>
+              </div> -->
+            </form>
+
           </div>
 
 

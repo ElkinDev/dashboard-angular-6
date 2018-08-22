@@ -257,6 +257,7 @@ export class FunctionsService {
     return new Promise((resolve, reject) => {
       let data = [{
         colors: ['#689a2e', '#83b834', '#91bf53', '#b1cf77'],
+        id:'planMiPersona',
         class: 'plan-mi-personal',
         icon: '../assets/images/icon-personal.png',
         logo: '../assets/images/mi-personal.png',
@@ -270,7 +271,7 @@ export class FunctionsService {
       }, {
         colors: ['#e09231', '#ef9c34', '#f4b04e', '#fbcf53'],
         class: 'plan-mi-negocio',
-
+        id:'planMinegocio',
         icon: '../assets/images/icon-negocio.png',
         logo: '../assets/images/mi-negocio.png',
         title: 'Mi negocio de confianza',
@@ -281,6 +282,7 @@ export class FunctionsService {
         ],
 
       }, {
+        id:'planCorporativo',        
         colors: ['#1a5ca5', '#226aaf', '#226aaf', '#226aaf'],
         class: 'plan-corporativo',
         icon: '../assets/images/icon-corporativo.png',
