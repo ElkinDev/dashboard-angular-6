@@ -28,6 +28,8 @@ import { CustomersFormComponent } from './customers-form/customers-form.componen
 import { InvocesCustomerComponent } from './invoces-customer/invoces-customer.component';
 import { NewInvoceComponent } from './new-invoce/new-invoce.component';
 import { OrderModule } from 'ngx-order-pipe';
+import { MyCurrencyPipe } from './my-currency-pipe.pipe';
+import { MyCurrencyFormatterDirective } from './my-currency-formatter.directive';
 
 declare let alertify: any;
 export const appRoutes:Routes = [
@@ -110,6 +112,7 @@ export const appRoutes:Routes = [
           CustomersFormComponent,
           InvocesCustomerComponent,
           NewInvoceComponent,
+          MyCurrencyFormatterDirective,
   ],
   imports: [
     OrderModule,
@@ -118,9 +121,10 @@ export const appRoutes:Routes = [
     RouterModule.forRoot(appRoutes),
     FormsModule,
     ReactiveFormsModule,
-    TextMaskModule
+    TextMaskModule,
+    
   ],
-  providers: [WebSocketService,FunctionsService,adminsService],
+  providers: [WebSocketService,FunctionsService,adminsService,MyCurrencyPipe,MyCurrencyFormatterDirective],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

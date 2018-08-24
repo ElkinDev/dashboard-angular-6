@@ -257,7 +257,7 @@ export class FunctionsService {
     return new Promise((resolve, reject) => {
       let data = [{
         colors: ['#689a2e', '#83b834', '#91bf53', '#b1cf77'],
-        id:'planMiPersona',
+        id: 'planMiPersona',
         class: 'plan-mi-personal',
         icon: '../assets/images/icon-personal.png',
         logo: '../assets/images/mi-personal.png',
@@ -271,7 +271,7 @@ export class FunctionsService {
       }, {
         colors: ['#e09231', '#ef9c34', '#f4b04e', '#fbcf53'],
         class: 'plan-mi-negocio',
-        id:'planMinegocio',
+        id: 'planMinegocio',
         icon: '../assets/images/icon-negocio.png',
         logo: '../assets/images/mi-negocio.png',
         title: 'Mi negocio de confianza',
@@ -282,7 +282,7 @@ export class FunctionsService {
         ],
 
       }, {
-        id:'planCorporativo',        
+        id: 'planCorporativo',
         colors: ['#1a5ca5', '#226aaf', '#226aaf', '#226aaf'],
         class: 'plan-corporativo',
         icon: '../assets/images/icon-corporativo.png',
@@ -335,4 +335,64 @@ export class FunctionsService {
     });
   }
 
+
+  //CUSTOMER
+  //Get info user cliente with DNI
+  getallInvoices(dataSend){
+    this.session = this.returnCurrentSession()
+    
+    return new Promise((resolve, reject) => {
+      var data
+      if (dataSend.company){
+        data = {
+          opt: 8,
+          mail: this.session.mail,
+          token: this.session.token,
+          company:{
+            mail:dataSend.mail
+          }
+        }
+      }else{
+        data = {
+          opt: 8,
+          mail:dataSend.mail,
+          token: this.session.token,
+          
+        }
+      }
+
+      console.log('veamos la puta data',data);
+      
+      this._wsSocket.emit('changeUserBalance', data).subscribe((res) => {
+        
+      }, (error) => {
+        reject({ err: true, msg: 'Error Inesperado' })
+
+      })
+    });
+  }
+  getInfoUser(numId) {
+    this.session = this.returnCurrentSession()
+    
+    return new Promise((resolve, reject) => {
+      let data = {
+        opt: 0,
+        mail: this.session.mail,
+        token: this.session.token,
+        identification:numId
+      }
+      this._wsSocket.emit('getInfo', data).subscribe((res) => {
+        
+        if(!res.err){
+          resolve({nombre:res.user.nombre+' '+res.user.apellido,direccion:res.user.address,typeIdentification:res.user.typeIdentification,cedula:res.user.cedula,mail:res.user.mail})
+        }else{
+          resolve({err:true,msg:res.msg})
+        }
+      }, (error) => {
+        reject({ err: true, msg: 'Error Inesperado' })
+
+      })
+    });
+
+  }
 }

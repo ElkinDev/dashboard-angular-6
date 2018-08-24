@@ -13,7 +13,7 @@
       <div class="page-header float-left">
         <div class="page-title">
           <h1>Nuevo Saldo de
-            <b>{{nameUSer}}</b>
+            <b>{{infoUser.nombre}} {{infoUser.apellido}}</b>
           </h1>
 
         </div>
@@ -87,14 +87,15 @@
                         <img class="img-fluid" [src]="plan.logo" [alt]='plan.title' [width]='120' [title]='plan.title'>
                       </div>
                       <div class="col-md-3 pt-5 text-center">
-                        <input type="number" class="form-control" #numConsultas{{plan.id}}='ngModel' ngModel name='numConsultas{{plan.id}}' >
+                        <input type="number" class="form-control" #numConsultas{{plan.id}}='ngModel' ngModel name='numConsultas{{plan.id}}' [min]='0'>
                       </div>
                       <div class="col-md-5 pt-5 text-center">
                         <div class="input-group mb-3">
                           <div class="input-group-prepend">
                             <span class="input-group-text">$</span>
                           </div>
-                          <input type="number" class="form-control" #valorConsultas{{plan.id}}='ngModel' ngModel name='valorConsultas{{plan.id}}' aria-label="Amount (to the nearest dollar)">
+                          <input type="text" class="form-control" #valorConsultas{{plan.id}}='ngModel' ngModel name='valorConsultas{{plan.id}}' [min]='0'
+                            myCurrencyFormatter>
                         </div>
                       </div>
                       <hr>
@@ -112,9 +113,9 @@
                     <div class="row">
 
                       <div class="col-md-12 mb-2">
-                        <h5>Elkin Andres Mendoza</h5>
-                        <h5>C.C. 1129529251</h5>
-                        <h5> Calle 112 # 45 - 35 Bogotá</h5>
+                        <h5>{{infoUser.nombre}} {{infoUser.apellido}} </h5>
+                        <h5>{{infoUser.typeIdentification}} {{infoUser.cedula}}</h5>
+                        <h5>{{infoUser.direccion}}</h5>
                       </div>
                       <div class="col-md-6">
                         <label class=" form-control-label">Departamento</label>
@@ -149,11 +150,10 @@
                     </div>
                     <div class="row mt-5">
                       <div class="col-md-6 text-center">
-                        <button class='btn btn-danger'>Cancelar</button>
+                        <input type="button" class='btn btn-danger' value="Cancelar" (click)="back()">
                       </div>
                       <div class="col-md-6 ">
-                        <button class='btn btn-success'>Registrar Saldo</button>
-
+                        <input type="submit" class="btn btn-success" value="Registrar Saldo">
                       </div>
                     </div>
                   </div>
