@@ -274,7 +274,7 @@
                   </div>
                   <div class="card-footer card-footer-custom border-0 rounded-0">
                     <div class="row text-center m-0 p-0 ">
-                      <div class=" p-1 bg-warning pointer text-dark" *ngIf="customer.typeIdentification=='NIT'" [ngClass]="{'col-sm-4': customer.typeIdentification!='NIT','col-sm-3':customer.typeIdentification=='NIT'}"
+                      <div routerLink="/Dashboard/customers/company/users/{{customer.cedula}}" class=" p-1 bg-warning pointer text-dark" *ngIf="customer.typeIdentification=='NIT'" [ngClass]="{'col-sm-4': customer.typeIdentification!='NIT','col-sm-3':customer.typeIdentification=='NIT'}"
                         title="Usuarios">
                         <i class="fa fa-users " aria-hidden="true"></i>
                         <br>

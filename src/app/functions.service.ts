@@ -243,7 +243,6 @@ export class FunctionsService {
         mail: this.session.mail,
         token: this.session.token
       }
-      console.log('uhhiuhui', data);
       this._wsSocket.emit('userRoles', data).subscribe((res) => {
         resolve({ roles: res.roles, customers: res.customers })
       }, (error) => {
@@ -338,33 +337,33 @@ export class FunctionsService {
 
   //CUSTOMER
   //Get info user cliente with DNI
-  getallInvoices(dataSend){
+  getallInvoices(dataSend) {
     this.session = this.returnCurrentSession()
-    
     return new Promise((resolve, reject) => {
-      var data
-      if (dataSend.company){
-        data = {
-          opt: 8,
-          mail: this.session.mail,
-          token: this.session.token,
-          company:{
-            mail:dataSend.mail
-          }
-        }
-      }else{
-        data = {
-          opt: 8,
-          mail:dataSend.mail,
-          token: this.session.token,
-          
+      var data;
+      data = {
+        opt: 8,
+        mail: this.session.mail,
+        token: this.session.token,
+        company: {
+          mail: dataSend.mail
         }
       }
-
-      console.log('veamos la puta data',data);
-      
+      console.log('que seee enviaaa??',data)
       this._wsSocket.emit('changeUserBalance', data).subscribe((res) => {
-        
+
+        if (!res.err) {
+          if (res.pays.length > 0) {
+            resolve({ pays: res.pays })
+
+          } else {
+            resolve({ pays: null })
+
+          }
+
+        } else {
+          resolve({ err: true, msg: res.msg })
+        }
       }, (error) => {
         reject({ err: true, msg: 'Error Inesperado' })
 
@@ -373,20 +372,20 @@ export class FunctionsService {
   }
   getInfoUser(numId) {
     this.session = this.returnCurrentSession()
-    
+
     return new Promise((resolve, reject) => {
       let data = {
         opt: 0,
         mail: this.session.mail,
         token: this.session.token,
-        identification:numId
+        identification: numId
       }
       this._wsSocket.emit('getInfo', data).subscribe((res) => {
-        
-        if(!res.err){
-          resolve({nombre:res.user.nombre+' '+res.user.apellido,direccion:res.user.address,typeIdentification:res.user.typeIdentification,cedula:res.user.cedula,mail:res.user.mail})
-        }else{
-          resolve({err:true,msg:res.msg})
+
+        if (!res.err) {
+          resolve({ nombre: res.user.nombre + ' ' + res.user.apellido, direccion: res.user.address, typeIdentification: res.user.typeIdentification, cedula: res.user.cedula, mail: res.user.mail })
+        } else {
+          resolve({ err: true, msg: res.msg })
         }
       }, (error) => {
         reject({ err: true, msg: 'Error Inesperado' })
@@ -394,5 +393,21 @@ export class FunctionsService {
       })
     });
 
+  }
+
+  newBalanceCustomer(data) {
+    var dataSend: any = data
+    return new Promise((resolve, reject) => {
+
+      this.session = this.returnCurrentSession()
+      dataSend.mail = this.session.mail;
+      dataSend.token = this.session.token;
+      this._wsSocket.emit('changeUserBalance', dataSend).subscribe((res) => {
+        resolve({})
+      }, (error) => {
+        reject({ err: true, msg: 'Error Inesperado' })
+
+      })
+    })
   }
 }

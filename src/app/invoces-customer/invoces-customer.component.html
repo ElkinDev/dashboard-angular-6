@@ -41,8 +41,12 @@
             <li>
               <a>Usuarios</a>
             </li>
-            <li class="active">
+            <li class="">
               <a routerLink="/Dashboard/customers">Clientes</a>
+
+            </li>
+            <li class="active">
+              <a>Saldos</a>
 
             </li>
           </ol>
@@ -74,24 +78,28 @@
 
         <div class="ListAdminsAll col-md-12" [hidden]="loadingMore">
           <div [hidden]="invocesPayment==null">
-            <table datatable [dtOptions]="dtOptions" class="row-border hover">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th>Referencia</th>
                   <th>Concepto</th>
-                  <th>Valor</th>
+                  <th>Costo</th>
+                  <th>N° de Consultas</th>
                   <th>Fecha</th>
+                  <th>Estado</th>
                   <th>Ver detalle</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let invoce of invocesPayment">
-                  <td>{{ invoce.id }}</td>
-                  <td>{{ invoce.concepto }}</td>
-                  <td>{{ invoce.valor }}</td>
-                  <td>{{ invoce.fecha }}</td>
-                  <td (click)='viewDetail(invoce)'>
-                    <button class='btn btn-secondary'>Ver detallado</button>
+                  <td>{{ invoce.codeReference }}</td>
+                  <td>{{ invoce.product }}</td>
+                  <td myCurrencyFormatter>{{ invoce.cost }}</td>
+                  <td>{{ invoce.count }}</td>
+                  <td>{{ invoce.date }}</td>
+                  <td class="font-weight-bold" [ngClass]="{'text-success': invoce.status=='SUCCESS','text-danger':invoce.status=='DECLINED','text-warning':invoce.status=='PENDING'}">{{invoce.status}}</td>
+                  <td (click)='viewDetail(invoce)' >
+                    <button *ngIf="invoce.codeReference!=null" class='btn btn-secondary'>Ver detallado</button>
                   </td>
                 </tr>
               </tbody>

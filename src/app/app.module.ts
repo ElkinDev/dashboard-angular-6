@@ -30,6 +30,7 @@ import { NewInvoceComponent } from './new-invoce/new-invoce.component';
 import { OrderModule } from 'ngx-order-pipe';
 import { MyCurrencyPipe } from './my-currency-pipe.pipe';
 import { MyCurrencyFormatterDirective } from './my-currency-formatter.directive';
+import { CustomerusersComponent } from './customerusers/customerusers.component';
 
 declare let alertify: any;
 export const appRoutes:Routes = [
@@ -81,6 +82,10 @@ export const appRoutes:Routes = [
     component:NewInvoceComponent
   },
   {
+    path:'Dashboard/customers/company/users/:dninumber',
+    component:CustomerusersComponent
+  },
+  {
     path:'Dashboard/filters/plans',
     component:FilterPlansComponent,
   },
@@ -113,6 +118,7 @@ export const appRoutes:Routes = [
           InvocesCustomerComponent,
           NewInvoceComponent,
           MyCurrencyFormatterDirective,
+          CustomerusersComponent,
   ],
   imports: [
     OrderModule,

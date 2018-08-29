@@ -23,7 +23,7 @@ export class NewInvoceComponent implements OnInit {
   allmunicipalities;
   newPay: NgForm;
   Total;
-  infoUser={nombre:null,apellido:null,typeIdentification:null,cedula:null,direccion:null};
+  infoUser = { nombre: null, apellido: null, typeIdentification: null, cedula: null, direccion: null };
   constructor(private renderer: Renderer, routeActived: ActivatedRoute, private router: Router, private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService, private _location: Location, private currencyPipe: MyCurrencyPipe) {
     this.dninumber = routeActived.snapshot.params['dninumber'];
     this._FunctionsService.getPlans().then(res => {
@@ -35,7 +35,7 @@ export class NewInvoceComponent implements OnInit {
         this.allDepartaments = responseD.states
       }
     })
-    
+
 
     this.loadingMore = false;
     this.allmunicipalities = null;
@@ -57,12 +57,13 @@ export class NewInvoceComponent implements OnInit {
 
       } else {
         this.infoUser = response;
-        
+
+
 
       }
     });
   }
-  back(){
+  back() {
     this._location.back();
   }
   changeDepartament(departament) {
@@ -75,7 +76,6 @@ export class NewInvoceComponent implements OnInit {
     })
   }
   onSubmitNewPay(data) {
-    console.log(data,'quierooo vertye esotooooo???')
     if ((data.value.numConsultasplanCorporativo == "" || data.value.numConsultasplanCorporativo == null) && (data.value.numConsultasplanMiPersona == "" || data.value.numConsultasplanMiPersona == null) && (data.value.numConsultasplanMinegocio == "" || data.value.numConsultasplanMinegocio == null) && (data.value.valorConsultasplanCorporativo == "" || data.value.valorConsultasplanCorporativo == null) && (data.value.valorConsultasplanMiPersona == "" || data.value.valorConsultasplanMiPersona == null) && (data.value.valorConsultasplanMinegocio == "" || data.value.valorConsultasplanMinegocio == null)) {
       alertify.alert('Nuevo saldo', "Por Favor ingresa Valores y cantidad de consultas para uno o mas planes.", function () { });
     } else {
@@ -107,12 +107,24 @@ export class NewInvoceComponent implements OnInit {
                         alertify.alert('Nuevo saldo', "Ingresa el número de consultas para el Plan (CORPORATIVO MI NEGOCIO DE CONFIANZA)", function () { });
 
                       } else {
-                        this.submitNewInvoice(data.value);
+                        if (isNaN(data.value.valorConsultasplanCorporativo) || isNaN(data.value.valorConsultasplanMinegocio) || isNaN(data.value.valorConsultasplanMiPersona)) {
+                          alertify.alert('Nuevo saldo', "Ingresa solo valores numéricos", function () { });
+
+                        } else {
+                          this.submitNewInvoice(data.value);
+
+                        }
 
                       }
                     }
                   } else {
-                    this.submitNewInvoice(data.value);
+                    if (isNaN(data.value.valorConsultasplanCorporativo) || isNaN(data.value.valorConsultasplanMinegocio) || isNaN(data.value.valorConsultasplanMiPersona)) {
+                      alertify.alert('Nuevo saldo', "Ingresa solo valores numéricos", function () { });
+
+                    } else {
+                      this.submitNewInvoice(data.value);
+
+                    }
 
 
                   }
@@ -120,13 +132,19 @@ export class NewInvoceComponent implements OnInit {
                 }
               }
             } else {
-              this.submitNewInvoice(data.value);
+              if (isNaN(data.value.valorConsultasplanCorporativo) || isNaN(data.value.valorConsultasplanMinegocio) || isNaN(data.value.valorConsultasplanMiPersona)) {
+                alertify.alert('Nuevo saldo', "Ingresa solo valores numéricos", function () { });
+
+              } else {
+                this.submitNewInvoice(data.value);
+
+              }
 
             }
           }
 
         }
-      }else{
+      } else {
         if ((data.value.numConsultasplanMinegocio != null && data.value.numConsultasplanMinegocio != "") || (data.value.valorConsultasplanMinegocio != null && data.value.valorConsultasplanMinegocio != "")) {
           if ((data.value.numConsultasplanMinegocio != null || data.value.numConsultasplanMinegocio != "") && (data.value.valorConsultasplanMinegocio == null || data.value.valorConsultasplanMinegocio == "")) {
             alertify.alert('Nuevo saldo', "Ingresa el costo del Plan (MI NEGOCIO DE CONFIANZA)", function () { });
@@ -146,12 +164,24 @@ export class NewInvoceComponent implements OnInit {
                     alertify.alert('Nuevo saldo', "Ingresa el número de consultas para el Plan (CORPORATIVO MI NEGOCIO DE CONFIANZA)", function () { });
 
                   } else {
-                    this.submitNewInvoice(data.value);
+                    if (isNaN(data.value.valorConsultasplanCorporativo) || isNaN(data.value.valorConsultasplanMinegocio) || isNaN(data.value.valorConsultasplanMiPersona)) {
+                      alertify.alert('Nuevo saldo', "Ingresa solo valores numéricos", function () { });
+
+                    } else {
+                      this.submitNewInvoice(data.value);
+
+                    }
 
                   }
                 }
               } else {
-                this.submitNewInvoice(data.value);
+                if (isNaN(data.value.valorConsultasplanCorporativo) || isNaN(data.value.valorConsultasplanMinegocio) || isNaN(data.value.valorConsultasplanMiPersona)) {
+                  alertify.alert('Nuevo saldo', "Ingresa solo valores numéricos", function () { });
+
+                } else {
+                  this.submitNewInvoice(data.value);
+
+                }
 
 
               }
@@ -159,7 +189,13 @@ export class NewInvoceComponent implements OnInit {
             }
           }
         } else {
-          this.submitNewInvoice(data.value);
+          if (isNaN(data.value.valorConsultasplanCorporativo) || isNaN(data.value.valorConsultasplanMinegocio) || isNaN(data.value.valorConsultasplanMiPersona)) {
+            alertify.alert('Nuevo saldo', "Ingresa solo valores numéricos", function () { });
+
+          } else {
+            this.submitNewInvoice(data.value);
+
+          }
 
         }
       }
@@ -168,33 +204,33 @@ export class NewInvoceComponent implements OnInit {
   }
 
   submitNewInvoice(data) {
-    console.log(data,'queeEEEEE???')
     let messageConfirm = '';
-    var TotalPay =0;
-    let dataSend = [
+    var TotalPay = 0;
+    let dataSend = {
+      place: [data.departament, data.municipalitie],
+      plans: []
+    }
 
-    ]
     if (data.numConsultasplanCorporativo != null && data.numConsultasplanCorporativo != "") {
-      console.log('seee meteeee 1')
-      TotalPay=TotalPay+parseFloat(data.valorConsultasplanCorporativo)
-      dataSend.push({ opt:2, querys: data.numConsultasplanCorporativo, value: data.valorConsultasplanCorporativo })
+      TotalPay = TotalPay + parseFloat(data.valorConsultasplanCorporativo)
+      dataSend.plans.push({ opt: 2, querys: data.numConsultasplanCorporativo, value: data.valorConsultasplanCorporativo, name: 'Plan Corporativo Mi Personal de Confianza' })
       messageConfirm = messageConfirm + ' <h4>Plan Corporativo Mi Personal de Confianza</h4><h5>N° de Consultas: ' + data.numConsultasplanCorporativo + '</h5><h5>Costo: $' + this.currencyPipe.transform(data.valorConsultasplanCorporativo) + '<h5> <hr>'
     }
     if (data.numConsultasplanMinegocio != null && data.numConsultasplanMinegocio != "") {
-      TotalPay=TotalPay+parseFloat(data.valorConsultasplanMinegocio)  
-      dataSend.push({ opt:1, querys: data.numConsultasplanMinegocio, value: data.valorConsultasplanMinegocio })      
+      TotalPay = TotalPay + parseFloat(data.valorConsultasplanMinegocio)
+      dataSend.plans.push({ opt: 1, querys: data.numConsultasplanMinegocio, value: data.valorConsultasplanMinegocio, name: 'Plan Mi Negocio de Confianza' })
       messageConfirm = messageConfirm + ' <h4>Plan Mi Negocio de Confianza</h4><h5>N° de Consultas: ' + data.numConsultasplanMinegocio + '</h5><h5>Costo: $' + this.currencyPipe.transform(data.valorConsultasplanMinegocio) + '<h5><hr>'
 
 
     }
     if (data.numConsultasplanMiPersona != null && data.numConsultasplanMiPersona != "") {
-      TotalPay=TotalPay+parseFloat(data.valorConsultasplanMiPersona);      
+      TotalPay = TotalPay + parseFloat(data.valorConsultasplanMiPersona);
       messageConfirm = messageConfirm + ' <h4>Plan Mi Personal de Confianza</h4><h5>N° de Consultas: ' + data.numConsultasplanMiPersona + '</h5><h5>Costo: $' + this.currencyPipe.transform(data.valorConsultasplanMiPersona) + '<h5><hr>'
-      dataSend.push({ opt:3, querys: data.numConsultasplanMiPersona, value: data.valorConsultasplanMiPersona })
+      dataSend.plans.push({ opt: 3, querys: data.numConsultasplanMiPersona, value: data.valorConsultasplanMiPersona, name: 'Plan Mi Personal de Confianza' })
 
     }
 
-    messageConfirm = messageConfirm + ' <h3>Total: $ ' + this.currencyPipe.transform(TotalPay)+ '</h3><hr>'
+    messageConfirm = messageConfirm + ' <h3>Total: $ ' + this.currencyPipe.transform(TotalPay) + '</h3><hr>'
 
 
     alertify
@@ -216,8 +252,45 @@ export class NewInvoceComponent implements OnInit {
       }).autoCancel(25);
 
   }
-  pushNewSaldos(data){
-    console.log(data,'queejestoooo?')
+  pushNewSaldos(data) {
+    var infouser: any = this.infoUser;
+    var numc = 0
+    data.plans.forEach(element => {
+      let dataSend = {
+        querys: element.querys,
+        value: element.value,
+        city: data.place[1],
+        state: data.place[0],
+        mailUser: infouser.mail,
+        opt: element.opt,
+        namePlan: element.name
+      }
+      this._FunctionsService.newBalanceCustomer(dataSend).then(res => {
+        let response: any = res;
+        if (numc <= data.plans.length) {
+
+          if (!response.err) {
+            alertify.success('Nuevo Saldo para el ' + dataSend.namePlan);
+            
+            if (numc + 1 == data.plans.length) {
+              setTimeout(() => {
+                this.router.navigate(['/Dashboard/customers/invoices/'+this.infoUser.cedula])
+              }, 3000)
+
+            }
+          } else {
+            alertify.success('Error registrando Saldo a ' + dataSend.namePlan);
+
+          }
+
+
+        }
+        numc++;
+
+      })
+
+    });
+
 
   }
 

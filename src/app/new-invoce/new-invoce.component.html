@@ -31,7 +31,7 @@
               <a>Usuarios</a>
             </li>
             <li class="active">
-              <a routerLink="/Dashboard/customers">Clientes</a>
+              <a routerLink="/Dashboard/customers/invoices/{{this.infoUser.cedula}}">Saldos de {{infoUser.nombre}} {{infoUser.apellido}}</a>
 
             </li>
           </ol>
@@ -150,7 +150,7 @@
                     </div>
                     <div class="row mt-5">
                       <div class="col-md-6 text-center">
-                        <input type="button" class='btn btn-danger' value="Cancelar" (click)="back()">
+                        <input type="button" class='btn btn-danger' value="Volver" (click)="back()">
                       </div>
                       <div class="col-md-6 ">
                         <input type="submit" class="btn btn-success" value="Registrar Saldo">
