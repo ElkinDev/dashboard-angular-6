@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import * as $ from 'jquery';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 import { DataTablesModule } from 'angular-datatables';
 
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
@@ -121,6 +123,7 @@ export const appRoutes:Routes = [
           CustomerusersComponent,
   ],
   imports: [
+    NgbModule,
     OrderModule,
     DataTablesModule,
     BrowserModule,

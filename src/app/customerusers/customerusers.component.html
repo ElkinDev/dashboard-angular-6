@@ -64,30 +64,65 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-3" [hidden]="loadingMore">
           <div class="card">
             <div class="card-header">
-              Saldos
+              <div class="row">
+                  <div class="col-md-4">Saldo</div>
+                  <div class="col-md-4">Total</div>
+                  <div class="col-md-4">llevas</div>
+              </div>
             </div>
             <ul class="list-group list-group-flush ">
               <li class="list-group-item">
-                <img src="../assets/images/mi-personal.png" width="50" class="img-fluid" alt="Plan Mi Personal de Confianza">
-                <span class="float-right mt-3">
-                  <h5 class="m-0">122</h5>
-                </span>
+                <div class="row mt-3">
+                  <div class="col-md-4">
+                    <img src="../assets/images/mi-personal.png" class="img-fluid" alt="Plan Mi Personal de Confianza">
+
+                  </div>
+                  <div class="col-md-4">
+                    <h5 class="m-0">{{TotalQueryMipersonal}}</h5>
+
+                  </div>
+                  <div class="col-md-4">
+                    <h5 class="m-0">{{llevasQueryMipersonal}}</h5>
+
+                  </div>
+                </div>
               </li>
               <li class="list-group-item">
-                <img src="../assets/images/mi-negocio.png" width="50" class="img-fluid" alt="Plan Mi Negocio de Confianza">
-                <span class="float-right mt-3">
-                  <h5 class="m-0">12</h5>
-                </span>
+                <div class="row mt-3">
+                  <div class="col-md-4">
+                    <img src="../assets/images/mi-negocio.png" class="img-fluid" alt="Plan Mi Negocio de Confianza">
+
+                  </div>
+                  <div class="col-md-4">
+                    <h5 class="m-0">{{TotalQueryMiNegocio}}</h5>
+
+                  </div>
+                  <div class="col-md-4">
+                    <h5 class="m-0">{{llevasQueryMinegocio}}</h5>
+
+                  </div>
+                </div>
               </li>
               <li class="list-group-item">
-                <img src="../assets/images/mi-personal-corporativo.png" width="50" class="img-fluid" alt="Plan Corporativo Mi Personal de Confianza">
-                <span class="float-right mt-3">
-                  <h5 class="m-0">0</h5>
-                </span>
-              </li>
+                  <div class="row mt-3">
+                    <div class="col-md-4">
+                      <img src="../assets/images/mi-personal-corporativo.png" class="img-fluid" alt="Plan Corporativo Mi Personal de Confianza">
+  
+                    </div>
+                    <div class="col-md-4">
+                      <h5 class="m-0">{{TotalQueryCorporativo}}</h5>
+  
+                    </div>
+                    <div class="col-md-4">
+                      <h5 class="m-0">{{llevasQueryCorporativo}}</h5>
+  
+                    </div>
+                  </div>
+                </li>
+              
             </ul>
           </div>
           <div class="row text-center">
@@ -101,33 +136,36 @@
 
 
         </div>
-        <div class="col-md-10 ListAdminsAll p-3  text-center" [hidden]="loadingMore || addNewuser">
-          <div [hidden]="invocesPayment==null">
-            <table datatable [dtOptions]="dtOptions" class="row-border hover">
+        <div class="col-md-9 ListAdminsAll p-3  text-center" [hidden]="loadingMore || addNewuser || editUser">
+          <div [hidden]="usersEmployedCustomer==null">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
               <thead>
                 <tr>
                   <th>Nombre</th>
                   <th>Cargo</th>
                   <th>Email</th>
                   <th>Creado</th>
+                  <th>Estado</th>
                   <th>Saldos</th>
                   <th>Acciones</th>
 
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let user of invocesPayment">
-                  <td>{{ user.nombre }}</td>
-                  <td>{{ user.cargo }}</td>
-                  <td>{{ user.email }}</td>
+                <tr *ngFor="let user of usersEmployedCustomer; let i = index">
+                  <td>{{ user.nombre }} {{ user.apellido }} </td>
+                  <td>{{ user.cargo||'Usuario Interno' }}</td>
+                  <td>{{ user.mail }}</td>
                   <td>{{ user.fecha }}</td>
+                  <td class="font-weight-bold" [ngClass]="{'text-success': user.status,'text-danger':!user.status}">{{ user.status?
+                    'Activo':'Inactivo' }}</td>
                   <td>
-                    <button class='btn btn-secondary'>Ver</button>
+                    <i class="fa fa-bars pointer" (click)="openModalBalances(content,user)" title="Administrar saldos"></i>
                   </td>
                   <td class="font-weight-bold">
-                    <i class="fa fa-edit pointer" aria-hidden="true" title="Editar"></i>&nbsp;
-                    <i class="ti-trash text-danger pointer" title="Eliminar" aria-hidden="true"></i>&nbsp;
-                    <i class="fa fa-plus-square text-success pointer" title="Añadir Saldo"></i>
+                    <i class="fa fa-edit pointer" (click)="openEditUser(user)" aria-hidden="true" title="Editar"></i>&nbsp;
+                    <i class="ti-trash text-danger  pointer" (click)="removeUser(user,i)" title="Eliminar" aria-hidden="true"></i>&nbsp;
+
 
                   </td>
 
@@ -136,15 +174,15 @@
             </table>
           </div>
 
-          <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="invocesPayment==null">
+          <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="usersEmployedCustomer==null">
             <div class="display-middle">
               <i class="display-fa-error fa fa-exclamation-triangle "></i>
               <h4 class="upper mt-2">{{messageErrorQuery}}</h4>
             </div>
           </div>
         </div>
-        <div class="col-md-10 ListAdminsAll p-5  bg-white " [hidden]="!addNewuser">
-          <form #newCompanyCustomer="ngForm" (ngSubmit)="( !NotEqualsPassword && (PowerPassword!='Débil' && PowerPassword!='' && PowerPassword!=null) ) && onSubmitNewCustomerCompany(newCompanyCustomer)">
+        <div class="col-md-9 ListAdminsAll p-5  bg-white " [hidden]="!addNewuser">
+          <form #newUserInte="ngForm" (ngSubmit)="( !NotEqualsPassword && (PowerPassword!='Débil' && PowerPassword!='' && PowerPassword!=null) ) && onSubmitNewCustomerCompany(newUserInte)">
             <div class="row">
               <div class="col-md-4 ">
                 <h4>Nuevo Usuario</h4>
@@ -152,11 +190,11 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class=" form-control-label">Nombre Completo</label>
+                      <label class=" form-control-label">* Nombre Completo</label>
 
-                      <input type="text" #nombre="ngModel" ngModel name="nombre" class="form-control" [ngClass]="{'is-invalid':newCompanyCustomer.submitted && nombre.invalid }"
+                      <input type="text" #nombre="ngModel" ngModel name="nombre" class="form-control" [ngClass]="{'is-invalid':newUserInte.submitted && nombre.invalid }"
                         required>
-                      <div *ngIf="newCompanyCustomer.submitted && nombre.invalid">
+                      <div *ngIf="newUserInte.submitted && nombre.invalid">
                         <small class="form-text text-danger">Nombre Requerido</small>
                       </div>
 
@@ -166,11 +204,11 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <label class=" form-control-label">Cargo en la empresa</label>
+                      <label class=" form-control-label">*Cargo en la empresa</label>
 
-                      <input type="text" #cargo="ngModel" ngModel name="cargo" class="form-control" [ngClass]="{'is-invalid':newCompanyCustomer.submitted && cargp.invalid }"
+                      <input type="text" #cargo="ngModel" ngModel name="cargo" class="form-control" [ngClass]="{'is-invalid':newUserInte.submitted && cargo.invalid }"
                         required>
-                      <div *ngIf="newCompanyCustomer.submitted && cargo.invalid">
+                      <div *ngIf="newUserInte.submitted && cargo.invalid">
                         <small class="form-text text-danger">*Cargo Requerido</small>
                       </div>
 
@@ -180,10 +218,10 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class=" form-group">
-                      <label class=" form-control-label">Correo electrónico</label>
-                      <input type="email" name="mail" #mail="ngModel" ngModel [ngClass]="{'is-invalid': ( newCompanyCustomer.submitted && mail.invalid) }"
+                      <label class=" form-control-label">* Correo electrónico</label>
+                      <input type="email" name="mail" #mail="ngModel" ngModel [ngClass]="{'is-invalid': ( newUserInte.submitted && mail.invalid) }"
                         placeholder="...." class="form-control" required email>
-                      <div *ngIf="newCompanyCustomer.submitted &&  mail.invalid">
+                      <div *ngIf="newUserInte.submitted &&  mail.invalid">
                         <small class="form-text text-danger" *ngIf="mail.errors.required">Correo electrónico requerido</small>
                         <small class="form-text text-danger" *ngIf="mail.errors.email">Correo electrónico inválido</small>
                       </div>
@@ -201,18 +239,18 @@
                 <div class="row">
 
                   <div class="col-md-12">
-                    <label class=" form-control-label">Contraseña</label>
+                    <label class=" form-control-label">* Contraseña</label>
                     <div class=" form-group">
                       <div class="input-group">
                         <input type="password" name="password1" #password1="ngModel" ngModel (keyup)="ValidatePasswordPower($event);validatePasswordRepeat($event,passwordRepeat1)"
-                          [ngClass]="{'is-invalid': (newCompanyCustomer.submitted && password1.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte','border-none':password1.value=='' && !PowerPassword }"
+                          [ngClass]="{'is-invalid': (newUserInte.submitted && password1.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte','border-none':password1.value=='' && !PowerPassword }"
                           (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
-                        <div class="input-group-addon" [ngClass]="{'is-invalid': (newCompanyCustomer.submitted && password1.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','border border-success': PowerPassword=='Fuerte'}">
-                          <i class="fa" [ngClass]="{'fa-times': (newCompanyCustomer.submitted && password1.invalid),'fa-times': PowerPassword=='Débil','fa-check': PowerPassword=='Fuerte' || PowerPassword=='Aceptable', 'fa-asterisk':password1.value=='' }"></i>
+                        <div class="input-group-addon" [ngClass]="{'is-invalid': (newUserInte.submitted && password1.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','border border-success': PowerPassword=='Fuerte'}">
+                          <i class="fa" [ngClass]="{'fa-times': (newUserInte.submitted && password1.invalid),'fa-times': PowerPassword=='Débil','fa-check': PowerPassword=='Fuerte' || PowerPassword=='Aceptable', 'fa-asterisk':password1.value=='' }"></i>
                         </div>
                       </div>
                       <small class="form-text font-weight-bold" *ngIf="password1.valid" [ngClass]="{'text-danger': PowerPassword=='Débil','text-warning': PowerPassword=='Aceptable','text-success': PowerPassword=='Fuerte'}">{{PowerPassword}}</small>
-                      <div *ngIf="newCompanyCustomer.submitted && password1.invalid">
+                      <div *ngIf="newUserInte.submitted && password1.invalid">
                         <small class="form-text text-danger" *ngIf="password1.errors.required">Contraseña Requerida</small>
                       </div>
                     </div>
@@ -221,18 +259,18 @@
                 <div class="row">
 
                   <div class="col-md-12">
-                    <label class=" form-control-label">Repetir Contraseña</label>
+                    <label class=" form-control-label">* Repetir Contraseña</label>
 
                     <div class=" form-group">
                       <div class="input-group">
                         <input type="password" name="passwordRepeat1" #passwordRepeat1="ngModel" ngModel (keyup)="validatePasswordRepeat($event,password1)"
-                          [ngClass]="{'is-invalid': (newCompanyCustomer.submitted && passwordRepeat1.invalid) || NotEqualsPassword  }"
+                          [ngClass]="{'is-invalid': (newUserInte.submitted && passwordRepeat1.invalid) || NotEqualsPassword  }"
                           placeholder="******" class="form-control" required>
                         <div class="input-group-addon" [ngClass]="{'border border-danger':NotEqualsPassword,'border border-success': (!NotEqualsPassword && passwordRepeat1.value!='' )  }">
                           <i class="fa fa-asterisk" [ngClass]="{'fa-times':NotEqualsPassword,'fa-check': (!NotEqualsPassword && passwordRepeat1.value!=''), 'fa-asterisk':passwordRepeat1.value=='' }"></i>
                         </div>
                       </div>
-                      <div *ngIf="newCompanyCustomer.submitted && passwordRepeat1.invalid">
+                      <div *ngIf="newUserInte.submitted && passwordRepeat1.invalid">
                         <small class="form-text text-danger" *ngIf="passwordRepeat1.errors.required">Contraseña Requerida</small>
                       </div>
                       <small *ngIf="NotEqualsPassword" class="form-text text-danger">
@@ -264,10 +302,17 @@
                   <div class="col-md-6">
                     Mi Personal de Confianza
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <div class="form-group">
-                      <input name="remitonumero" id="remitonumero" type="text" required class="form-control" placeholder="...">
+                      <input type="number" #numQuerysMPC="ngModel" [ngClass]="{'is-invalid': noQueryValidMiPersonal}" ngModel name="numQueryMPC"
+                        class="form-control" (keyup)="ChangeBalancesCustomer('MPC',numQuerysMPC.value)" placeholder="...">
                     </div>
+
+                  </div>
+                  <div class="col-md-12 mt-0">
+                    <small class="form-text text-danger" *ngIf="noQueryValidMiPersonal">
+                      La cantidad de consultas debe ser menor a {{TotalQueryMipersonal}}
+                    </small>
                   </div>
 
                 </div>
@@ -275,23 +320,33 @@
                   <div class="col-md-6">
                     Mi Negocio de Confianza
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <div class="form-group">
-                      <input name="remitonumero" id="remitonumero" type="text" required class="form-control" placeholder="...">
+                      <input type="text" #numQuerysMNC="ngModel" ngModel name="numQuerysMNC" (keyup)="ChangeBalancesCustomer('MNC',numQuerysMNC.value)"
+                        class="form-control" placeholder="..." [ngClass]="{'is-invalid': noQueryValidMiNegocio}">
                     </div>
                   </div>
-
+                  <div class="col-md-12 mt-0">
+                    <small class="form-text text-danger" *ngIf="noQueryValidMiNegocio">
+                      La cantidad de consultas debe ser menor a {{TotalQueryMiNegocio}}
+                    </small>
+                  </div>
                 </div>
                 <div class="row mb-2">
                   <div class="col-md-6">
                     Plan Corporativo - Mi Personal de Confianza
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <div class="form-group">
-                      <input name="remitonumero" id="remitonumero" type="text" required class="form-control" placeholder="...">
+                      <input type="text" #numQuerysCMPC="ngModel" ngModel name="numQuerysCMPC" (keyup)="ChangeBalancesCustomer('CMPC',numQuerysCMPC.value)"
+                        class="form-control" placeholder="..." [ngClass]="{'is-invalid': noQueryValidCorporativo}">
                     </div>
                   </div>
-
+                  <div class="col-md-12">
+                    <small class="form-text text-danger" *ngIf="noQueryValidCorporativo">
+                      La cantidad de consultas debe ser menor a {{TotalQueryCorporativo}}
+                    </small>
+                  </div>
                 </div>
               </div>
             </div>
@@ -309,9 +364,264 @@
 
           </form>
         </div>
+        <div class="col-md-9 ListAdminsAll p-5  bg-white " [hidden]="!editUser">
+          <form [formGroup]="EditUser" (ngSubmit)=" ( !NotEqualsPassword && (PowerPassword!='Débil' && PowerPassword!='' && PowerPassword!=null)) && onSubmitEditUser(EditUser)">
+            <div class="row">
+              <div class="col-md-4 offset-md-2">
+                <h4>Editar Usuario</h4>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class=" form-control-label">* Nombre Completo</label>
+
+                      <input type="text" formControlName="nombre" class="form-control" [ngClass]="{'is-invalid':EditUser.controls.nombre.invalid }"
+                        required>
+                      <div *ngIf="EditUser.controls.nombre.invalid">
+                        <small class="form-text text-danger">Nombre Requerido</small>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class=" form-control-label">*Cargo en la empresa</label>
+
+                      <input type="text" formControlName="cargo" class="form-control" [ngClass]="{'is-invalid': EditUser.controls.cargo.invalid }"
+                        required>
+                      <div *ngIf="EditUser.controls.cargo.invalid">
+                        <small class="form-text text-danger">*Cargo Requerido</small>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class=" form-group">
+                      <label class=" form-control-label">* Correo electrónico</label>
+                      <input type="email" id="mail" name="mail" formControlName="mail" [ngClass]="{'is-invalid': EditUser.controls.mail.invalid }"
+                        placeholder="...." class="form-control" required email>
+                      <div *ngIf="EditUser.controls.mail.invalid">
+                        <small class="form-text text-danger" *ngIf="EditUser.controls.mail.errors.required">Correo electrónico
+                          requerido
+                        </small>
+                        <small class="form-text text-danger" *ngIf="EditUser.controls.mail.errors.email">Correo electrónico
+                          inválido
+                        </small>
+                      </div>
+                      <small *ngIf="ExistUser" class="form-text text-danger">
+                        Ya está registrado un usuario con este correo electrónico
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+              <div class="col-md-4">
+                <h4>Datos de Sesión</h4>
+                <div class="row">
+
+                  <div class="col-md-12">
+                    <label class=" form-control-label">Contraseña</label>
+                    <div class=" form-group">
+                      <div class="input-group">
+                        <input type="password" formControlName="password1" (keyup)="ValidatePasswordPower($event);validatePasswordRepeat($event,EditUser.controls.passwordRepeat1)"
+                          [ngClass]="{'is-invalid': EditUser.controls.password1.invalid,'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte','border-none':EditUser.controls.password1.value=='' && !PowerPassword }"
+                          (keydown)="disabledPassErr()" placeholder="******" class="form-control">
+                        <div class="input-group-addon" [ngClass]="{'is-invalid': EditUser.controls.password1.invalid,'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','border border-success': PowerPassword=='Fuerte'}">
+                          <i class="fa" [ngClass]="{'fa-times':EditUser.controls.password1.invalid,'fa-times': PowerPassword=='Débil','fa-check': PowerPassword=='Fuerte' || PowerPassword=='Aceptable', 'fa-asterisk':EditUser.controls.password1.value=='' || EditUser.controls.password1.value==null}"></i>
+                        </div>
+                      </div>
+                      <small class="form-text font-weight-bold" *ngIf="EditUser.controls.password1.valid" [ngClass]="{'text-danger': PowerPassword=='Débil','text-warning': PowerPassword=='Aceptable','text-success': PowerPassword=='Fuerte'}">{{PowerPassword}}</small>
+                      <div *ngIf="EditUser.controls.password1.invalid">
+                        <small class="form-text text-danger" *ngIf="EditUser.controls.password1.errors.required">Contraseña
+                          Requerida
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+
+                  <div class="col-md-12">
+                    <label class=" form-control-label"> Repetir Contraseña</label>
+
+                    <div class=" form-group">
+                      <div class="input-group">
+                        <input type="password" formControlName="passwordRepeat1" (keyup)="validatePasswordRepeat($event,EditUser.controls.password1)"
+                          [ngClass]="{'is-invalid': EditUser.controls.passwordRepeat1.invalid || NotEqualsPassword  }" placeholder="******"
+                          class="form-control">
+                        <div class="input-group-addon" [ngClass]="{'border border-danger':NotEqualsPassword,'border border-success': EditUser.controls.passwordRepeat1.value!='' && EditUser.controls.passwordRepeat1.value!=null  }">
+                          <i class="fa fa-asterisk" [ngClass]="{'fa-times':NotEqualsPassword,'fa-check': EditUser.controls.passwordRepeat1.value!='' && EditUser.controls.passwordRepeat1.value!=null, 'fa-asterisk':EditUser.controls.passwordRepeat1.value=='' && EditUser.controls.passwordRepeat1.value==null }"></i>
+                        </div>
+                      </div>
+                      <div *ngIf="EditUser.controls.passwordRepeat1.invalid">
+                        <small class="form-text text-danger" *ngIf="EditUser.controls.passwordRepeat1.errors.required">Contraseña
+                          Requerida
+                        </small>
+                      </div>
+                      <small *ngIf="NotEqualsPassword" class="form-text text-danger">
+                        Contraseñas no coinciden
+                      </small>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <label class=" form-control-label">Estado</label>
+                    <div class=" form-group">
+                      <label class="switch switch-3d switch-success mr-3">
+
+                        <input type="checkbox" formControlName="checModusEdit" (change)="changeStatusCustomer()" class="switch-input">
+                        <span class="switch-label"></span>
+                        <span class="switch-handle"></span>
+
+                      </label> {{modusEditUser}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12 text-center">
+                <button class="btn btn-danger" (click)="this.editUser=false" type="submit">Cancelar
+                  <i></i>
+                </button> &nbsp; &nbsp;
+                <button class="btn btn-success" type="submit">Guardar
+                  <i></i>
+                </button>
+              </div>
+            </div>
+
+          </form>
+        </div>
       </div>
     </div>
 
+    <ng-template #content let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title"> <b>Control de Saldos de</b><br> {{CurrentUserBalance}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row text-center">
+            <div class="col-md-4 offset-md-0">
+              <h5>Plan</h5>
+            </div>
+            <div class="col-md-6">
+              <h5>Administrar Saldos</h5>
+            </div>
+            <div class="col-md-2">
+              <h5>N° de saldos disponibles</h5>
+            </div>
+          </div>
+          <div class="row text-center pt-2 pb-5">
+            <div class="col-md-4 offset-md-0">
+              <img src="../assets/images/mi-personal.png" width="100" class="img-fluid" alt="Plan Mi personal de Confianza">
+            </div>
+            <div class="col-md-6 mt-4">
+              <div class="row ">
+
+
+                <div class="col-md-4 offset-md-2">
+                  <input type="number" class="form-control" [min]="1" [max]="5000">
+                </div>
+                <div class="col-md-3  text-center">
+                  <div class=" form-group">
+
+                    <label class="switch switch-3d switch-success mr-3">
+
+                      <input type="checkbox" [(ngModel)]="modusPushBalance" (change)="changeModusPushBalance()" class="switch-input">
+                      <span class="switch-label bg-danger"></span>
+                      <span class="switch-handle"></span>
+                      {{modusPushSaldo}}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-md-2 mt-4">
+              <h4>10</h4>
+            </div>
+            <hr>
+          </div>
+          <div class="row text-center pt-2 pb-5">
+            <div class="col-md-4 offset-md-0">
+              <img src="../assets/images/mi-negocio.png" width="100" class="img-fluid" alt="Plan Mi Negocio de Confianza">
+            </div>
+            <div class="col-md-6 mt-4">
+              <div class="row ">
+
+
+                <div class="col-md-4 offset-md-2">
+                  <input type="number" class="form-control" [min]="1" [max]="5000">
+                </div>
+                <div class="col-md-3  text-center">
+                  <div class=" form-group">
+
+                    <label class="switch switch-3d switch-success mr-3">
+
+                      <input type="checkbox" [(ngModel)]="modusPushBalance" (change)="changeModusPushBalance()" class="switch-input">
+                      <span class="switch-label bg-danger"></span>
+                      <span class="switch-handle"></span>
+                      {{modusPushSaldo}}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-md-2 mt-4">
+              <h4>0</h4>
+            </div>
+            <hr>
+          </div>
+          <div class="row text-center pt-2 pb-5">
+            <div class="col-md-4 offset-md-0">
+              <img src="../assets/images/mi-personal-corporativo.png" width="100" class="img-fluid" alt="Plan Mi Negocio de Confianza">
+            </div>
+            <div class="col-md-6 mt-4">
+              <div class="row ">
+
+
+                <div class="col-md-4 offset-md-2">
+                  <input type="number" class="form-control" [min]="1" [max]="5000">
+                </div>
+                <div class="col-md-3  text-center">
+                  <div class=" form-group">
+
+                    <label class="switch switch-3d switch-success mr-3">
+
+                      <input type="checkbox" [(ngModel)]="modusPushBalance" (change)="changeModusPushBalance()" class="switch-input">
+                      <span class="switch-label bg-danger"></span>
+                      <span class="switch-handle"></span>
+                      {{modusPushSaldo}}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-md-2 mt-4">
+              <h4>0</h4>
+            </div>
+            <hr>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+      </div>
+    </ng-template>
 
 
   </div>

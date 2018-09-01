@@ -198,7 +198,7 @@ export class FunctionsService {
     });
   }
   returnCurrentSession() {
-    if (localStorage.getItem('currentUser') != "") {
+    if (localStorage.getItem('currentUser') != "" && localStorage.getItem('currentUser') != null) {
       let session = JSON.parse(localStorage.getItem('currentUser'));
       return { mail: session.mail, token: session.token }
     } else {
@@ -349,7 +349,7 @@ export class FunctionsService {
           mail: dataSend.mail
         }
       }
-      console.log('que seee enviaaa??',data)
+      console.log('que seee enviaaa??', data)
       this._wsSocket.emit('changeUserBalance', data).subscribe((res) => {
 
         if (!res.err) {
@@ -404,6 +404,53 @@ export class FunctionsService {
       dataSend.token = this.session.token;
       this._wsSocket.emit('changeUserBalance', dataSend).subscribe((res) => {
         resolve({})
+      }, (error) => {
+        reject({ err: true, msg: 'Error Inesperado' })
+
+      })
+    })
+  }
+
+  getAllUsersEmployedCompany(email) {
+    this.session = this.returnCurrentSession()
+
+    return new Promise((resolve, reject) => {
+      let senData = {
+        opt: 20,
+        mail: this.session.mail,
+        token: this.session.token,
+        company: {
+          mail: email
+        }
+      }
+      this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
+        if (res.err) {
+          resolve({ err: true, msg: res.msg, type: res.type })
+        } else {
+          resolve({ users: res.users })
+        }
+      }, (error) => {
+        reject({ err: true, msg: 'Error Inesperado' })
+
+      })
+    })
+  }
+  getBalancesfromCustomer(email) {
+    return new Promise((resolve, reject) => {
+      let senData = {
+        opt: 9,
+        mail: this.session.mail,
+        token: this.session.token,
+        company: {
+          mail: email
+        }
+      }
+      this._wsSocket.emit('changeUserBalance', senData).subscribe((res) => {
+        if (res.err) {
+          resolve({ err: true, msg: res.msg, type: res.type })
+        } else {
+          resolve({ plans: res.data })
+        }
       }, (error) => {
         reject({ err: true, msg: 'Error Inesperado' })
 
