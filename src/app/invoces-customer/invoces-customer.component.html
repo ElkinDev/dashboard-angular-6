@@ -74,9 +74,13 @@
     </div>
 
     <div class="container" [hidden]="loadingMore">
+      <div class="row mb-4">
+          <button class="btn btn-success" routerLink="/Dashboard/customers/company/users/{{this.dninumber}}" >Administrar Usuarios internos</button>
+
+      </div>
       <div class="row p-3">
 
-        <div class="ListAdminsAll col-md-12" [hidden]="loadingMore">
+        <div class="ListAdminsAll col-md-12 text-center" [hidden]="loadingMore">
           <div [hidden]="invocesPayment==null">
             <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
               <thead>

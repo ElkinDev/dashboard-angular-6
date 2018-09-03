@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, Renderer, ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, Renderer, ChangeDetectorRef,ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { NgForm, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
-
+import { CustomersService } from '../customers-people/customers-service.service';
+import { DataTableDirective } from 'angular-datatables';
 import { Router, ActivatedRoute } from "@angular/router";
 import { WebSocketService } from '../websocket.service';
 import { FunctionsService } from '../functions.service'
@@ -18,13 +19,15 @@ declare let alertify: any;
   templateUrl: './customerusers.component.html',
   styleUrls: ['./customerusers.component.css']
 })
-export class CustomerusersComponent implements OnInit {
+export class CustomerusersComponent implements OnDestroy, OnInit {
+  @ViewChild(DataTableDirective)
+  dtElement: DataTableDirective;
+  dtOptions: DataTables.Settings = {};
+  dtTrigger = new Subject();
   dninumber;
   loadingMore;
   nameUSer;
-  dtOptions: DataTables.Settings = {};
   usersEmployedCustomer;
-  dtTrigger = new Subject();
   messageErrorQuery;
   infoUser;
   checkedActivoUser: boolean;
@@ -46,6 +49,7 @@ export class CustomerusersComponent implements OnInit {
   noQueryValidCorporativo: boolean = false;
   EditUser = new FormGroup({
     nombre: new FormControl(),
+    cedula: new FormControl(),
     cargo: new FormControl(),
     mail: new FormControl(),
     checModusEdit: new FormControl(),
@@ -57,13 +61,16 @@ export class CustomerusersComponent implements OnInit {
   CurrentUserBalance = null;
   modusPushSaldo;
   modusPushBalance = true;
-  constructor(private renderer: Renderer, routeActived: ActivatedRoute, private router: Router, private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService, private _location: Location, private cdRef: ChangeDetectorRef, private modalService: NgbModal) {
+  senData;
+  roleUser;
+  constructor(private renderer: Renderer, routeActived: ActivatedRoute, private router: Router, private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService, private _location: Location, private cdRef: ChangeDetectorRef, private modalService: NgbModal, private _CustomersService: CustomersService) {
+    this.senData = null
     this.dninumber = routeActived.snapshot.params['dninumber'];
     this.loadingMore = true;
     this.checkedActivoUser = true;
     this.statusNewCustomer = 'Activo';
     this.NotEqualsPassword, this.addNewuser, this.ExistUser, this.editUser = false;
-
+    this.roleUser = 'customer';
     this.messageErrorQuery = 'No hay usuarios registrados.'
     this.modusPushSaldo = 'Adicionar'
     this._FunctionsService.SpanishLanguageDatatable().then(res => {
@@ -120,39 +127,76 @@ export class CustomerusersComponent implements OnInit {
     });
 
   }
+  getOnlyInfo(email) {
+    this._FunctionsService.getAllUsersEmployedCompany(email).then(res => {
+      let response: any = res;
+
+      if (response.err) {
+        if (response.type == 'noCompanyEmployes') {
+          this.usersEmployedCustomer = null;
+          this.messageErrorQuery = response.msg
+          this.loadingMore = false;
+
+        } else {
+
+          this.router.navigate(["/Dashboard/customers/"]);
+          alertify.error(response.msg);
+        }
+      } else {
+        this.usersEmployedCustomer = response.users
+        this.loadingMore = false;
+        this.rerender()
+
+
+
+
+      }
+
+    });
+  }
   getAllBalances(email) {
     this._FunctionsService.getBalancesfromCustomer(email).then(res => {
       let response: any = res;
-      console.log(res,'que eees?')
-      if(response.plans.length>0){
+      if (response.plans.length > 0) {
         response.plans.forEach(element => {
-        switch(element.plan){
-          case 'Contratación de personal' :
-          this.TotalQueryCorporativo=element.total;
-          this.llevasQueryCorporativo=element.count;
-          break;
-          case 'Mi negocio de confianza' :
-          this.TotalQueryMiNegocio=element.total;
-          this.llevasQueryMinegocio=element.count;
-          break;
-          case 'Mi personal de Confianza' :
-          this.TotalQueryMipersonal=element.total;
-          this.llevasQueryMipersonal=element.count;
-          break;
-          default:
-          break;
+          switch (element.plan) {
+            case 'Contratación de personal':
+              this.TotalQueryCorporativo = element.total;
+              this.llevasQueryCorporativo = element.count;
+              break;
+            case 'Mi negocio de confianza':
+              this.TotalQueryMiNegocio = element.total;
+              this.llevasQueryMinegocio = element.count;
+              break;
+            case 'Mi personal de Confianza':
+              this.TotalQueryMipersonal = element.total;
+              this.llevasQueryMipersonal = element.count;
+              break;
+            default:
+              break;
 
-        }
+          }
         });
       }
-      
+
       this.loadingMore = false;
 
     });
   }
+  
+
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+  }
+
+  rerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
   }
   ngOnInit() {
 
@@ -161,6 +205,21 @@ export class CustomerusersComponent implements OnInit {
 
 
     }
+
+    this._wsSocket.on('createUser:' + this.roleUser).subscribe((res) => {
+      if (!res.err) {
+        alertify.success('Usuario interno ' + res.mail, ' creado con exito');
+        this.senData = null;
+        location.reload();
+
+      } else {
+
+      }
+
+
+    }, (error) => {
+
+    })
 
     // Calling the DT trigger to manually render the table
   }
@@ -196,6 +255,16 @@ export class CustomerusersComponent implements OnInit {
       this.NotEqualsPassword = false;
     }
   }
+  validatePasswordRepeat1(repeatPassword, password) {
+    if (repeatPassword.value != password.value) {
+      if (password.value.length != 0 && repeatPassword.value.length != 0) {
+        this.NotEqualsPassword = true;
+      }
+    } else {
+      this.NotEqualsPassword = false;
+    }
+
+  }
   disabledPassErr(): void {
     this.NotEqualsPassword = false;
 
@@ -203,8 +272,49 @@ export class CustomerusersComponent implements OnInit {
   changeStatusCustomer() {
     this.statusNewCustomer === 'Activo' ? this.statusNewCustomer = 'Inactivo' : this.statusNewCustomer = 'Activo'
   }
-  onSubmitNewCustomerCompany() {
+  onSubmitNewCustomerCompany(data) {
+    let resd: any = null;
 
+    if (data.valid) {
+      if (data.value.password1 != data.value.passwordRepeat1) {
+        this.NotEqualsPassword = true;
+      } else {
+        let senData = {
+          nit: data.value.cedula,
+          nombre: data.value.nombre,
+          emailUser: data.value.mail,
+          password: data.value.password1,
+          passwordRepeat: data.value.passwordRepeat1,
+          typeIdentification: 'CC',
+          status: data.value.checkmodusNew,
+          opt: 16,
+          company: this.infoUser.id
+
+        }
+        this.senData = senData
+        this._CustomersService.createCustomer(senData).then(res => {
+          resd = res;
+          if (resd.type == 'createdUserNew') {
+            alertify.alert("Confirma el registro de usuario", function () {
+              window.open(resd.link, "_blank")
+
+            });
+          }
+        }, err => {
+          alertify.error(err.msg)
+        })
+
+
+
+      }
+    } else {
+
+    }
+
+
+  }
+  closeEditForm(){
+    this.addNewuser=false;this.NotEqualsPassword = false;this.PowerPassword = null;
   }
   onSubmitEditUser(user) {
     console.log('vengaaa entraaaa', user);
@@ -267,15 +377,27 @@ export class CustomerusersComponent implements OnInit {
     user.status ? this.modusEditUser = 'Activo' : this.modusEditUser = 'Inactivo'
     this.EditUser.patchValue({
       nombre: user.nombre,
+      cedula: user.cedula,
       cargo: user.cargo,
-      mail: user.email,
+      mail: user.mail,
       checModusEdit: user.status
     });
   }
   removeUser(data, index): void {
+    let opt;
+    data.typeIdentification == 'NIT' ? opt = 13 : opt = 17;
     alertify
-      .confirm("Usuarios Internos de " + this.nameUSer, "¿Eliminar al usuario " + data.email + "?",
+      .confirm("Usuarios Internos de " + this.nameUSer, "¿Eliminar al usuario " + data.mail + "?",
         (() => {
+          this._FunctionsService.RemoveUser(data.mail, data.id, opt).then(msg => {
+            alertify.success(msg);
+            this.usersEmployedCustomer.splice(index, 1);
+            console.log(this.usersEmployedCustomer,);
+            this.rerender()
+
+          }, err => {
+            alertify.error(err)
+          })
 
         })
         , () => {
@@ -294,13 +416,13 @@ export class CustomerusersComponent implements OnInit {
   openModalBalances(content, data) {
     this.CurrentUserBalance = data.nombre;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', size: "lg" }).result.then((result) => {
-      console.log('closed')
     }, (reason) => {
-      console.log('dismiss')
     });
   }
   changeModusPushBalance() {
     this.modusPushSaldo === 'Adicionar' ? this.modusPushSaldo = 'Restar' : this.modusPushSaldo = 'Adicionar'
   }
+
+  
 
 }

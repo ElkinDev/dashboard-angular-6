@@ -164,6 +164,7 @@ export class CustomersFormComponent implements OnInit {
           phone: data.value.phone
         }
         this.senData = senData;
+        console.log(this.senData,'que enviamosss ??? EMC');
         this._CustomersService.createCustomer(this.senData).then(res => {
           resd = res;
           if (resd.type == 'createdUserNew') {
@@ -248,36 +249,36 @@ export class CustomersFormComponent implements OnInit {
           alertify.error(err.msg)
         })
 
-        this._wsSocket.on('createUser').subscribe((res) => {
-          if (res.mail === this.senData.emailUser) {
+        // this._wsSocket.on('createUser').subscribe((res) => {
+        //   if (res.mail === this.senData.emailUser) {
 
-            var formdata = new FormData();
-            if (formdata && this.sendImage != null) {
-              console.log(this.sendImage, 'VEAAMOS QUE LO QUE');
-              formdata.append('imgProfile', this.sendImage)
-              formdata.append('id', res.id)
-              formdata.append('opt', '3')
-              formdata.append('mail', this.session.mail)
-              formdata.append('token', this.session.token)
-              this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
-                let resp1 = JSON.parse(resp);
-                this.router.navigate(['/Dashboard/customers'])
-
-
-
-
-              });
-            } else {
-              this.router.navigate(['/Dashboard/customers'])
+        //     var formdata = new FormData();
+        //     if (formdata && this.sendImage != null) {
+        //       console.log(this.sendImage, 'VEAAMOS QUE LO QUE');
+        //       formdata.append('imgProfile', this.sendImage)
+        //       formdata.append('id', res.id)
+        //       formdata.append('opt', '3')
+        //       formdata.append('mail', this.session.mail)
+        //       formdata.append('token', this.session.token)
+        //       this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
+        //         let resp1 = JSON.parse(resp);
+        //         this.router.navigate(['/Dashboard/customers'])
 
 
 
-            }
-          }
 
-        }, (error) => {
+        //       });
+        //     } else {
+        //       this.router.navigate(['/Dashboard/customers'])
 
-        })
+
+
+        //     }
+        //   }
+
+        // }, (error) => {
+
+        // })
 
 
       }

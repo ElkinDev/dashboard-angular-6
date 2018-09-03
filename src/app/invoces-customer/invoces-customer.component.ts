@@ -26,7 +26,15 @@ export class InvocesCustomerComponent implements OnDestroy, OnInit {
   dtTrigger = new Subject();
   messageErrorQuery;
   infoUser;
-
+  TotalQueryMipersonal;
+  llevasQueryMipersonal;
+  noQueryValidMiPersonal: boolean = false;
+  TotalQueryMiNegocio;
+  llevasQueryMinegocio;
+  noQueryValidMiNegocio: boolean = false;
+  TotalQueryCorporativo;
+  llevasQueryCorporativo;
+  noQueryValidCorporativo: boolean = false;
   constructor(private renderer: Renderer, routeActived: ActivatedRoute, private router: Router, private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService, private _location: Location) {
     this.dninumber = routeActived.snapshot.params['dninumber'];
     this.isProdEnvironment = routeActived.snapshot.data[0]['isProd'];
@@ -63,12 +71,42 @@ export class InvocesCustomerComponent implements OnDestroy, OnInit {
       if (!response.err) {
         this.invocesPayment = response.pays;
         this.dtTrigger.next();
+        this.getAllBalances(this.infoUser.mail);
       } else {
         this.invocesPayment = null;
         alertify.error(response.msg);
 
       }
 
+
+    });
+  }
+  getAllBalances(email) {
+    this._FunctionsService.getBalancesfromCustomer(email).then(res => {
+      let response: any = res;
+      if (response.plans.length > 0) {
+        response.plans.forEach(element => {
+          switch (element.plan) {
+            case 'Contratación de personal':
+              this.TotalQueryCorporativo = element.total;
+              this.llevasQueryCorporativo = element.count;
+              break;
+            case 'Mi negocio de confianza':
+              this.TotalQueryMiNegocio = element.total;
+              this.llevasQueryMinegocio = element.count;
+              break;
+            case 'Mi personal de Confianza':
+              this.TotalQueryMipersonal = element.total;
+              this.llevasQueryMipersonal = element.count;
+              break;
+            default:
+              break;
+
+          }
+        });
+      }
+
+      this.loadingMore = false;
 
     });
   }

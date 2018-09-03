@@ -148,6 +148,21 @@ export class FunctionsService {
     oReq.send(datos);
   }
 
+  httpGet(theUrl, cb) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+      if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+        // console.log(xmlHttp.responseText,'listooo?')
+        cb(xmlHttp.responseText);
+
+      }
+    }
+    xmlHttp.open("GET", theUrl, false); // true for asynchronous 
+    xmlHttp.send(null);
+
+  }
+
+
   ValidationSecurityPassword(value) {
     var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
     var mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
@@ -381,9 +396,9 @@ export class FunctionsService {
         identification: numId
       }
       this._wsSocket.emit('getInfo', data).subscribe((res) => {
-
+        console.log(res,'vesamosasdas queee?',res);
         if (!res.err) {
-          resolve({ nombre: res.user.nombre + ' ' + res.user.apellido, direccion: res.user.address, typeIdentification: res.user.typeIdentification, cedula: res.user.cedula, mail: res.user.mail })
+          resolve({ nombre: res.user.nombre + ' ' + res.user.apellido, direccion: res.user.address, typeIdentification: res.user.typeIdentification, cedula: res.user.cedula, mail: res.user.mail,id:res.user.id })
         } else {
           resolve({ err: true, msg: res.msg })
         }
