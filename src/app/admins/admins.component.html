@@ -99,6 +99,20 @@
                       </div>
 
                     </div>
+                    <div class="col-md-10 offset-md-1">
+                      <label class=" form-control-label">N° de Cedula</label>
+
+                      <div class="form-group">
+                        <input type="text" formControlName="nit" class="form-control" [ngClass]="{'is-invalid': EditUser.controls.nit.invalid }"
+                          required>
+
+                        <div *ngIf="EditUser.controls.nit.invalid">
+                          <small class="form-text text-danger">*Número de identificación Requerido</small>
+                        </div>
+
+                      </div>
+
+                    </div>
                   </div>
                   <div class="row">
                     <div class="col-md-10 offset-md-1">
@@ -199,7 +213,7 @@
               </div>
             </div>
 
-            <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="ListAdmins==null || ListAdminsnull" >
+            <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="ListAdminsnull" >
               <div class="display-middle">
                 <i class="ti-reload display-1"></i>
                 <h4 class="upper mt-3">{{messageErrorQuery}}</h4>

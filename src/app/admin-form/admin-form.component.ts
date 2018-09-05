@@ -77,6 +77,7 @@ export class AdminFormComponent implements OnInit {
         imgProfile:null,
         nombre: null,
         apellido: null,
+        nit: null,
         emailUser:null,
         status:true,
         password:'',

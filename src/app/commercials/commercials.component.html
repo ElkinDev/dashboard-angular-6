@@ -102,6 +102,20 @@
 
                     </div>
                   </div>
+                  <div class="col-md-10 offset-md-1">
+                    <label class=" form-control-label">N° de Cedula</label>
+
+                    <div class="form-group">
+                      <input type="text" formControlName="nit" class="form-control" [ngClass]="{'is-invalid': EditUser.controls.nit.invalid }"
+                        required>
+
+                      <div *ngIf="EditUser.controls.nit.invalid">
+                        <small class="form-text text-danger">*Número de identificación Requerido</small>
+                      </div>
+
+                    </div>
+
+                  </div>
                   <div class="row">
                     <div class="col-md-10 offset-md-1">
                       <label class=" form-control-label">Correo Electrónico</label>
@@ -114,8 +128,10 @@
                             placeholder="AndresIniesta@gmail...." class="form-control" required email>
                         </div>
                         <div *ngIf="EditUser.controls.mail.invalid">
-                          <small class="form-text text-danger" *ngIf="EditUser.controls.mail.errors.required">Correo electrónico requerido</small>
-                          <small class="form-text text-danger" *ngIf="EditUser.controls.mail.errors.email">Correo electrónico inválido</small>
+                          <small class="form-text text-danger" *ngIf="EditUser.controls.mail.errors.required">Correo electrónico
+                            requerido</small>
+                          <small class="form-text text-danger" *ngIf="EditUser.controls.mail.errors.email">Correo electrónico
+                            inválido</small>
                         </div>
                         <small *ngIf="ExistUser" class="form-text text-danger">
                           Ya está registrado un usuario con este correo electrónico
@@ -172,13 +188,14 @@
                   <div class="media media-custom">
                     <a href="#">
                       <img class="align-self-center rounded-circle mr-3" [ngClass]="{'d-none':addSeller || editSeller }" style="width:75px; height:75px;"
-                        alt="{{commercial.nombre +' '+ commercial.apellido}}"  [src]="commercial.imgProfile ? commercial.imgProfile : hrefImageUploaded">
+                        alt="{{commercial.nombre +' '+ commercial.apellido}}" [src]="commercial.imgProfile ? commercial.imgProfile : hrefImageUploaded">
 
                     </a>
                     <div class="media-body">
                       <h5 class="display-6 m-0 text-light">{{commercial.nombre +' '+ commercial.apellido}}</h5>
                       <p class="m-0 p-0 text-light">{{RoleUser}}</p>
-                      <span class="badge" [ngClass]="{'badge-success':commercial.status,'badge-danger':!commercial.status}">{{commercial.status ? 'Activo':'Inactivo'}}</span>
+                      <span class="badge" [ngClass]="{'badge-success':commercial.status,'badge-danger':!commercial.status}">{{commercial.status
+                        ? 'Activo':'Inactivo'}}</span>
                     </div>
                   </div>
                   <div class="card-body">
@@ -202,7 +219,8 @@
               </div>
             </div>
 
-            <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="listCommercials==null || ListSellerNull" [hidden]="loadingMore">
+            <div class="col-md-12 border-right border-left mt-5 mb-5 display-table text-center" *ngIf="listCommercials==null || ListSellerNull"
+              [hidden]="loadingMore">
               <div class="display-middle">
                 <i class="ti-reload display-1"></i>
                 <h4 class="upper mt-3">{{messageErrorQuery}}</h4>

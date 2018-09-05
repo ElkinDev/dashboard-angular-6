@@ -1,5 +1,5 @@
 <section class="container-fluid section-full bg-dark display-table">
-    <section class="display-middle text-center">
+    <section class="display-middle text-center" [hidden]="loadingMore">
         <div class="panel-login col-lg-4 offset-lg-4">
             <form class="form-horizontal" #login="ngForm" (ngSubmit)=" login.form.valid && onSubmit(login)">
                 <div class="row">
@@ -15,19 +15,20 @@
                         <label for="validationServerUsername">Usuario</label>
                         <div class="form-group">
 
-                            <input name="email" #email="ngModel" ngModel  (keypress)="removeErrors($event,'username')" type="email" class="form-control" [ngClass]="{'is-invalid': (login.submitted && email.invalid) || dontExist }"
-                                id="email" placeholder="Correo Electrónico" aria-describedby="email" required email >
-                                <div *ngIf="login.submitted && email.invalid" class="invalid-feedback">
-                                    
-                                </div>
-                                <div *ngIf="login.submitted && email.invalid" class="invalid-feedback">
-                                    <div *ngIf="email.errors.required">Correo electrónico requerido</div>
-                                    <div *ngIf="email.errors.email">Correo electrónico inválido</div>
-                                </div>
-                                <div *ngIf="dontExist" class="invalid-feedback">
-                                    {{msgError}}
-                                </div>
-                            
+                            <input name="email" #email="ngModel" ngModel (keypress)="removeErrors($event,'username')" type="email" class="form-control"
+                                [ngClass]="{'is-invalid': (login.submitted && email.invalid) || dontExist }" id="email" placeholder="Correo Electrónico"
+                                aria-describedby="email" required email>
+                            <div *ngIf="login.submitted && email.invalid" class="invalid-feedback">
+
+                            </div>
+                            <div *ngIf="login.submitted && email.invalid" class="invalid-feedback">
+                                <div *ngIf="email.errors.required">Correo electrónico requerido</div>
+                                <div *ngIf="email.errors.email">Correo electrónico inválido</div>
+                            </div>
+                            <div *ngIf="dontExist" class="invalid-feedback">
+                                {{msgError}}
+                            </div>
+
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -40,7 +41,9 @@
                         <div class="form-group">
 
                             <label for="validationServer03">Contraseña</label>
-                            <input name="password" #password="ngModel" (keypress)="removeErrors($event,'password')" ngModel type="password" class="form-control" id="password" [ngClass]="{ 'is-invalid': (login.submitted && password.invalid ) || passwordincorrect }" placeholder="Contraseña" required minlength="6">
+                            <input name="password" #password="ngModel" (keypress)="removeErrors($event,'password')" ngModel type="password" class="form-control"
+                                id="password" [ngClass]="{ 'is-invalid': (login.submitted && password.invalid ) || passwordincorrect }"
+                                placeholder="Contraseña" required minlength="6">
                             <div *ngIf="login.submitted && password.invalid" class="invalid-feedback">
                                 <div *ngIf="password.errors.required">Contraseña es requerida</div>
                                 <div *ngIf="password.errors.minlength">La contraseña es mayor o igual a 6 dígitos</div>
@@ -81,4 +84,21 @@
             </form>
         </div>
     </section>
+
+    <div class=" text-center loading-panel-2" [hidden]="!loadingMore">
+        <div class="dot dot-1"></div>
+        <div class="dot dot-2"></div>
+        <div class="dot dot-3"></div>
+
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+            <defs>
+                <filter id="goo">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="blur" />
+                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -7" />
+                </filter>
+            </defs>
+        </svg>
+
+    </div>
+
 </section>

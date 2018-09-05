@@ -13,69 +13,80 @@ export class LoginComponent implements OnInit {
   dontExist: boolean = false
   passwordincorrect: boolean = false
   msgError;
-  constructor(
-    private _FunctionsService: FunctionsService,
-    private router: Router
-  ) {
-    this.msgError=null;
-    
-   }
+  sessionActive;
+  loadingMore: boolean
+
+  constructor(private _FunctionsService: FunctionsService, private router: Router) {
+    this.msgError = null;
+    this.sessionActive = false;
+    this.loadingMore = true;
+  }
   errorUsername: string
   model: any = {};
 
 
   ngOnInit() {
-    
-  }
-  onSubmit(login: NgForm) {
-    this.msgError=null;
-    this.passwordincorrect,this.dontExist = false;
-    
-    let sendData={
-      opt:0,
-      mail:login.value.email,
-      psw:login.value.password
-    };
-    if (login.valid) {
-    console.log('entraaaaaaaaaaa');
-      
-    this._FunctionsService.logInLogOutDashboar(sendData).then(data => {
-      let dataResponse:any=data;
-      if(dataResponse.err){
-        if(dataResponse.type=='noUserPass'){
-          this.passwordincorrect = true
-        }else{
-          this.dontExist = true
-          this.msgError=dataResponse.msg
-        }
-       
-        
-      }else{
-        if (dataResponse.res){
-          this._FunctionsService.createSessionStorage({token:dataResponse.token,name:dataResponse.name,role:dataResponse.role,mail:login.value.email}).then(resp => {
-            let resp1:any=resp
-            if(!resp1.err){
-              setTimeout(() => {
-                this.router.navigate(['/Dashboard']);
-    
-              }, 1000)
-            }
-          })
-        }else{
-        
-          this.dontExist = true
-        this.msgError= 'Error inesperado - intente nuevamente.';
-        }
-      }
+    this._FunctionsService.getSessionStorage().then(res => {
+      if (res == null || res == '') {
+        this.loadingMore = false;
 
-    },err=>{
+      } else {
+        this.checkSession(res)
+      }
+    }, err => {
 
     })
-        
-       
-        
+  }
+  onSubmit(login: NgForm) {
+    this.loadingMore = true;
 
-      
+    this.msgError = null;
+    this.passwordincorrect, this.dontExist = false;
+
+    let sendData = {
+      opt: 0,
+      mail: login.value.email,
+      psw: login.value.password
+    };
+    if (login.valid) {
+
+      this._FunctionsService.logInLogOutDashboar(sendData).then(data => {
+        let dataResponse: any = data;
+        if (dataResponse.err) {
+          if (dataResponse.type == 'noUserPass') {
+            this.passwordincorrect = true
+          } else {
+            this.dontExist = true
+            this.msgError = dataResponse.msg
+          }
+
+
+        } else {
+          if (dataResponse.res) {
+
+            this._FunctionsService.createSessionStorage({ token: dataResponse.token, name: dataResponse.name, role: dataResponse.role, mail: login.value.email }).then(resp => {
+              let resp1: any = resp
+              if (!resp1.err) {
+                setTimeout(() => {
+                  this.router.navigate(['/Dashboard']);
+
+                }, 1000)
+              }
+            })
+          } else {
+            this.dontExist = true
+            this.msgError = 'Error inesperado - intente nuevamente.';
+          }
+        }
+        this.loadingMore = false;
+      }, err => {
+
+      })
+
+
+
+
+
     }
   }
 
@@ -91,5 +102,35 @@ export class LoginComponent implements OnInit {
         break
     }
 
+  }
+
+  checkSession(data) {
+    let getSession = JSON.parse(data)
+
+    let senData = {
+      opt: 2,
+      mail: getSession.mail,
+      token: getSession.token
+    }
+    this._FunctionsService.logInLogOutDashboar(senData).then(data => {
+      let responseData: any = data;
+      if (responseData.err) {
+        this.loadingMore = false;
+
+      } else {
+        if (!responseData.res) {
+          this.loadingMore = false;
+
+
+        } else {
+          if (this.router.url === '/login') {
+            this.router.navigate(['/Dashboard']);
+
+          }
+          this.sessionActive = true;
+        }
+      }
+
+    })
   }
 }

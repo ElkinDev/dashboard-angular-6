@@ -37,7 +37,7 @@ export class CommercialsComponent implements OnInit {
   urlMainServerPhotos;
   session;
   EditUser = new FormGroup({
-
+    nit: new FormControl(),
     imgProfile: new FormControl(),
     nombre: new FormControl(),
     apellido: new FormControl(),
@@ -45,7 +45,7 @@ export class CommercialsComponent implements OnInit {
     checModusEdit: new FormControl(),
 
   });
-  
+
   constructor(private _commercialService: CommercialsService, private cdRef: ChangeDetectorRef, private _FunctionsService: FunctionsService, private _wsSocket: WebSocketService) {
     this.editSeller = false;
     this.ExistUser = false;
@@ -67,7 +67,7 @@ export class CommercialsComponent implements OnInit {
     this.sendImage = null;
     this.fileImageEdit = null;
     this.idUserEditNow = null;
-    this.session=this._FunctionsService.returnCurrentSession()
+    this.session = this._FunctionsService.returnCurrentSession()
 
   }
   ngAfterViewChecked() {
@@ -77,7 +77,9 @@ export class CommercialsComponent implements OnInit {
     this._commercialService.getAllCommercials().then((res) => {
       console.log('traaeme el res', res)
       if (!res) {
-        this.listCommercials = null
+        this.listCommercials = []
+        this.ListSellerNull = true;
+
         this.messageErrorQuery = "No Hay resultados"
 
       } else {
@@ -89,7 +91,8 @@ export class CommercialsComponent implements OnInit {
       }, 1000)
 
     }, (err) => {
-      this.listCommercials = null;
+      this.listCommercials = [];
+      this.ListSellerNull = true;
       this.messageErrorQuery = err.msg ? err.msg : '¡Error inesperado, inténtelo nuevamente!';
       setTimeout(() => {
         this.loadingMore = false;
@@ -97,10 +100,13 @@ export class CommercialsComponent implements OnInit {
 
       console.log(err, 'cuaaal es')
     })
-    
+
     this._wsSocket.on('createUser:' + this.RoleUser).subscribe((res) => {
       if (res.mail.match(new RegExp(this.senData.emailUser, 'gi'))) {
+        this.ListSellerNull = false;
         var formdata = new FormData();
+        this.senData.cedula = this.senData.nit;
+
         if (formdata && this.sendImage != null) {
           console.log('aqui see meteee');
           formdata.append('imgProfile', this.sendImage)
@@ -115,8 +121,8 @@ export class CommercialsComponent implements OnInit {
           this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
             let resp1 = JSON.parse(resp);
             this.senData.imgProfile = resp1.imageProfile;
-            console.log(resp1,'quee nos traeeeee');
-            if (this.listCommercials != []) {
+            console.log(resp1, 'quee nos traeeeee');
+            if (this.listCommercials != [] && this.listCommercials != null) {
               let resultAdmin = this.listCommercials.find(obj => {
                 return obj.emailUser === this.senData.emailUser
               });
@@ -152,14 +158,14 @@ export class CommercialsComponent implements OnInit {
         } else {
           this.senData.fecha = res.dateCreate;
           this.senData.id = res.id;
-          if (this.listCommercials != []) {
+          if (this.listCommercials != [] && this.listCommercials != null) {
 
             let resultAdmin = this.listCommercials.find(obj => {
               return obj.emailUser === this.senData.emailUser
             });
             if (!resultAdmin) {
               this.senData.mail = this.senData.emailUser;
-              this.sendImage = null;              
+              this.sendImage = null;
               this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
               this.listCommercials.push(this.senData);
               this.addSeller = false;
@@ -168,8 +174,8 @@ export class CommercialsComponent implements OnInit {
               alertify.success('Usuario Creado Exitosamente');
             };
           } else {
-            this.senData.mail = this.senData.emailUser;            
-            this.sendImage = null;            
+            this.senData.mail = this.senData.emailUser;
+            this.sendImage = null;
             this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
             this.listCommercials.push(this.senData)
             this.addSeller = false;
@@ -246,7 +252,7 @@ export class CommercialsComponent implements OnInit {
 
 
     })
-   
+
 
   }
   editSellerUser(data, index): void {
@@ -255,6 +261,8 @@ export class CommercialsComponent implements OnInit {
     this.EditUser.patchValue({
       nombre: data.nombre,
       apellido: data.apellido,
+      nit: data.cedula,
+      cedula: data.cedula,
       mail: data.mail,
       checModusEdit: data.status,
       imgProfile: null
@@ -275,14 +283,16 @@ export class CommercialsComponent implements OnInit {
   }
   onSubmitEditUser(data: NgForm) {
     var dataSend = {
-      userEdit:{
+      userEdit: {
         nombre: data.value.nombre,
         apellido: data.value.apellido,
         mail: data.value.mail,
+        nit: data.value.cedula,
+        cedula: data.value.cedula,
         status: data.value.checModusEdit,
         id: this.idUserEditNow
       },
-      opt:5
+      opt: 5
     }
     this._FunctionsService.editUser(dataSend).then(msg => {
       let respF: any = msg;
@@ -338,24 +348,6 @@ export class CommercialsComponent implements OnInit {
 
 
 
-
-    // this._commercialService.editUser(dataSend).then(msg => {
-    //   alertify.success(msg);
-    //   this.listCommercials[this.indexNowEdit].nombre = data.value.nombre
-    //   this.listCommercials[this.indexNowEdit].apellido = data.value.apellido
-    //   this.listCommercials[this.indexNowEdit].status = data.value.checModusEdit
-    //   this.listCommercials[this.indexNowEdit].mail = data.value.mail
-    //   this.editSeller ? this.editSeller = false : this.editSeller = true
-    //   this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
-    //   if (this.nameUserPhoto) {
-    //     console.log('que es esto', this.nameUserPhoto)
-    //     this.listCommercials[this.indexNowEdit].imgProfile = this.urlMainServer + this.nameUserPhoto
-    //   }
-    // }, err => {
-    //   alertify.error(err);
-
-
-    // })
   }
 
 
@@ -364,7 +356,7 @@ export class CommercialsComponent implements OnInit {
     alertify
       .confirm("Comerciales", "¿Eliminar al Comercial " + data.mail + "?",
         (() => {
-          this._FunctionsService.RemoveUser(data.mail,data.id,6).then(msg => {
+          this._FunctionsService.RemoveUser(data.mail, data.id, 6).then(msg => {
             alertify.success(msg);
             this.listCommercials.splice(index, 1);
             if (this.listCommercials.length <= 0) {

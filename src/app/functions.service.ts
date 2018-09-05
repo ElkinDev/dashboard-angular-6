@@ -364,7 +364,6 @@ export class FunctionsService {
           mail: dataSend.mail
         }
       }
-      console.log('que seee enviaaa??', data)
       this._wsSocket.emit('changeUserBalance', data).subscribe((res) => {
 
         if (!res.err) {
@@ -396,7 +395,6 @@ export class FunctionsService {
         identification: numId
       }
       this._wsSocket.emit('getInfo', data).subscribe((res) => {
-        console.log(res,'vesamosasdas queee?',res);
         if (!res.err) {
           resolve({ nombre: res.user.nombre + ' ' + res.user.apellido, direccion: res.user.address, typeIdentification: res.user.typeIdentification, cedula: res.user.cedula, mail: res.user.mail,id:res.user.id })
         } else {
@@ -439,6 +437,7 @@ export class FunctionsService {
         }
       }
       this._wsSocket.emit('userRolesEvents', senData).subscribe((res) => {
+        // console.log('estooo lllegaaaa',res);
         if (res.err) {
           resolve({ err: true, msg: res.msg, type: res.type })
         } else {
@@ -461,6 +460,7 @@ export class FunctionsService {
         }
       }
       this._wsSocket.emit('changeUserBalance', senData).subscribe((res) => {
+        console.log('Change user veamos',res)
         if (res.err) {
           resolve({ err: true, msg: res.msg, type: res.type })
         } else {

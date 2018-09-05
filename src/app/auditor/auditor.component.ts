@@ -40,7 +40,7 @@ export class AuditorComponent implements OnInit {
   idUserEditNow;
   session;
   EditUser = new FormGroup({
-
+    nit: new FormControl(),
     imgProfile: new FormControl(),
     nombre: new FormControl(),
     apellido: new FormControl(),
@@ -70,7 +70,7 @@ export class AuditorComponent implements OnInit {
     this.sendImage = null;
     this.fileImageEdit = null;
     this.idUserEditNow = null;
-    this.session=this._FunctionsService.returnCurrentSession()
+    this.session = this._FunctionsService.returnCurrentSession()
 
 
   }
@@ -81,7 +81,8 @@ export class AuditorComponent implements OnInit {
     this._auditorService.getAllEditors().then((res) => {
 
       if (!res) {
-        this.ListEditors = null
+        this.ListEditors = []
+        this.ListEditorsNull = true;
         this.messageErrorQuery = "No Hay resultados"
 
       } else {
@@ -93,7 +94,8 @@ export class AuditorComponent implements OnInit {
       }, 1000)
 
     }, (err) => {
-      this.ListEditors = null;
+      this.ListEditors = [];
+      this.ListEditorsNull = true;
       this.messageErrorQuery = err.msg ? err.msg : '¡Error inesperado, inténtelo nuevamente!';
       setTimeout(() => {
         this.loadingMore = false;
@@ -101,8 +103,12 @@ export class AuditorComponent implements OnInit {
     })
 
     this._wsSocket.on('createUser:' + this.RoleUser).subscribe((res) => {
-      if (res.mail.match(new RegExp(this.senData.emailUser, 'gi'))) {      
+      if (res.mail.match(new RegExp(this.senData.emailUser, 'gi'))) {
         var formdata = new FormData();
+        this.ListEditorsNull = false;
+
+        this.senData.cedula = this.senData.nit;
+
         if (formdata && this.sendImage != null) {
           console.log('aqui see meteee');
           formdata.append('imgProfile', this.sendImage)
@@ -118,7 +124,7 @@ export class AuditorComponent implements OnInit {
             let resp1 = JSON.parse(resp);
             this.senData.imgProfile = resp1.imageProfile;
             console.log(resp1, 'quee nos traeeeee');
-            if (this.ListEditors != []) {
+            if (this.ListEditors != [] && this.ListEditors != null) {
               let resultAdmin = this.ListEditors.find(obj => {
                 return obj.emailUser === this.senData.emailUser
               });
@@ -154,14 +160,14 @@ export class AuditorComponent implements OnInit {
         } else {
           this.senData.fecha = res.dateCreate;
           this.senData.id = res.id;
-          if (this.ListEditors != []) {
+          if (this.ListEditors != [] && this.ListEditors != null) {
 
             let resultAdmin = this.ListEditors.find(obj => {
               return obj.emailUser === this.senData.emailUser
             });
             if (!resultAdmin) {
               this.senData.mail = this.senData.emailUser;
-              
+
               this.sendImage = null;
               this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
               this.ListEditors.push(this.senData);
@@ -172,7 +178,7 @@ export class AuditorComponent implements OnInit {
             };
           } else {
             this.senData.mail = this.senData.emailUser;
-            
+
             this.sendImage = null;
             this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
             this.ListEditors.push(this.senData)
@@ -257,6 +263,8 @@ export class AuditorComponent implements OnInit {
     this.EditUser.patchValue({
       nombre: data.nombre,
       apellido: data.apellido,
+      nit: data.cedula,
+      cedula: data.cedula,
       mail: data.mail,
       checModusEdit: data.status,
       imgProfile: null
@@ -280,6 +288,8 @@ export class AuditorComponent implements OnInit {
         nombre: data.value.nombre,
         apellido: data.value.apellido,
         mail: data.value.mail,
+        nit: data.value.cedula,
+        cedula: data.value.cedula,
         status: data.value.checModusEdit,
         id: this.idUserEditNow
       },
@@ -337,25 +347,6 @@ export class AuditorComponent implements OnInit {
 
     })
 
-
-
-    // this._auditorService.editUser(dataSend).then(msg => {
-    //   alertify.success(msg);
-    //   this.ListEditors[this.indexNowEdit].nombre = data.value.nombre
-    //   this.ListEditors[this.indexNowEdit].apellido = data.value.apellido
-    //   this.ListEditors[this.indexNowEdit].mail = data.value.mail
-    //   this.ListEditors[this.indexNowEdit].status = data.value.checModusEdit
-    //   this.EditAuditor ? this.EditAuditor = false : this.EditAuditor = true
-    //   this.ListAllInfo ? this.ListAllInfo = false : this.ListAllInfo = true
-    //   if (this.nameUserPhoto) {
-    //     console.log('que es esto', this.nameUserPhoto)
-    //     this.ListEditors[this.indexNowEdit].imgProfile = this.urlMainServer + this.nameUserPhoto
-    //   }
-    // }, err => {
-    //   alertify.error(err);
-
-
-    // })
   }
 
   removeAuditor(data, index): void {
@@ -368,7 +359,7 @@ export class AuditorComponent implements OnInit {
             this.ListEditors.splice(index, 1);
             if (this.ListEditors.length <= 0) {
               this.ListEditorsNull = true;
-              this.messageErrorQuery = "- Sin usuarios Comerciales -"
+              this.messageErrorQuery = "- Sin usuarios Auditores -"
 
             }
           }, err => {

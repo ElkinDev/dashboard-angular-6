@@ -45,6 +45,7 @@ export class AdminsComponent implements OnInit {
     imgProfile: new FormControl(),
     nombre: new FormControl(),
     apellido: new FormControl(),
+    nit: new FormControl(),
     mail: new FormControl(),
     checModusEdit: new FormControl(),
 
@@ -74,7 +75,7 @@ export class AdminsComponent implements OnInit {
     this.sendImage = null;
     this.fileImageEdit = null;
     this.idUserEditNow = null;
-    this.session=this._FunctionsService.returnCurrentSession()
+    this.session = this._FunctionsService.returnCurrentSession()
   }
 
   ngAfterViewChecked() {
@@ -82,11 +83,11 @@ export class AdminsComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('escuchando')
     this._adminService.getAllAdmins().then((res) => {
-
       if (!res) {
-        this.ListAdmins = null
+        this.ListAdmins = []
+        this.ListAdminsnull = true;
+
         this.messageErrorQuery = "No Hay resultados"
       } else {
         this.ListAdmins = res;
@@ -98,7 +99,9 @@ export class AdminsComponent implements OnInit {
 
 
     }, (err) => {
-      this.ListAdmins = null
+
+      this.ListAdmins = [];
+      this.ListAdminsnull = true;
       this.messageErrorQuery = err.msg ? err.msg : '¡Error inesperado, inténtelo nuevamente!'
       setTimeout(() => {
         this.loadingMore = false;
@@ -107,23 +110,25 @@ export class AdminsComponent implements OnInit {
 
     })
     this._wsSocket.on('createUser:' + this.RoleUser).subscribe((res) => {
+      
       if (res.mail.match(new RegExp(this.senData.emailUser, 'gi'))) {
+        this.ListAdminsnull = false;
         var formdata = new FormData();
+        this.senData.cedula = this.senData.nit;
         if (formdata && this.sendImage != null) {
-          
+
           formdata.append('imgProfile', this.sendImage)
           formdata.append('id', res.id)
           formdata.append('opt', '0')
           formdata.append('mail', this.session.mail)
           formdata.append('token', this.session.token)
-          this.ListAdminsnull = false;
           this.senData.fecha = res.dateCreate;
           this.senData.id = res.id;
           this.ListAdmins = this.ListAdmins || [];
           this._FunctionsService.ajaxHttpRequest(formdata, this.progressImage, resp => {
             let resp1 = JSON.parse(resp);
             this.senData.imgProfile = resp1.imageProfile;
-            if (this.ListAdmins != []) {
+            if (this.ListAdmins != [] && this.ListAdmins != null) {
               let resultAdmin = this.ListAdmins.find(obj => {
                 return obj.emailUser === this.senData.emailUser
               });
@@ -158,15 +163,15 @@ export class AdminsComponent implements OnInit {
         } else {
           this.senData.fecha = res.dateCreate;
           this.senData.id = res.id;
-          if (this.ListAdmins != []) {
+          if (this.ListAdmins != [] && this.ListAdmins != null) {
 
             let resultAdmin = this.ListAdmins.find(obj => {
               return obj.emailUser === this.senData.emailUser
             });
             if (!resultAdmin) {
               this.senData.mail = this.senData.emailUser;
-              
-              this.sendImage = null;              
+
+              this.sendImage = null;
               this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
               this.ListAdmins.push(this.senData);
               this.addAdmin = false;
@@ -176,8 +181,8 @@ export class AdminsComponent implements OnInit {
             };
           } else {
             this.senData.mail = this.senData.emailUser;
-            
-            this.sendImage = null;            
+
+            this.sendImage = null;
             this.hrefImageUpload2 = this.urlMainServer + 'noimage.png';
             this.ListAdmins.push(this.senData)
             this.addAdmin = false;
@@ -228,6 +233,8 @@ export class AdminsComponent implements OnInit {
   }
 
   submitNewUserAdmin(data): void {
+
+    console.log(data, 'que nostraee')
     let resd: any = null;
     this.senData = data;
     this.senData.RoleUser = this.RoleUser;
@@ -261,6 +268,7 @@ export class AdminsComponent implements OnInit {
     this.EditUser.patchValue({
       nombre: data.nombre,
       apellido: data.apellido,
+      nit: data.cedula,
       mail: data.mail,
       checModusEdit: data.status,
       imgProfile: null
@@ -282,10 +290,13 @@ export class AdminsComponent implements OnInit {
     var dataSend = {
       nombre: data.value.nombre,
       apellido: data.value.apellido,
+      cedula: data.value.nit,
+      nit: data.value.nit,
       mail: data.value.mail,
       status: data.value.checModusEdit,
       id: this.idUserEditNow
     }
+
     this._adminService.editUser(dataSend).then(msg => {
       let respF: any = msg;
       if (respF.type === 'updateData' && !this.fileImageEdit) {

@@ -4,8 +4,8 @@
       <div class="col-md-12 text-center">
         <img class="rounded-circle img-fluid" [src]="hrefImageUploaded" alt="" width="200">
         <br>
-        <input class="btn form-control mt-3 text-center" type="file" name="imgProfile" #imgProfile="ngModel" id="imgProfile"
-          ngModel accept="image/x-png,image/gif,image/jpeg" (change)="readUrl($event)" />
+        <input class="btn form-control mt-3 text-center" type="file" name="imgProfile" #imgProfile="ngModel" id="imgProfile" ngModel
+          accept="image/x-png,image/gif,image/jpeg" (change)="readUrl($event)" />
       </div>
       <div class="col-md-12">
         <div class="row ">
@@ -30,6 +30,20 @@
 
               <div *ngIf="newUser.submitted && apellido.invalid">
                 <small class="form-text text-danger">*Apellidos Requerido</small>
+              </div>
+
+            </div>
+
+          </div>
+          <div class="col-md-10 offset-md-1">
+            <label class=" form-control-label">N° de Cedula</label>
+
+            <div class="form-group">
+              <input type="text" name="nit" name="nit" #nit="ngModel" id="nit" ngModel class="form-control" [ngClass]="{'is-invalid': (newUser.submitted && nit.invalid) }"
+                required>
+
+              <div *ngIf="newUser.submitted && nit.invalid">
+                <small class="form-text text-danger">* Número de identificación Requerido</small>
               </div>
 
             </div>
@@ -63,7 +77,9 @@
             <label class=" form-control-label">Contraseña</label>
             <div class=" form-group">
               <div class="input-group">
-                <input type="password" id="password" name="password" #password="ngModel" id="password" ngModel (keyup)="ValidatePasswordPower($event);validatePasswordRepeat($event,passwordRepeat)" [ngClass]="{'is-invalid': (newUser.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte','border-none':password.value=='' && !PowerPassword }" (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
+                <input type="password" id="password" name="password" #password="ngModel" id="password" ngModel (keyup)="ValidatePasswordPower($event);validatePasswordRepeat($event,passwordRepeat)"
+                  [ngClass]="{'is-invalid': (newUser.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','is-valid': PowerPassword=='Fuerte','border-none':password.value=='' && !PowerPassword }"
+                  (keydown)="disabledPassErr()" placeholder="******" class="form-control" required>
                 <div class="input-group-addon" [ngClass]="{'is-invalid': (newUser.submitted && password.invalid),'border border-danger': PowerPassword=='Débil','border border-warning': PowerPassword=='Aceptable','border border-success': PowerPassword=='Fuerte'}">
                   <i class="fa" [ngClass]="{'fa-times': (newUser.submitted && password.invalid),'fa-times': PowerPassword=='Débil','fa-check': PowerPassword=='Fuerte' || PowerPassword=='Aceptable', 'fa-asterisk':password.value=='' }"></i>
                 </div>
@@ -81,10 +97,11 @@
 
             <div class=" form-group">
               <div class="input-group">
-                <input type="password" name="passwordRepeat" #passwordRepeat="ngModel" ngModel (keyup)="validatePasswordRepeat($event,password)"  [ngClass]="{'is-invalid': (newUser.submitted && passwordRepeat.invalid) || NotEqualsPassword  }"
-                  placeholder="******" class="form-control" required>
+                <input type="password" name="passwordRepeat" #passwordRepeat="ngModel" ngModel (keyup)="validatePasswordRepeat($event,password)"
+                  [ngClass]="{'is-invalid': (newUser.submitted && passwordRepeat.invalid) || NotEqualsPassword  }" placeholder="******"
+                  class="form-control" required>
                 <div class="input-group-addon" [ngClass]="{'border border-danger':NotEqualsPassword }">
-                  <i class="fa fa-asterisk"[ngClass]="{'fa-times':NotEqualsPassword,'fa-check': (!NotEqualsPassword && passwordRepeat.value!=''), 'fa-asterisk':passwordRepeat.value=='' }" ></i>
+                  <i class="fa fa-asterisk" [ngClass]="{'fa-times':NotEqualsPassword,'fa-check': (!NotEqualsPassword && passwordRepeat.value!=''), 'fa-asterisk':passwordRepeat.value=='' }"></i>
                 </div>
               </div>
               <div *ngIf="newUser.submitted && passwordRepeat.invalid">

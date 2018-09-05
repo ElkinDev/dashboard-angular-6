@@ -2183,6 +2183,18 @@ header .form-inline {
         animation: rotate-move 2s ease-in-out infinite;
       }
 
+      .loading-panel-2{
+        width: 200px;
+        height: 200px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: auto;
+        filter: url('#goo');
+        animation: rotate-move 2s ease-in-out infinite;
+      }
+
       .loading-panel-1{
         width: 150px;
         height: 150px;

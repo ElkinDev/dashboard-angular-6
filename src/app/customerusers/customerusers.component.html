@@ -163,7 +163,7 @@
                     <i class="fa fa-bars pointer" (click)="openModalBalances(content,user)" title="Administrar saldos"></i>
                   </td>
                   <td class="font-weight-bold">
-                    <i class="fa fa-edit pointer" (click)="openEditUser(user)" aria-hidden="true" title="Editar"></i>&nbsp;
+                    <i class="fa fa-edit pointer" (click)="openEditUser(user,i)" aria-hidden="true" title="Editar"></i>&nbsp;
                     <i class="ti-trash text-danger  pointer" (click)="removeUser(user,i)" title="Eliminar" aria-hidden="true"></i>&nbsp;
 
 
@@ -383,7 +383,7 @@
           </form>
         </div>
         <div class="col-md-9 ListAdminsAll p-5  bg-white " [hidden]="!editUser">
-          <form [formGroup]="EditUser" (ngSubmit)=" ( !NotEqualsPassword && (PowerPassword!='Débil' && PowerPassword!='' && PowerPassword!=null)) && onSubmitEditUser(EditUser)">
+          <form [formGroup]="EditUser" (ngSubmit)="onSubmitEditUser(EditUser)">
             <div class="row">
               <div class="col-md-4 offset-md-2">
                 <h4>Editar Usuario</h4>

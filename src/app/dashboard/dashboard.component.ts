@@ -19,7 +19,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this._FunctionsService.getSessionStorage().then(res => {
-      console.log('entraaa????')
       if (res == null || res == '') {
         this.router.navigate(['/login']);
 
@@ -30,6 +29,9 @@ export class DashboardComponent implements OnInit {
 
     })
   }
+
+
+  
 
   checkSession(data) {
     let getSession = JSON.parse(data)

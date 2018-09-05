@@ -27,7 +27,7 @@ export class NavbarAsideComponent implements OnInit {
       }else{
 
       }
-      console.log('quee es ',res)
+      // console.log('quee es ',res)
     },err=>{
       
     })

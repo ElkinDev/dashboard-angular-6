@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, Renderer, ChangeDetectorRef,ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, Renderer, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { NgForm, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { CustomersService } from '../customers-people/customers-service.service';
@@ -63,6 +63,8 @@ export class CustomerusersComponent implements OnDestroy, OnInit {
   modusPushBalance = true;
   senData;
   roleUser;
+  idNowEdit;
+  indexNowEdit;
   constructor(private renderer: Renderer, routeActived: ActivatedRoute, private router: Router, private _wsSocket: WebSocketService, private _FunctionsService: FunctionsService, private _location: Location, private cdRef: ChangeDetectorRef, private modalService: NgbModal, private _CustomersService: CustomersService) {
     this.senData = null
     this.dninumber = routeActived.snapshot.params['dninumber'];
@@ -109,6 +111,7 @@ export class CustomerusersComponent implements OnDestroy, OnInit {
         if (response.type == 'noCompanyEmployes') {
           this.usersEmployedCustomer = null;
           this.messageErrorQuery = response.msg
+          console.log('entraaaa acá no tiene');
           this.getAllBalances(email);
         } else {
 
@@ -117,7 +120,11 @@ export class CustomerusersComponent implements OnDestroy, OnInit {
         }
       } else {
         this.usersEmployedCustomer = response.users
+        // this.rerender()
         this.dtTrigger.next();
+
+        console.log('entraaaa 2');
+
         this.getAllBalances(email);
 
 
@@ -157,33 +164,56 @@ export class CustomerusersComponent implements OnDestroy, OnInit {
   getAllBalances(email) {
     this._FunctionsService.getBalancesfromCustomer(email).then(res => {
       let response: any = res;
-      if (response.plans.length > 0) {
-        response.plans.forEach(element => {
-          switch (element.plan) {
-            case 'Contratación de personal':
-              this.TotalQueryCorporativo = element.total;
-              this.llevasQueryCorporativo = element.count;
-              break;
-            case 'Mi negocio de confianza':
-              this.TotalQueryMiNegocio = element.total;
-              this.llevasQueryMinegocio = element.count;
-              break;
-            case 'Mi personal de Confianza':
-              this.TotalQueryMipersonal = element.total;
-              this.llevasQueryMipersonal = element.count;
-              break;
-            default:
-              break;
+      if (!response.err) {
+        if (response.plans.length > 0) {
+          response.plans.forEach(element => {
+            switch (element.plan) {
+              case 'Contratación de personal':
+                this.TotalQueryCorporativo = element.total;
+                this.llevasQueryCorporativo = element.count;
+                break;
+              case 'Mi negocio de confianza':
+                this.TotalQueryMiNegocio = element.total;
+                this.llevasQueryMinegocio = element.count;
+                break;
+              case 'Mi personal de Confianza':
+                this.TotalQueryMipersonal = element.total;
+                this.llevasQueryMipersonal = element.count;
+                break;
+              default:
+                break;
 
-          }
-        });
+            }
+          });
+        } else {
+          this.TotalQueryCorporativo = 0;
+          this.llevasQueryCorporativo = 0;
+
+          this.TotalQueryMiNegocio = 0;
+          this.llevasQueryMinegocio = 0;
+
+          this.TotalQueryMipersonal = 0;
+          this.llevasQueryMipersonal = 0;
+
+        }
+      } else {
+        this.TotalQueryCorporativo = 0;
+        this.llevasQueryCorporativo = 0;
+
+        this.TotalQueryMiNegocio = 0;
+        this.llevasQueryMinegocio = 0;
+
+        this.TotalQueryMipersonal = 0;
+        this.llevasQueryMipersonal = 0;
       }
 
       this.loadingMore = false;
 
+    }, err => {
+      alertify.error('Error inesperado intente ingresar nuevamente')
     });
   }
-  
+
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
@@ -313,12 +343,10 @@ export class CustomerusersComponent implements OnDestroy, OnInit {
 
 
   }
-  closeEditForm(){
-    this.addNewuser=false;this.NotEqualsPassword = false;this.PowerPassword = null;
+  closeEditForm() {
+    this.addNewuser = false; this.NotEqualsPassword = false; this.PowerPassword = null;
   }
-  onSubmitEditUser(user) {
-    console.log('vengaaa entraaaa', user);
-  }
+
   ChangeBalancesCustomer(plan, numquery) {
 
 
@@ -372,8 +400,10 @@ export class CustomerusersComponent implements OnDestroy, OnInit {
 
   }
 
-  openEditUser(user) {
+  openEditUser(user, index) {
     this.editUser = true;
+    this.idNowEdit = user
+    this.indexNowEdit = index;
     user.status ? this.modusEditUser = 'Activo' : this.modusEditUser = 'Inactivo'
     this.EditUser.patchValue({
       nombre: user.nombre,
@@ -382,6 +412,63 @@ export class CustomerusersComponent implements OnDestroy, OnInit {
       mail: user.mail,
       checModusEdit: user.status
     });
+  }
+  onSubmitEditUser(data: NgForm) {
+    var DataImport;
+    let dataFi: any;
+    console.log('vengaaaa entraa')
+    let sendData = {
+      opt: 18,
+      userEdit: {
+        nombre: data.value.nombre,
+        apellido: null,
+        typeIdentification: 'CC',
+        mail: data.value.mail,
+        id: this.idNowEdit.id,
+        address: null,
+        nit: data.value.cedula,
+        status: data.value.checModusEdit,
+        phone: '',
+      }
+    }
+    DataImport = {
+      nombre: data.value.nombre,
+      typeIdentification: 'CC',
+      mail: data.value.mail,
+      id: this.idNowEdit.id,
+      cedula: data.value.cedula,
+      status: data.value.checModusEdit,
+      fecha: this.idNowEdit.fecha
+
+    }
+
+
+    this._FunctionsService.editUser(sendData).then(data => {
+      dataFi = data;
+
+      if (dataFi.err) {
+        alertify.error(dataFi.msg);
+
+      } else {
+        alertify.success(dataFi.msg);
+        this.usersEmployedCustomer[this.indexNowEdit] = DataImport;
+        this.editUser = false;
+        // this.usersEmployedCustomer.splice(index, 1);
+
+        this.rerender()
+      }
+      // alertify.success(msg);
+
+
+
+
+
+
+    }, err => {
+      alertify.error(err);
+
+
+    })
   }
   removeUser(data, index): void {
     let opt;
@@ -392,7 +479,7 @@ export class CustomerusersComponent implements OnDestroy, OnInit {
           this._FunctionsService.RemoveUser(data.mail, data.id, opt).then(msg => {
             alertify.success(msg);
             this.usersEmployedCustomer.splice(index, 1);
-            console.log(this.usersEmployedCustomer,);
+            console.log(this.usersEmployedCustomer);
             this.rerender()
 
           }, err => {
@@ -423,6 +510,6 @@ export class CustomerusersComponent implements OnDestroy, OnInit {
     this.modusPushSaldo === 'Adicionar' ? this.modusPushSaldo = 'Restar' : this.modusPushSaldo = 'Adicionar'
   }
 
-  
+
 
 }
