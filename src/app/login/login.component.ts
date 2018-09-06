@@ -60,6 +60,7 @@ export class LoginComponent implements OnInit {
             this.msgError = dataResponse.msg
           }
 
+          this.loadingMore = false;
 
         } else {
           if (dataResponse.res) {
@@ -76,9 +77,10 @@ export class LoginComponent implements OnInit {
           } else {
             this.dontExist = true
             this.msgError = 'Error inesperado - intente nuevamente.';
+            this.loadingMore = false;
+
           }
         }
-        this.loadingMore = false;
       }, err => {
 
       })
